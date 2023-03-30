@@ -1,0 +1,15 @@
+.text-stroke-black-3 {
+    -webkit-text-stroke: 3px black;
+}
+.text-stroke-white-3 {
+    -webkit-text-stroke: 3px #fff;
+}
+
+::-moz-selection {
+    color: white;
+    background: yellow;
+}
+::selection {
+    color: white;
+    background: rgb(99 102 241);
+}

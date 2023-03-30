@@ -1,0 +1,21 @@
+---
+import Head from "../components/Head.astro";
+
+export interface Props {
+  title: string;
+  lang: string;
+  description: string;
+}
+
+const { title, lang, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <Head title={title} description={description} />
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
