@@ -5,16 +5,16 @@ export interface Props {
   title: string;
   lang: string;
   description: string;
+  center?: boolean;
 }
 
-const { title, lang, description } = Astro.props;
+const { title, lang, description, center } = Astro.props;
 ---
 
-<!DOCTYPE html>
 <html lang={lang}>
   <Head title={title} description={description} />
   <body>
-    <main>
+    <main class={center ? "center" : ""}>
       <slot />
     </main>
   </body>

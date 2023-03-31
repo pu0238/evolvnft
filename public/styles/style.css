@@ -1,15 +1,24 @@
 .text-stroke-black-3 {
-    -webkit-text-stroke: 3px black;
+  -webkit-text-stroke: 3px black;
 }
 .text-stroke-white-3 {
-    -webkit-text-stroke: 3px #fff;
+  -webkit-text-stroke: 3px #fff;
 }
 
 ::-moz-selection {
-    color: white;
-    background: yellow;
+  color: white;
+  background: yellow;
 }
 ::selection {
-    color: white;
-    background: rgb(99 102 241);
+  color: white;
+  background: rgb(99 102 241);
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 }

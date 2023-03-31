@@ -6,6 +6,7 @@ import MiddleCenteredHeader from "../components/MiddleCenteredHeader.vue";
 import SecondSection from "../components/SecondSection.vue";
 import ThirdSectionLeft from "../components/ThirdSectionLeft.vue";
 import Footer from "../components/Footer.vue";
+import MobileMenu from "../components/MobileMenu.vue";
 
 const navItems = [
   { isComingSoon: false, content: "solution" },
@@ -15,7 +16,11 @@ const navItems = [
 ];
 ---
 
-<Main title="EvolvNFT - evolving lanchpad" lang="pl" description="Evolvnft is a decentralized token ranch and a place to create editable, levelable and evolving metadata for your decentralized assets!">
+<Main
+  title="EvolvNFT - evolving lanchpad"
+  lang="pl"
+  description="Evolvnft is a decentralized token ranch and a place to create editable, levelable and evolving metadata for your decentralized assets!"
+>
   <div class="container px-8 mx-auto">
     <section class="w-full float-left">
       <Menu class="my-8" client:visible navItems={navItems} />
@@ -32,4 +37,8 @@ const navItems = [
     </section>
   </div>
   <Footer class="w-full float-left" />
+  <MobileMenu
+    client:visible
+    navItems={navItems}
+  />
 </Main>

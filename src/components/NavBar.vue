@@ -13,25 +13,36 @@
 </template>
 
 <script lang="ts">
-import { PropType, reactive } from "vue";
+import { useStore } from "@nanostores/vue";
+import { computed, PropType, reactive } from "vue";
+import { isMenuOpen } from "../state/menuState";
 import NavItem from "./NavItem.vue";
 
 export default {
   components: { NavItem },
-    methods: {
+  methods: {
     scrollToElement(event: any) {
-      if(!event.target.innerText) return;
-      const el = document.querySelector(`#${this.camalize(event.target.innerText)}`);
+      if (!event.target.innerText) return;
+      const el = document.getElementById(
+        `${this.camalize(event.target.innerText)}`
+      );
       const html = document.querySelector("html");
       if (!html || !el) return;
+      this.isMenuOpenValue && this.toogleMenu();
       html.scrollTo({
         top: el.getBoundingClientRect().top,
         behavior: "smooth",
       });
     },
     camalize(str: string) {
-      return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
-    }
+      return str
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+    },
+    toogleMenu() {
+      isMenuOpen.set(!this.isMenuOpenValue);
+      console.log(isMenuOpen.get());
+    },
   },
   props: {
     navItems: {
@@ -44,6 +55,7 @@ export default {
       ],
       required: true,
     },
+    methods: {},
     textColor: {
       type: String,
       default: "black",
@@ -52,8 +64,9 @@ export default {
     },
   },
   setup(props) {
+    const $isMenuOpen = useStore(isMenuOpen);
     props = reactive(props);
-    return {};
+    return { isMenuOpenValue: computed(() => $isMenuOpen.value) };
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <li
-    class="relative inline float-left py-2 mx-2 font-semibold font-josefin text-lg"
+    class="relative bottom-0 block md:inline float-none md:float-left py-2 mx-2 font-semibold font-josefin text-lg"
     :class="{
       'text-white': textColor === 'white',
       'text-black': textColor === 'black',
@@ -17,7 +17,7 @@
     >
     <span
       v-if="content === 'community'"
-      class="absolute -right-3 top-2 z-10 rotate-45"
+      class="absolute -ml-2 top-2 z-10 rotate-45"
     >
       <svg
         class="h-2 fill-indigo-500"
