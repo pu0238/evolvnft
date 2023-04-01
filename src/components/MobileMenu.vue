@@ -52,7 +52,6 @@ export default {
     sharedConnect,
     toogleMenu() {
       isMenuOpen.set(!this.isMenuOpenValue);
-      console.log(this.isMenuOpenValue, isMenuOpen.get());
     },
   },
   props: {

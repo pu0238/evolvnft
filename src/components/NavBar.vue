@@ -41,7 +41,6 @@ export default {
     },
     toogleMenu() {
       isMenuOpen.set(!this.isMenuOpenValue);
-      console.log(isMenuOpen.get());
     },
   },
   props: {
