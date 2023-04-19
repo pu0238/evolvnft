@@ -1,6 +1,8 @@
 <template>
   <div>
-    <span class="text-xl md:text-2xl font-cal mb-4 text-white">{{ heading }}</span>
+    <span class="text-xl md:text-2xl font-cal mb-4 text-white">{{
+      heading
+    }}</span>
     <div
       v-bind="getRootProps()"
       class="font-josefin text-zinc-300 border-dashed border-2 border-indigo-500 h-32 text-center flex justify-center items-center"
@@ -9,12 +11,11 @@
       <p v-if="isDragActive">frop image here ...</p>
       <p v-else>drag here collection <br />image</p>
     </div>
-    <button @click="open">open</button>
   </div>
 </template>
 
 <script lang="ts">
-import { reactive } from "vue";
+import { PropType, reactive } from "vue";
 import { useDropzone } from "vue3-dropzone";
 
 export default {
@@ -24,16 +25,30 @@ export default {
       default: "Input:",
       required: false,
     },
+    acceptFiles: {
+      type: Array,
+      required: false,
+    },
+    acceptedTypes: {
+      type: Array as PropType<string[]>,
+      default: ["image/jpeg", "image/png", "image/gif"],
+      required: false,
+    },
   },
-  setup(props) {
+  emits: ['acceptFiles'],
+  setup(props, { emit }) {
     props = reactive(props);
-    const onDrop = (acceptFiles: any[], rejectReasons: any[]) => {
-      console.log(acceptFiles);
-      console.log(acceptFiles[0]);
+    const onDrop = async (acceptFiles: any[], rejectReasons: any[]) => {
+      const filteredAcceptFiles = acceptFiles.filter((file) =>
+        props.acceptedTypes.includes(file.type)
+      );
+      emit('acceptFiles', filteredAcceptFiles);
     };
     const { getRootProps, getInputProps, isDragActive, open, ...rest } =
       useDropzone({
         onDrop,
+        maxSize: 100_000,
+        maxFiles: 1,
       });
     return {
       getRootProps,

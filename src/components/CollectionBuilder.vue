@@ -21,6 +21,10 @@
             <span class="text-indigo-500">set</span> collection
             <span class="text-indigo-500">image</span>
           </span>
+          <span v-if="step === 5">
+            <span class="text-indigo-500">open</span> or
+            <span class="text-indigo-500">closed</span> collection?
+          </span>
         </h2>
         <div class="my-2 lg:my-8">
           <p class="text-md md:text-lg lg:text-xl font-josefin text-zinc-300">
@@ -40,6 +44,10 @@
             <span v-if="step === 4">
               The image of the collection is incredibly important because it
               will be visible as the main image of the collection.
+            </span>
+            <span v-if="step === 5">
+              At this stage, you will specify whether the collection you create
+              should be limited to a certain number of tokens
             </span>
           </p>
           <InputArea
@@ -67,6 +75,13 @@
             class="mt-4 md:mt-14 lg:mt-16"
             v-if="step === 4"
             heading="Drag image here:"
+            @acceptFiles="(files: Array<any>) => $emit('acceptFiles', files)"
+          />
+          <LockCollection
+            class="mt-4 md:mt-14 lg:mt-16"
+            v-if="step === 5"
+            v-model:checked="isColectionOpen"
+            v-model:tokenLimit="tokenLimit"
           />
         </div>
       </div>
@@ -110,6 +125,7 @@ import CollectionBaner from "./CollectionBaner.vue";
 import SecondSectionTitle from "./SecondSectionTitle.vue";
 import InputArea from "./InputArea.vue";
 import Uploader from "./Uploader.vue";
+import LockCollection from "./LockCollection.vue";
 import { reactive } from "vue";
 
 export default {
@@ -119,6 +135,8 @@ export default {
       collectionTitle: undefined,
       collectionSymbol: undefined,
       collectionDescription: undefined,
+      isColectionOpen: false,
+      tokenLimit: "",
     };
   },
   methods: {
@@ -126,7 +144,7 @@ export default {
       this.collectionImg &&
         this.$emit("emitedCollectionImg", this.collectionImg);
       this.collectionTitle &&
-        this.$emit("update:emitedCollectionTitle", this.collectionTitle);
+        this.$emit("emitedCollectionTitle", this.collectionTitle);
       this.collectionSymbol &&
         this.$emit("emitedCollectionSymbol", this.collectionSymbol);
       this.collectionDescription &&
@@ -149,6 +167,7 @@ export default {
     SecondSectionTitle,
     InputArea,
     Uploader,
+    LockCollection,
   },
   props: {
     textColor: {
@@ -156,6 +175,9 @@ export default {
       default: "white",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
+    },
+    emitedTokenLimit: {
+      type: String,
     },
     next: {
       type: Function,
@@ -188,6 +210,12 @@ export default {
       default: "Evolv NFT",
       required: false,
     },
+    acceptFiles: {
+      type: Array,
+    },
+    emitedIsColectionOpen: {
+      type: Boolean,
+    },
   },
   emits: [
     "next",
@@ -195,7 +223,10 @@ export default {
     "emitedCollectionImg",
     "emitedCollectionSymbol",
     "emitedCollectionDescription",
-    "update:emitedCollectionTitle",
+    "emitedCollectionTitle",
+    "acceptFiles",
+    "emitedIsColectionOpen",
+    "emitedTokenLimit",
   ],
   setup(props) {
     props = reactive(props);
