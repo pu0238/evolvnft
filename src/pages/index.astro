@@ -1,45 +1,22 @@
 ---
-import Main from "../layouts/Main.astro";
 import Header from "../components/Header.vue";
-import Menu from "../components/Menu.vue";
 import MiddleCenteredHeader from "../components/MiddleCenteredHeader.vue";
 import SecondSection from "../components/SecondSection.vue";
 import ThirdSectionLeft from "../components/ThirdSectionLeft.vue";
-import Footer from "../components/Footer.vue";
-import MobileMenu from "../components/MobileMenu.vue";
-
-const navItems = [
-  { isComingSoon: false, content: "solution" },
-  { isComingSoon: false, content: "use cases" },
-  { isComingSoon: true, content: "launchpad" },
-  { isComingSoon: true, content: "community" },
-  // marketplace
-];
+import Container from "../layouts/Container.astro";
 ---
 
-<Main
-  title="EvolvNFT - evolving lanchpad"
-  lang="pl"
-  description="Evolvnft is a decentralized token ranch and a place to create editable, levelable and evolving metadata for your decentralized assets!"
->
-  <div class="container px-8 mx-auto">
-    <section class="w-full float-left">
-      <Menu class="my-8" client:visible navItems={navItems} />
-      <Header class="mx-4 float-left md:my-8 lg:my-20" />
-    </section>
-    <section class="w-full float-left flex justify-center">
-      <MiddleCenteredHeader class="mx-4 float-left max-w-3xl" />
-    </section>
-    <section class="w-full float-left flex justify-center">
-      <SecondSection class="my-8 sm:my-16 md:my-20" />
-    </section>
-    <section class="w-full float-left">
-      <ThirdSectionLeft class="mx-4" />
-    </section>
-  </div>
-  <Footer class="w-full float-left" />
-  <MobileMenu
-    client:visible
-    navItems={navItems}
-  />
-</Main>
+<Container>
+  <section class="w-full float-left">
+    <Header class="mx-4 float-left md:my-8 lg:my-20" />
+  </section>
+  <section class="w-full float-left flex justify-center">
+    <MiddleCenteredHeader class="mx-4 float-left max-w-3xl" />
+  </section>
+  <section class="w-full float-left flex justify-center">
+    <SecondSection class="my-8 sm:my-16 md:my-20" />
+  </section>
+  <section class="w-full float-left">
+    <ThirdSectionLeft class="mx-4" />
+  </section>
+</Container>

@@ -1,12 +1,12 @@
 export const ConstantineInfo = {
   // Chain-id of the Cosmos SDK chain.
-  chainId: "constantine-1",
+  chainId: "constantine-2",
   // The name of the chain to be displayed to the user.
-  chainName: "Constantine Testnet",
+  chainName: "Constantine 2 Testnet",
   // RPC endpoint of the chain.
-  rpc: "https://rpc.constantine-1.archway.tech",
+  rpc: "https://rpc.constantine-2.archway.tech",
   // REST endpoint of the chain.
-  rest: "https://api.constantine-1.archway.tech",
+  rest: "https://api.constantine-2.archway.tech",
   // Staking coin information
   stakeCurrency: {
     // Coin denomination to be displayed to the user.
@@ -89,6 +89,6 @@ export const ConstantineInfo = {
     average: 0.1,
     high: 0.2,
   },
-  faucets: ["https://faucet.constantine-1.archway.tech"],
+  faucets: ["https://faucet.constantine-2.archway.tech"],
   features: ["cosmwasm"],
 };

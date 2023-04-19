@@ -1,9 +1,9 @@
 <template>
-  <footer class="mt-32 border-t-2 border-zink-300 pt-8 pb-20">
+  <footer class="mt-16 border-t-2 border-zink-300 pt-8 p-10 lg:pb-20">
     <div class="container mx-auto px-24">
       <Logo class="float-left" />
       <div
-        class="w-full grid md:grid-cols-3 gap-14 float-left py-10 text-xl font-josefin"
+        class="w-full grid md:grid-cols-3 gap-8 lg:gap-14 float-left py-10"
       >
         <FooterButton content="twitter" :isDisabled="true" />
         <FooterButton content="discord" :isDisabled="true" />

@@ -4,16 +4,16 @@
     <div class="my-8">
       <HeaderSubtitle />
     </div>
-    <div class="float-left">
+    <div class="float-left flex">
       <Button
         :isDisabled="true"
         :isFilled="true"
         content="integrate docs"
         :isComingSoon="true"
         color="black"
-        class="mr-2 sm:mr-4"
+        class="mr-2"
       />
-      <Button :isFilled="true" content="create token" color="black" />
+      <Button :isFilled="true" content="create token" color="black" class="flex-0" href="/create"/>
     </div>
   </div>
 </template>

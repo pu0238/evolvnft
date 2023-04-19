@@ -1,14 +1,14 @@
-import FooterButton from './FooterButton.vue';
+import Uploader from './Uploader.vue';
 
 export default {
-  component: FooterButton,
+  component: Uploader,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'FooterButton'
+  title: 'Uploader'
 };
 
 const Template = args => ({
-  components: { FooterButton },
-  template: '<FooterButton />',
+  components: { Uploader },
+  template: '<Uploader />',
 });
 export const Default = Template.bind({});

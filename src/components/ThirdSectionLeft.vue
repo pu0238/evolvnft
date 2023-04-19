@@ -7,7 +7,7 @@
       />
     </div>
     <div class="float-left">
-      <Button :isFilled="true" content="start building" />
+      <Button :isFilled="true" content="start building" href="/create"/>
     </div>
   </div>
 </template>

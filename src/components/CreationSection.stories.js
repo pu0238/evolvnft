@@ -1,14 +1,14 @@
-import FooterButton from './FooterButton.vue';
+import CreationSection from './CreationSection.vue';
 
 export default {
-  component: FooterButton,
+  component: CreationSection,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'FooterButton'
+  title: 'CreationSection'
 };
 
 const Template = args => ({
-  components: { FooterButton },
-  template: '<FooterButton />',
+  components: { CreationSection },
+  template: '<CreationSection />',
 });
 export const Default = Template.bind({});

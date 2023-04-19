@@ -1,6 +1,6 @@
 <template>
   <button
-    class="border-b-2 border-zink-300 px-2 flex items-center py-2"
+    class="border-b-2 border-zink-300 px-2 flex items-center py-2 text-xl font-josefin"
     :class="{
       'text-zinc-400': isDisabled,
       'hover:border-indigo-700 ease-out duration-300': !isDisabled,
@@ -73,7 +73,7 @@ export default {
   props: {
     content: {
       type: String,
-      default: "Click me!",
+      default: "twitter",
       required: true,
     },
     isDisabled: {
