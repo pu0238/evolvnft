@@ -25,6 +25,10 @@
             <span class="text-indigo-500">open</span> or
             <span class="text-indigo-500">closed</span> collection?
           </span>
+          <span v-if="step === 6">
+            your <span class="text-indigo-500">collection</span> has been
+            <span class="text-indigo-500">created</span>!
+          </span>
         </h2>
         <div class="my-2 lg:my-8">
           <p class="text-md md:text-lg lg:text-xl font-josefin text-zinc-300">
@@ -48,6 +52,9 @@
             <span v-if="step === 5">
               At this stage, you will specify whether the collection you create
               should be limited to a certain number of tokens
+            </span>
+            <span v-if="step === 6">
+              To create tokens or create a candie machine go to collection management
             </span>
           </p>
           <InputArea
@@ -89,11 +96,11 @@
         class="float-left w-full flex justify-center lg:w-auto lg:block lg:mx-auto"
       >
         <CollectionBaner
-          :collectionImg="collectionImg || emitedCollectionImg"
-          :collectionSymbol="collectionSymbol || emitedCollectionSymbol"
-          :collectionTitle="collectionTitle || emitedCollectionTitle"
+          :collectionImg="collectionImg || collectionImgValue"
+          :collectionSymbol="collectionSymbol || collectionSymbolValue"
+          :collectionTitle="collectionTitle || collectionTitleValue"
           :collectionDescription="
-            collectionDescription || emitedCollectionDescription
+            collectionDescription || collectionDescriptionValue
           "
         />
       </div>
@@ -106,12 +113,27 @@
         color="white"
         :isFilled="false"
         @click="goBack"
+        v-if="step !== 6"
+      />
+      <Button
+        class="float-right"
+        content="create collection 🎉"
+        @click="goNext"
+        v-if="step === 5"
+      />
+      <Button
+        class="float-right"
+        content="menage collections"
+        arrow="right"
+        href="#"
+        v-else-if="step === 6"
       />
       <Button
         class="float-right"
         content="next step"
         arrow="right"
         @click="goNext"
+        v-else
       />
     </div>
   </div>
@@ -126,7 +148,16 @@ import SecondSectionTitle from "./SecondSectionTitle.vue";
 import InputArea from "./InputArea.vue";
 import Uploader from "./Uploader.vue";
 import LockCollection from "./LockCollection.vue";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
+import { useStore } from "@nanostores/vue";
+import {
+  collectionDescription,
+  collectionImg,
+  collectionSymbol,
+  collectionTitle,
+  isColectionClosed,
+  tokenLimit,
+} from "../state/collectionState";
 
 export default {
   data() {
@@ -141,14 +172,11 @@ export default {
   },
   methods: {
     saveColectionData() {
-      this.collectionImg &&
-        this.$emit("emitedCollectionImg", this.collectionImg);
-      this.collectionTitle &&
-        this.$emit("emitedCollectionTitle", this.collectionTitle);
-      this.collectionSymbol &&
-        this.$emit("emitedCollectionSymbol", this.collectionSymbol);
+      this.collectionImg && collectionImg.set(this.collectionImg);
+      this.collectionTitle && collectionTitle.set(this.collectionTitle);
+      this.collectionSymbol && collectionSymbol.set(this.collectionSymbol);
       this.collectionDescription &&
-        this.$emit("emitedCollectionDescription", this.collectionDescription);
+        collectionDescription.set(this.collectionDescription);
     },
     goNext() {
       this.saveColectionData();
@@ -188,28 +216,6 @@ export default {
     step: {
       type: Number,
     },
-    //  Emited data
-    emitedCollectionImg: {
-      type: String,
-      default: "/evolvnft-collection-logo.svg",
-      required: false,
-    },
-    emitedCollectionSymbol: {
-      type: String,
-      default: "EN",
-      required: false,
-    },
-    emitedCollectionDescription: {
-      type: String,
-      default:
-        "this is example description of your digital asset. it should be short and clear.",
-      required: false,
-    },
-    emitedCollectionTitle: {
-      type: String,
-      default: "Evolv NFT",
-      required: false,
-    },
     acceptFiles: {
       type: Array,
     },
@@ -217,20 +223,24 @@ export default {
       type: Boolean,
     },
   },
-  emits: [
-    "next",
-    "back",
-    "emitedCollectionImg",
-    "emitedCollectionSymbol",
-    "emitedCollectionDescription",
-    "emitedCollectionTitle",
-    "acceptFiles",
-    "emitedIsColectionOpen",
-    "emitedTokenLimit",
-  ],
+  emits: ["next", "back", "acceptFiles"],
   setup(props) {
     props = reactive(props);
-    return {};
+    const $isColectionClosed = useStore(isColectionClosed);
+    const $tokenLimit = useStore(tokenLimit);
+    const $collectionImg = useStore(collectionImg);
+    const $collectionTitle = useStore(collectionTitle);
+    const $collectionSymbol = useStore(collectionSymbol);
+    const $collectionDescription = useStore(collectionDescription);
+
+    return {
+      isColectionClosedValue: computed(() => $isColectionClosed.value),
+      tokenLimitValue: computed(() => $tokenLimit.value),
+      collectionImgValue: computed(() => $collectionImg.value),
+      collectionTitleValue: computed(() => $collectionTitle.value),
+      collectionSymbolValue: computed(() => $collectionSymbol.value),
+      collectionDescriptionValue: computed(() => $collectionDescription.value),
+    };
   },
 };
 </script>

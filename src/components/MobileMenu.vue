@@ -56,7 +56,7 @@ export default {
   },
   props: {
     navItems: {
-      type: Array as PropType<{ isComingSoon: boolean; content: string }[]>,
+      type: Array as PropType<{ isComingSoon: boolean; content: string, href: string | undefined }[]>,
       default: () => [
         { isComingSoon: false, content: "solution" },
         { isComingSoon: false, content: "use cases" },

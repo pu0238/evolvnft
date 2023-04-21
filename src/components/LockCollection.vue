@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     setColectionOpen(isOpen: boolean) {
-      console.log("setColectionOpen", isOpen);
       isColectionClosed.set(isOpen);
     },
     setTokenLimit(limit: string) {
@@ -49,7 +48,7 @@ export default {
     },
   },
   mounted() {
-    console.log("isColectionClosedValue", this.isColectionClosedValue);
+
     this.checked = this.isColectionClosedValue;
     this.limit = this.tokenLimitValue;
   },

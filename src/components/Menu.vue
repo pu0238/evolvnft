@@ -43,15 +43,10 @@ import { computed, PropType, reactive } from "vue";
 import NavBar from "./NavBar.vue";
 import Logo from "./Logo.vue";
 import Button from "./Button.vue";
-import type { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useStore } from "@nanostores/vue";
 import { isMenuOpen } from "../state/menuState";
 import { sharedConnect } from "../utils/wallet";
 import { isWalletConnected } from "../state/walletState";
-
-declare global {
-  interface Window extends KeplrWindow {}
-}
 
 export default {
   components: { NavBar, Logo, Button },
@@ -63,7 +58,7 @@ export default {
   },
   props: {
     navItems: {
-      type: Array as PropType<{ isComingSoon: boolean; content: string }[]>,
+      type: Array as PropType<{ isComingSoon: boolean; content: string, href: string | undefined }[]>,
       default: () => [
         { isComingSoon: false, content: "solution" },
         { isComingSoon: false, content: "use cases" },

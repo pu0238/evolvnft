@@ -1,4 +1,7 @@
-export const ConstantineInfo = {
+import type { SigningCosmWasmClientOptions } from "@archwayhq/arch3.js/build";
+import { GasPrice } from "@cosmjs/stargate";
+
+export const CONSTANTINE_INFO = {
   // Chain-id of the Cosmos SDK chain.
   chainId: "constantine-2",
   // The name of the chain to be displayed to the user.
@@ -92,3 +95,13 @@ export const ConstantineInfo = {
   faucets: ["https://faucet.constantine-2.archway.tech"],
   features: ["cosmwasm"],
 };
+
+export const DEFAULT_GAS_PRICE = GasPrice.fromString("0.02uconst");
+
+export const DEFAULT_SIGNING_CLIENT_OPTIONS: SigningCosmWasmClientOptions = {
+  broadcastPollIntervalMs: 300,
+  broadcastTimeoutMs: 20_000,
+  gasPrice: DEFAULT_GAS_PRICE,
+};
+
+export const CONTRACT_ADDRESS = "archway1r0lngnh3c8jyxn4dhx9y995l3us0wkz6dke9nl552vjs9cltrd7qy5peva";

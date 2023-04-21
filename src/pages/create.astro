@@ -1,10 +1,10 @@
 ---
-import CollectionSection from "../components/CollectionSection.vue";
 import Container from "../layouts/Container.astro";
+import CreationSection from "../components/CreationSection.vue";
 ---
 
 <Container>
   <section class="w-full float-left flex justify-center mt-8 lg:mt-16">
-    <CollectionSection />
+    <CreationSection client:visible />
   </section>
 </Container>

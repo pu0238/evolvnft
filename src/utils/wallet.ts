@@ -1,7 +1,7 @@
-import type { Window as KeplrWindow } from "@keplr-wallet/types";
+import type { Window as KeplrWindow, OfflineAminoSigner, OfflineDirectSigner } from "@keplr-wallet/types";
 import { useStore } from "@nanostores/vue";
 import { isWalletConnected } from "../state/walletState";
-import { ConstantineInfo } from "./constant";
+import { CONSTANTINE_INFO } from "./constant";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -15,11 +15,11 @@ export async function sharedConnect() {
     return;
   }
   if (isWalletConnectedValue) {
-    await keplr.disable(ConstantineInfo.chainId);
+    await keplr.disable(CONSTANTINE_INFO.chainId);
     isWalletConnected.set(false);
     return;
   }
-  await keplr.experimentalSuggestChain(ConstantineInfo);
-  await keplr.enable(ConstantineInfo.chainId);
+  await keplr.experimentalSuggestChain(CONSTANTINE_INFO);
+  await keplr.enable(CONSTANTINE_INFO.chainId);
   isWalletConnected.set(true);
 }
