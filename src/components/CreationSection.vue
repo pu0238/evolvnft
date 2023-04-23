@@ -36,6 +36,8 @@ import {
   SigningCosmWasmClientOptions,
 } from "@archwayhq/arch3.js";
 import { isWalletConnected } from "../state/walletState";
+import { isWallet } from "../utils/wallet";
+import { uploadFile } from "../utils/uploader";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -54,48 +56,15 @@ export default {
   },
 
   methods: {
-    async uploadFile(file: any) {
-      const bodyData = Object.values(new Uint8Array(await file.arrayBuffer()));
-      if (bodyData.length === 0) {
-        return console.error("Failed to upload image");
-      }
-      const tags = [
-        {
-          name: "Content-Type",
-          value: file.type,
-        },
-      ];
-
-      const result = await fetch(
-        "https://tGY64E3EMTOBP20R85p9HAwtIHJImucrwPU8j4Z2EUg.exm.run",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            data: bodyData,
-            type: "buffer",
-            tags,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const bodyResult = await result.json();
-      const uploadId = bodyResult.data.execution.result.id as string;
-      return uploadId;
-    },
     async uploadImage() {
       const firstFile = this.acceptFiles[0] as unknown as any;
       if (!firstFile) return console.error("Failed to upload image");
-      const imageId = await this.uploadFile(firstFile);
+      const imageId = await uploadFile(firstFile);
       if (!imageId) return console.error("Failed to upload image");
       return `https://arweave.net/${imageId}`;
     },
 
     async createCollection() {
-      if (!this.isWalletConnectedValue) {
-        return console.error("Wallet is not connected");
-      }
       const arweaveUrl = await this.uploadImage();
       if (!arweaveUrl) {
         return console.error("Failed to upload image");
@@ -120,10 +89,12 @@ export default {
 
       const register_collection = {
         name: this.collectionTitleValue,
+        description: this.collectionDescriptionValue,
         symbol: this.collectionSymbolValue,
         thumbnail: arweaveUrl,
-        preminted: true,
         open: !this.isColectionClosedValue,
+        limit: this.isColectionClosedValue ? Number(this.tokenLimitValue) : 0,
+        ic_collection_id: null, //TODO: add IC collection id
       };
 
       const { transactionHash } = await cosmSigner.execute(
@@ -140,7 +111,6 @@ export default {
       const data = await cosmSigner.queryContractSmart(CONTRACT_ADDRESS, {
         list_user_collections,
       });
-      console.log("wallet collections:", data);
     },
 
     updateCollectionLogo(files: Array<any>) {
@@ -153,10 +123,8 @@ export default {
       };
     },
     nextStep() {
-      console.log("next step", this.step);
       this.step++;
       if (this.step === 6) {
-        console.log("create collection");
         this.createCollection()
       }
     },
@@ -172,7 +140,6 @@ export default {
     const $collectionTitle = useStore(collectionTitle);
     const $collectionSymbol = useStore(collectionSymbol);
     const $collectionDescription = useStore(collectionDescription);
-    const $isWalletConnected = useStore(isWalletConnected);
 
     return {
       isColectionClosedValue: computed(() => $isColectionClosed.value),
@@ -181,7 +148,6 @@ export default {
       collectionTitleValue: computed(() => $collectionTitle.value),
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
-      isWalletConnectedValue: computed(() => $isWalletConnected.value),
     };
   },
 };

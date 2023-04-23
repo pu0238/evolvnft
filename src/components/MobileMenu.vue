@@ -1,6 +1,6 @@
 <template>
-  <div class="fixed block md:hidden">
-    <div v-if="isMenuOpenValue" class="fixed w-full h-full bg-white px-6 py-4">
+  <div class="fixed block w-full md:hidden">
+    <div v-if="isMenuOpenValue" class="fixed top-0 w-full h-full bg-white px-6 py-4">
       <div class="mx-10">
         <div class="mt-14 grid container text-center mx-auto cursor-pointer">
           <div class="p-4" @click="toogleMenu">
@@ -22,7 +22,7 @@
             :isFilled="true"
             :content="isWalletConnected ? 'disconnect' : 'connect'"
             :isComingSoon="false"
-            class="float-right"
+            class="float-right mx-auto"
             @click="sharedConnect"
           />
         </div>
@@ -39,7 +39,7 @@ import Button from "./Button.vue";
 import type { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useStore } from "@nanostores/vue";
 import { isMenuOpen } from "../state/menuState";
-import { sharedConnect } from "../utils/wallet";
+import { isWallet, sharedConnect } from "../utils/wallet";
 import { isWalletConnected } from "../state/walletState";
 
 declare global {
@@ -56,7 +56,14 @@ export default {
   },
   props: {
     navItems: {
-      type: Array as PropType<{ isComingSoon: boolean; content: string, href: string | undefined }[]>,
+      type: Array as PropType<
+        {
+          isComingSoon: boolean;
+          content: string;
+          href: string | undefined;
+          isWalletStricted: boolean;
+        }[]
+      >,
       default: () => [
         { isComingSoon: false, content: "solution" },
         { isComingSoon: false, content: "use cases" },
@@ -67,12 +74,13 @@ export default {
     },
   },
   setup(props) {
+    isWallet();
     const $isMenuOpen = useStore(isMenuOpen);
-    const $isWalletConnected = useStore(isWalletConnected);
+    const $collectionDescription = useStore(isWalletConnected);
     props = reactive(props);
     return {
       isMenuOpenValue: computed(() => $isMenuOpen.value),
-      isWalletConnected: computed(() => $isWalletConnected.value),
+      isWalletConnected: computed(() => $collectionDescription.value),
     };
   },
 };

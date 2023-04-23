@@ -104,4 +104,4 @@ export const DEFAULT_SIGNING_CLIENT_OPTIONS: SigningCosmWasmClientOptions = {
   gasPrice: DEFAULT_GAS_PRICE,
 };
 
-export const CONTRACT_ADDRESS = "archway1r0lngnh3c8jyxn4dhx9y995l3us0wkz6dke9nl552vjs9cltrd7qy5peva";
+export const CONTRACT_ADDRESS = "archway1r394up7nx6emjglxgmtlwf8cs9w4mv5k0e83vzfd7cjm0ndnkj6slj08c8";

@@ -60,7 +60,7 @@
           <InputArea
             v-if="step === 1"
             class="mt-4 md:mt-14 lg:mt-16"
-            placeholder="name like: Evolve NFT"
+            placeholder="name like: Evolv NFT"
             heading="Collecrion name:"
             v-model="collectionTitle"
           />
@@ -125,7 +125,7 @@
         class="float-right"
         content="menage collections"
         arrow="right"
-        href="#"
+        href="/collection-menager"
         v-else-if="step === 6"
       />
       <Button

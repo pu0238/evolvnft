@@ -8,8 +8,8 @@
       class="font-josefin text-zinc-300 border-dashed border-2 border-indigo-500 h-32 text-center flex justify-center items-center"
     >
       <input v-bind="getInputProps()" />
-      <p v-if="isDragActive">frop image here ...</p>
-      <p v-else>drag here collection <br />image</p>
+      <p v-if="isDragActive">drop file here ...</p>
+      <p v-else>drag files here!</p>
     </div>
   </div>
 </template>
@@ -34,6 +34,10 @@ export default {
       default: ["image/jpeg", "image/png", "image/gif"],
       required: false,
     },
+    maxFiles: {
+      type: Number,
+      required: false,
+    },
   },
   emits: ['acceptFiles'],
   setup(props, { emit }) {
@@ -48,7 +52,7 @@ export default {
       useDropzone({
         onDrop,
         maxSize: 100_000,
-        maxFiles: 1,
+        maxFiles: props.maxFiles,
       });
     return {
       getRootProps,

@@ -1,5 +1,8 @@
 <template>
-  <a :href="href">
+  <a
+    :href="isWalletStricted ? undefined : href"
+    @click="openIfWalletIsConnected()"
+  >
     <button
       class="px-4 sm:px-5 py-2 text-sm sm:text-base align-middle font-semibold flex items-center border-4 rounded-full font-josefin disabled:text-zinc-200 relative group"
       :class="{
@@ -53,14 +56,22 @@
       >
         soon!</span
       >
-    </button></a
-  >
+    </button>
+  </a>
 </template>
 
 <script lang="ts">
 import { PropType, reactive } from "vue";
+import { openIfConnected } from "../utils/wallet";
 
 export default {
+  methods: {
+    openIfWalletIsConnected() {
+      if (this.href && this.isWalletStricted) {
+        openIfConnected(this.href);
+      }
+    },
+  },
   props: {
     isDisabled: {
       type: Boolean,
@@ -96,6 +107,11 @@ export default {
     href: {
       type: String,
       default: undefined,
+      required: false,
+    },
+    isWalletStricted: {
+      type: Boolean,
+      default: false,
       required: false,
     },
   },

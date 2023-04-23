@@ -8,7 +8,7 @@
   >
     <span class="text-indigo-500">create</span>
     and
-    <span class="text-indigo-500">evolve</span>
+    <span class="text-indigo-500">evolv</span>
     your assets
   </h1>
 </template>

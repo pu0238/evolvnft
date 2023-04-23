@@ -13,7 +13,15 @@
         color="black"
         class="mr-2"
       />
-      <Button :isFilled="true" content="create token" color="black" class="flex-0" href="/create"/>
+      <Button
+        :isFilled="true"
+        content="create token"
+        color="black"
+        class="flex-0"
+        href="/create"
+        :isWalletStricted="true"
+        client:only
+      />
     </div>
   </div>
 </template>
@@ -25,6 +33,5 @@ import Button from "./Button.vue";
 
 export default {
   components: { HeaderTitle, HeaderSubtitle, Button },
-
 };
 </script>

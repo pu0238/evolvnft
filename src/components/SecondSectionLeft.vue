@@ -1,13 +1,18 @@
 <template>
   <div class="max-w-xl 2xl:max-w-2xl">
-    <SecondSectionTitle textColor="white"/>
+    <SecondSectionTitle textColor="white" />
     <div class="my-8">
       <HeaderSubtitle
         textColor="white"
-        content="thanks to integration with several blockchains, we are able to provide tools for creating fully decentralized NFTs that can evolve, change over time or be leveled!"
+        content="thanks to integration with several blockchains, we are able to provide tools for creating fully decentralized NFTs that can evolv, change over time or be leveled!"
       />
     </div>
-    <Button :isFilled="true" content="create NFT" href="/create"/>
+    <Button
+      :isFilled="true"
+      content="create NFT"
+      href="/create"
+      :isWalletStricted="true"
+    />
   </div>
 </template>
 

@@ -7,6 +7,7 @@
         :content="item.content"
         textColor="black"
         :href="item.href"
+        :isWalletStricted="item.isWalletStricted"
         @click="scrollToElement"
       />
     </ul>
@@ -46,7 +47,14 @@ export default {
   },
   props: {
     navItems: {
-      type: Array as PropType<{ isComingSoon: boolean; content: string, href: string | undefined }[]>,
+      type: Array as PropType<
+        {
+          isComingSoon: boolean;
+          content: string;
+          href: string | undefined;
+          isWalletStricted: boolean;
+        }[]
+      >,
       default: () => [
         { isComingSoon: false, content: "solution" },
         { isComingSoon: false, content: "use cases" },
@@ -60,6 +68,11 @@ export default {
       default: "black",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
+    },
+    isWalletStricted: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
   },
   setup(props) {

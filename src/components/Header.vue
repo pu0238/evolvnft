@@ -5,7 +5,7 @@
       <img
         draggable="false"
         class="float-right hidden lg:block lg:w-96 xl:w-auto"
-        src="/evolve-tree.svg"
+        src="/evolv-tree.svg"
       />
     </div>
   </header>

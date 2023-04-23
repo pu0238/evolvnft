@@ -1,13 +1,18 @@
 <template>
   <div class="float-left max-w-3xl">
     <ThirdSectionTitle />
-    <div class="my-8 ">
+    <div class="my-8">
       <HeaderSubtitle
         content="NFT is tokens with huge potential it's time to unlock it. create games, modern decentralized assets that can change according to your needs"
       />
     </div>
     <div class="float-left">
-      <Button :isFilled="true" content="start building" href="/create"/>
+      <Button
+        :isFilled="true"
+        content="start building"
+        href="/create"
+        :isWalletStricted="true"
+      />
     </div>
   </div>
 </template>

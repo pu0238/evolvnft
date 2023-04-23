@@ -8,15 +8,15 @@ import Container from "../layouts/Container.astro";
 
 <Container>
   <section class="w-full float-left">
-    <Header class="mx-4 float-left md:my-8 lg:my-20" />
+    <Header class="mx-4 float-left md:my-8 lg:my-20" client:visible/>
   </section>
   <section class="w-full float-left flex justify-center">
     <MiddleCenteredHeader class="mx-4 float-left max-w-3xl" />
   </section>
   <section class="w-full float-left flex justify-center">
-    <SecondSection class="my-8 sm:my-16 md:my-20" />
+    <SecondSection class="my-8 sm:my-16 md:my-20" client:visible/>
   </section>
   <section class="w-full float-left">
-    <ThirdSectionLeft class="mx-4" />
+    <ThirdSectionLeft class="mx-4" client:visible/>
   </section>
 </Container>

@@ -30,8 +30,8 @@
         'fill-black': !isDisabled,
       }"
     />
-    <span class="mx-2 flex-auto text-left"
-      ><span class="float-left relative"
+    <span class="mx-2 flex-auto text-left">
+      <span class="float-left relative"
         >{{ content }}
         <span
           v-if="isDisabled"
@@ -68,7 +68,9 @@ import { reactive } from "vue";
 
 export default {
   components: {
-    SvgTwitter, SvgDiscord, SvgTelegram
+    SvgTwitter,
+    SvgDiscord,
+    SvgTelegram,
   },
   props: {
     content: {

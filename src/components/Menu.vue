@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ErrorLog />
     <div
       class="w-full float-left md:drop-shadow-md bg-white px-6 py-4 rounded-full mt-6"
     >
@@ -45,11 +46,12 @@ import Logo from "./Logo.vue";
 import Button from "./Button.vue";
 import { useStore } from "@nanostores/vue";
 import { isMenuOpen } from "../state/menuState";
-import { sharedConnect } from "../utils/wallet";
+import { isWallet, sharedConnect } from "../utils/wallet";
 import { isWalletConnected } from "../state/walletState";
+import ErrorLog from "./ErrorLog.vue";
 
 export default {
-  components: { NavBar, Logo, Button },
+  components: { NavBar, Logo, Button, ErrorLog },
   methods: {
     sharedConnect,
     toogleMenu() {
@@ -58,7 +60,14 @@ export default {
   },
   props: {
     navItems: {
-      type: Array as PropType<{ isComingSoon: boolean; content: string, href: string | undefined }[]>,
+      type: Array as PropType<
+        {
+          isComingSoon: boolean;
+          content: string;
+          href: string | undefined;
+          isWalletStricted: boolean;
+        }[]
+      >,
       default: () => [
         { isComingSoon: false, content: "solution" },
         { isComingSoon: false, content: "use cases" },
@@ -69,12 +78,13 @@ export default {
     },
   },
   setup(props) {
+    isWallet();
+    const $collectionDescription = useStore(isWalletConnected);
     const $isMenuOpen = useStore(isMenuOpen);
-    const $isWalletConnected = useStore(isWalletConnected);
     props = reactive(props);
     return {
       isMenuOpenValue: computed(() => $isMenuOpen.value),
-      isWalletConnected: computed(() => $isWalletConnected.value),
+      isWalletConnected: computed(() => $collectionDescription.value),
     };
   },
 };
