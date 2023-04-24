@@ -34,14 +34,15 @@
             :collectionDescription="collection?.description"
             :collectionSymbol="collection?.symbol"
           />
-          <Actions
-            v-for="action in actions"
-            :collectionImg="action.img"
-            :collectionTitle="action.title"
-            :collectionDescription="action.description"
-            :active="action.active"
-            @click="openBox(action.tag)"
-          />
+          <div v-for="action in actions">
+            <Actions
+              :collectionImg="action.img"
+              :collectionTitle="action.title"
+              :collectionDescription="action.description"
+              :active="action.active"
+              @click="openBox(action.tag)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -90,6 +91,7 @@ export default {
   },
   data() {
     return {
+      evolv: true,
       mintBox: false,
       actions: [
         {
@@ -100,18 +102,18 @@ export default {
           tag: "mint",
         },
         {
-          img: "/launchpad-black.svg",
-          title: "join to launchpad",
-          description: "Apply for your collection to launchpad",
-          active: false,
-          tag: "launchpad",
-        },
-        {
           img: "/evolv-metadata-black.svg",
           title: "evolv metadata",
           description: "Evolv metadata of specific NFT",
           active: true,
           tag: "evolv",
+        },
+        {
+          img: "/launchpad-black.svg",
+          title: "join to launchpad",
+          description: "Apply for your collection to launchpad",
+          active: false,
+          tag: "launchpad",
         },
         {
           img: "/candie-machine-black.svg",

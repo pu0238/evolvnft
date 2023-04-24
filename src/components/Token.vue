@@ -1,12 +1,14 @@
 <template>
   <div
     class="bg-black float-left px-8 py-4 flex flex-col justify-items-center rounded-xl w-60 relative"
-  >
-    <img class="w-32 mx-auto mb-2" :src="metadata.image" />
+    :class="{ 'cursor-pointer': evolv }"
+    >
+    <img class="w-32 mx-auto mb-2" :src="metadata.image" draggable="false"/>
     <img
       class="w-10 mx-auto mb-2 absolute right-3 top-3"
       :class="{ hidden: !evolv }"
       src="/edit-icon.svg"
+      draggable="false"
     />
     <p class="text-zinc-400 font-josefin text-xs">Token name:</p>
     <h3 class="text-white font-cal text-lg text-center">{{ metadata.name }}</h3>
