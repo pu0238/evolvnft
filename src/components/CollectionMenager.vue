@@ -1,12 +1,16 @@
 <template>
   <div>
     <SingleCollection
-      v-if="collectionAddress && !tokens"
+      v-if="collectionAddress && !singleCollection"
       :collectionAddress="collectionAddress"
       @back="collectionAddress = undefined"
-      @tokens="(tokensData: any) => (tokens = tokensData)"
+      @singleCollection="(col: any) => (singleCollection = col)"
     />
-    <CollectionTokens v-else-if="collectionAddress && tokens" :tokens="tokens" @back="tokens = undefined"/>
+    <CollectionTokens
+      v-else-if="collectionAddress && singleCollection"
+      :singleCollection="singleCollection"
+      @back="singleCollection = undefined"
+    />
     <CollectionsList
       v-else
       :collections="collections"
@@ -37,14 +41,15 @@ export default {
     return {
       collections: [] as CollectionEntitie[],
       collectionAddress: undefined as string | undefined,
-      tokens: undefined as string | undefined,
+      singleCollection: undefined as CollectionEntitie | undefined,
+      //tokens: undefined as string | undefined,
     };
   },
   components: {
     CollectionItem,
     CollectionsList,
     SingleCollection,
-    CollectionTokens
+    CollectionTokens,
   },
   methods: {
     openCollection(address: string) {

@@ -27,7 +27,7 @@
         viewBox="0 0 14 12"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        class="mr-3 ease-out duration-300 fill-white group-hover:fill-indigo-500"
+        class="mr-3 ease-out duration-300 fill-white"
         :class="{
           hidden: arrow !== 'left',
           'group-hover:fill-indigo-500': color !== 'black',

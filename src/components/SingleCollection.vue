@@ -82,7 +82,7 @@ declare global {
 }
 
 export default {
-  emits: ["back", "tokens"],
+  emits: ["back", "singleCollection"],
   components: {
     CollectionBaner,
     Actions,
@@ -142,14 +142,14 @@ export default {
     back: {
       type: Function,
     },
-    tokens: {
+    singleCollection: {
       type: Function,
     },
   },
   methods: {
     openBox(tag: string) {
       if (tag === "mint") this.mintBox = true;
-      if (tag === "evolv") this.$emit("tokens", this.collection.tokens);
+      if (tag === "evolv") this.$emit("singleCollection", this.collection);
     },
     async getCollection(): Promise<void | CollectionEntitie> {
       const offlineSigner = window.keplr?.getOfflineSigner(
