@@ -1,9 +1,12 @@
 <template>
   <div>
     <SingleCollection
-      v-if="collectionAddress"
+      v-if="collectionAddress && !tokens"
       :collectionAddress="collectionAddress"
+      @back="collectionAddress = undefined"
+      @tokens="(tokensData: any) => (tokens = tokensData)"
     />
+    <CollectionTokens v-else-if="collectionAddress && tokens" :tokens="tokens" @back="tokens = undefined"/>
     <CollectionsList
       v-else
       :collections="collections"
@@ -27,18 +30,21 @@ import { computed } from "vue";
 import { isWallet } from "../utils/wallet";
 import CollectionsList from "./CollectionsList.vue";
 import SingleCollection from "./SingleCollection.vue";
+import CollectionTokens from "./CollectionTokens.vue";
 
 export default {
   data() {
     return {
       collections: [] as CollectionEntitie[],
       collectionAddress: undefined as string | undefined,
+      tokens: undefined as string | undefined,
     };
   },
   components: {
     CollectionItem,
     CollectionsList,
     SingleCollection,
+    CollectionTokens
   },
   methods: {
     openCollection(address: string) {

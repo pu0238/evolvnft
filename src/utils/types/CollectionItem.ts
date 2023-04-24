@@ -11,4 +11,6 @@ export interface CollectionEntitie {
   owner: string;
   ic_collection_id: null | string;
   tokens: null | { [key: string]: CollectionToken };
+  accumulated_rewards?: { [key: string]: string };
+  rewards_percentage_fee?: number //2500 = 25%
 }

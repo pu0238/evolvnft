@@ -7,6 +7,15 @@
       :afterMint="loadCollectionData()"
     />
     <div class="flex-auto">
+      <div class="flex-auto mb-8">
+        <Button
+          content="back"
+          arrow="left"
+          color="black"
+          class="mb-4"
+          @click="$emit('back')"
+        />
+      </div>
       <div class="flex-auto ml-8">
         <h1 class="text-5xl xl:text-6xl 2xl:text-7xl font-cal text-black">
           actions
@@ -65,16 +74,19 @@ import CollectionBaner from "./CollectionBaner.vue";
 import Actions from "./Actions.vue";
 import type { CollectionEntitie } from "../utils/types/CollectionItem";
 import MintBox from "./MintBox.vue";
+import Button from "./Button.vue";
 
 declare global {
   interface Window extends KeplrWindow {}
 }
 
 export default {
+  emits: ["back", "tokens"],
   components: {
     CollectionBaner,
     Actions,
     MintBox,
+    Button,
   },
   data() {
     return {
@@ -125,10 +137,17 @@ export default {
       type: String,
       required: true,
     },
+    back: {
+      type: Function,
+    },
+    tokens: {
+      type: Function,
+    },
   },
   methods: {
     openBox(tag: string) {
       if (tag === "mint") this.mintBox = true;
+      if (tag === "evolv") this.$emit("tokens", this.collection.tokens);
     },
     async getCollection(): Promise<void | CollectionEntitie> {
       const offlineSigner = window.keplr?.getOfflineSigner(
@@ -157,10 +176,10 @@ export default {
     },
     async loadCollectionData() {
       if (this.collectionAddress) {
-      const collectionData = await this.getCollection();
-      collectionData && (this.collection = collectionData);
-    }
-    }
+        const collectionData = await this.getCollection();
+        collectionData && (this.collection = collectionData);
+      }
+    },
   },
   async mounted() {
     await this.loadCollectionData();

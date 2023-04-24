@@ -23,7 +23,7 @@ export default {
   props: {
     collectionImg: {
       type: String,
-      default: "/mint.svg",
+      default: "/mint-black.svg",
       required: false,
     },
     collectionDescription: {

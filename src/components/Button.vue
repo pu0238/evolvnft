@@ -10,9 +10,9 @@
           isFilled && color === 'indigo',
         'bg-transparent border-indigo-500 text-indigo-500 disabled:text-indigo-700 disabled:border-indigo-700 hover:text-indigo-700 hover:border-indigo-700':
           !isFilled && color === 'indigo',
-        'bg-black border-black text-white disabled:bg-zinc-700 disabled:border-zinc-700 disabled:text-zinc-400 hover:bg-zinc-700 hover:border-zinc-700':
+        'bg-black border-black text-white disabled:bg-zinc-700 disabled:border-zinc-700 disabled:text-zinc-400 hover:text-black hover:bg-transparent hover:border-black':
           isFilled && color === 'black',
-        'bg-transparent border-black text-black disabled:border-zinc-400 disabled:text-zinc-400':
+        'bg-transparent border-black text-black disabled:border-zinc-400 disabled:text-zinc-400 ':
           !isFilled && color === 'black',
         'ease-out duration-300': !isDisabled,
         'bg-transparent border-white text-white disabled:border-zinc-300 disabled:text-zinc-300 hover:text-indigo-500 hover:border-indigo-500':
@@ -28,7 +28,11 @@
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         class="mr-3 ease-out duration-300 fill-white group-hover:fill-indigo-500"
-        :class="{ hidden: arrow !== 'left' }"
+        :class="{
+          hidden: arrow !== 'left',
+          'group-hover:fill-indigo-500': color !== 'black',
+          'group-hover:fill-black': color === 'black',
+        }"
       >
         <path
           d="M2.62441e-07 6.00395C2.5329e-07 5.79459 0.0446136 5.58556 0.132744 5.39582C0.139502 5.37876 0.148 5.3628 0.15638 5.34661C0.157732 5.34397 0.159112 5.34257 0.160464 5.34008C0.169926 5.32202 0.180469 5.30387 0.190742 5.28548C0.200204 5.26788 0.210754 5.25147 0.221432 5.23474C0.221932 5.23395 0.22209 5.23334 0.222752 5.23209C0.256544 5.17991 0.29319 5.12906 0.334417 5.08152C0.348204 5.06567 0.362794 5.04968 0.376987 5.03474L4.41857 0.380419C4.85902 -0.126807 5.56791 -0.126807 6.00836 0.380419C6.44881 0.887645 6.44881 1.70483 6.00836 2.21206L3.83323 4.71699L12.8223 4.71699C13.4747 4.717 14 5.29113 14 6.0048C14 6.71854 13.4747 7.29348 12.8223 7.29346L3.84581 7.29347L6.01257 9.78875C6.45302 10.296 6.45302 11.1123 6.01257 11.6196C5.57212 12.1268 4.86253 12.1268 4.42208 11.6196L0.420341 7.01112L0.417619 7.00816C0.388017 6.98064 0.358969 6.9517 0.331529 6.91999C0.111298 6.66638 -1.324e-05 6.33493 2.62441e-07 6.00395Z"
