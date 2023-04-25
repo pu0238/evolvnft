@@ -139,7 +139,7 @@
         class="float-right"
         content="menage collections"
         arrow="right"
-        href="/collection-menager"
+        href="/collection-manager"
         v-else-if="step === 7"
       />
       <Button
