@@ -34,6 +34,8 @@
             :collectionTitle="collection?.name"
             :collectionDescription="collection?.description"
             :collectionSymbol="collection?.symbol"
+            :rewardsPercentageFee="collection?.rewards_percentage_fee"
+            :accumulatedRewards="collection?.accumulated_rewards"
           />
           <div v-for="action in actions">
             <Actions
@@ -55,6 +57,8 @@
         :collectionTitle="collection?.name"
         :collectionDescription="collection?.description"
         :collectionSymbol="collection?.symbol"
+        :rewardsPercentageFee="collection?.rewards_percentage_fee"
+        :accumulatedRewards="collection?.accumulated_rewards"
       />
     </div>
   </div>
@@ -182,6 +186,7 @@ export default {
       if (this.collectionAddress) {
         const collectionData = await this.getCollection();
         if (collectionData) {
+          console.log(collectionData);
           this.collection = collectionData;
         }
       }

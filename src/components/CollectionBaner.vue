@@ -7,7 +7,11 @@
     }"
   >
     <div class="text-center">
-      <img class="w-32 lg:w-40 mx-auto" :src="collectionImg" draggable="false"/>
+      <img
+        class="w-32 lg:w-40 mx-auto"
+        :src="collectionImg"
+        draggable="false"
+      />
       <h3
         class="font-cal text-xl lg:text-2xl mt-2 mb-1"
         :class="{
@@ -29,7 +33,7 @@
     </div>
     <div class="mt-2">
       <h4
-        class="font-cal text-md lg:text-lg lg:mb-2"
+        class="font-cal text-md lg:text-lg lg:mb-1"
         :class="{
           'text-black': bgColor === 'white',
           'text-white': bgColor === 'black',
@@ -38,7 +42,7 @@
         Description
       </h4>
       <p
-        class="font-josefin mb-1 lg:mb-4 text-sm lg:text-base"
+        class="font-josefin mb-1 lg:mb-2 text-sm lg:text-base"
         :class="{
           'text-zinc-400': bgColor === 'white',
           'text-zinc-200': bgColor === 'black',
@@ -46,8 +50,47 @@
       >
         {{ collectionDescription }}
       </p>
+      <div v-if="rewardsPercentageFee" class="mt-4">
+        <h4
+          class="font-cal text-md lg:text-lg lg:mb-1"
+          :class="{
+            'text-black': bgColor === 'white',
+            'text-white': bgColor === 'black',
+          }"
+        >
+          Rewards Percentage
+        </h4>
+        <p
+          class="font-josefin lg:mb-1"
+          :class="{
+            'text-zinc-400': bgColor === 'white',
+            'text-zinc-200': bgColor === 'black',
+          }"
+        >
+          {{ rewardsPercentageFee / 100 }}%
+        </p>
+        <h4
+          class="font-cal text-md lg:text-lg lg:mb-1"
+          :class="{
+            'text-black': bgColor === 'white',
+            'text-white': bgColor === 'black',
+          }"
+        >
+          Rewards
+        </h4>
+        <p
+          v-for="(reward, denom) in accumulatedRewards"
+          class="font-josefin"
+          :class="{
+            'text-zinc-400': bgColor === 'white',
+            'text-zinc-200': bgColor === 'black',
+          }"
+        >
+          {{ reward }} {{ denom }}
+        </p>
+      </div>
       <h4
-        class="font-cal text-md lg:text-lg lg:mb-2"
+        class="font-cal text-md lg:text-lg mt-4 lg:mt-8 lg:mb-1"
         :class="{
           'text-black': bgColor === 'white',
           'text-white': bgColor === 'black',
@@ -56,7 +99,7 @@
         Medifires
       </h4>
       <p
-        class="font-josefin lg:mb-4"
+        class="font-josefin lg:mb-2"
         :class="{
           'text-zinc-400': bgColor === 'white',
           'text-zinc-200': bgColor === 'black',
@@ -73,6 +116,14 @@ import { reactive } from "vue";
 
 export default {
   props: {
+    rewardsPercentageFee: {
+      type: Number,
+      required: false,
+    },
+    accumulatedRewards: {
+      type: Object,
+      required: false,
+    },
     collectionImg: {
       type: String,
       default: "/evolvnft-collection-logo.svg",
