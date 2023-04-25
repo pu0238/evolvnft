@@ -30,7 +30,7 @@ export default {
   },
   props: {
     evolv: {
-      type: Boolean,
+      type: Number,
       default: false,
       required: false,
     },

@@ -103,6 +103,7 @@ import {
   DEFAULT_SIGNING_CLIENT_OPTIONS,
 } from "../utils/constant";
 import { SigningArchwayClient } from "@archwayhq/arch3.js/build";
+import { getNextMetadataId, postEvolveMetadata } from "../utils/evolve";
 
 export default {
   emit: ["close", "afterMint"],
@@ -129,7 +130,11 @@ export default {
       type: Function,
     },
     afterMint: {
-      type: Function,
+      type: Promise,
+    },
+    collection: {
+      type: Object,
+      required: true,
     },
   },
   methods: {
@@ -149,7 +154,7 @@ export default {
           prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
         }
       );
-      const tokens = await this.uploadData();
+      const tokens = await this.uploadData(accounts[0].address);
       if (!tokens) return console.error("Failed to mint NFTs");
       const mint_tokens = {
         address: this.collectionAddress,
@@ -166,7 +171,7 @@ export default {
       );
       this.$emit("afterMint");
     },
-    async uploadData() {
+    async uploadData(accountAddress: string) {
       const uploudedMetadata: { a: string; b: number; c: number }[] = [];
       for (const fileName in this.filesToUpload) {
         if (
@@ -187,7 +192,20 @@ export default {
           );
           if (!metadataUploadId)
             return console.error("Failed to upload metadata");
-          uploudedMetadata.push({ a: metadataUploadId, b: 0, c: 0 });
+          if (!this.collection.ic_collection_id) {
+            uploudedMetadata.push({ a: metadataUploadId, b: 0, c: 0 });
+          } else {
+            const metadataId = await postEvolveMetadata(
+              accountAddress,
+              this.collection.ic_collection_id,
+              metadataUploadId
+            );
+            uploudedMetadata.push({
+              a: accountAddress,
+              b: this.collection.ic_collection_id,
+              c: metadataId,
+            });
+          }
         }
       }
       return uploudedMetadata;

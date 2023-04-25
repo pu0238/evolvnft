@@ -105,7 +105,7 @@ export const DEFAULT_SIGNING_CLIENT_OPTIONS: SigningCosmWasmClientOptions = {
 };
 
 export const CONTRACT_ADDRESS =
-  "archway1r394up7nx6emjglxgmtlwf8cs9w4mv5k0e83vzfd7cjm0ndnkj6slj08c8";
+  "archway12fxmuuc2qt38zgxy95nn45apu7zkthvfjx8v4jda5ya0uydvqj2q9nnq25";
 
 export const CARNISTER_API_URL =
   "http://127.0.0.1:4943/v1";

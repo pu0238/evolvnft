@@ -22,10 +22,13 @@
             <span class="text-indigo-500">image</span>
           </span>
           <span v-if="step === 5">
+            select a <span class="text-indigo-500">metadata</span> type!
+          </span>
+          <span v-if="step === 6">
             <span class="text-indigo-500">open</span> or
             <span class="text-indigo-500">closed</span> collection?
           </span>
-          <span v-if="step === 6">
+          <span v-if="step === 7">
             your <span class="text-indigo-500">collection</span> has been
             <span class="text-indigo-500">created</span>!
           </span>
@@ -50,11 +53,17 @@
               will be visible as the main image of the collection.
             </span>
             <span v-if="step === 5">
+              here you can decide whether you want to use metadata or
+              evolv-metadata. Usually metadata is not mutable unlike
+              evlov-metadata!
+            </span>
+            <span v-if="step === 6">
               At this stage, you will specify whether the collection you create
               should be limited to a certain number of tokens
             </span>
-            <span v-if="step === 6">
-              To create tokens or create a candie machine go to collection management
+            <span v-if="step === 7">
+              To create tokens or create a candie machine go to collection
+              management
             </span>
           </p>
           <InputArea
@@ -84,9 +93,14 @@
             heading="Drag image here:"
             @acceptFiles="(files: Array<any>) => $emit('acceptFiles', files)"
           />
+          <EvolvMetadata
+            v-if="step === 5"
+            class="mt-4 md:mt-14 lg:mt-16"
+            v-model:checked="isColectionMetadataEvolv"
+          />
           <LockCollection
             class="mt-4 md:mt-14 lg:mt-16"
-            v-if="step === 5"
+            v-if="step === 6"
             v-model:checked="isColectionOpen"
             v-model:tokenLimit="tokenLimit"
           />
@@ -113,20 +127,20 @@
         color="white"
         :isFilled="false"
         @click="goBack"
-        v-if="step !== 6"
+        v-if="step !== 7"
       />
       <Button
         class="float-right"
         content="create collection 🎉"
         @click="goNext"
-        v-if="step === 5"
+        v-if="step === 6"
       />
       <Button
         class="float-right"
         content="menage collections"
         arrow="right"
         href="/collection-menager"
-        v-else-if="step === 6"
+        v-else-if="step === 7"
       />
       <Button
         class="float-right"
@@ -152,12 +166,14 @@ import { computed, reactive } from "vue";
 import { useStore } from "@nanostores/vue";
 import {
   collectionDescription,
+  collectionEvolvMetadata,
   collectionImg,
   collectionSymbol,
   collectionTitle,
   isColectionClosed,
   tokenLimit,
 } from "../state/collectionState";
+import EvolvMetadata from "./EvolvMetadata.vue";
 
 export default {
   data() {
@@ -167,6 +183,7 @@ export default {
       collectionSymbol: undefined,
       collectionDescription: undefined,
       isColectionOpen: false,
+      isColectionMetadataEvolv: false,
       tokenLimit: "",
     };
   },
@@ -175,8 +192,10 @@ export default {
       this.collectionImg && collectionImg.set(this.collectionImg);
       this.collectionTitle && collectionTitle.set(this.collectionTitle);
       this.collectionSymbol && collectionSymbol.set(this.collectionSymbol);
-      this.collectionDescription &&
-        collectionDescription.set(this.collectionDescription);
+      this.collectionDescription && collectionDescription.set(this.collectionDescription);
+      this.isColectionOpen && isColectionClosed.set(this.isColectionOpen);
+      this.isColectionMetadataEvolv && collectionEvolvMetadata.set(this.isColectionMetadataEvolv);
+      this.tokenLimit && tokenLimit.set(this.tokenLimit);
     },
     goNext() {
       this.saveColectionData();
@@ -188,6 +207,7 @@ export default {
     },
   },
   components: {
+    EvolvMetadata,
     SecondSectionLeft,
     HeaderSubtitle,
     Button,
@@ -232,6 +252,7 @@ export default {
     const $collectionTitle = useStore(collectionTitle);
     const $collectionSymbol = useStore(collectionSymbol);
     const $collectionDescription = useStore(collectionDescription);
+    const $collectionEvolvMetadata = useStore(collectionEvolvMetadata);
 
     return {
       isColectionClosedValue: computed(() => $isColectionClosed.value),
@@ -240,6 +261,7 @@ export default {
       collectionTitleValue: computed(() => $collectionTitle.value),
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
+      collectionEvolvMetadataValue: computed(() => $collectionEvolvMetadata.value),
     };
   },
 };

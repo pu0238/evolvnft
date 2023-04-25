@@ -48,7 +48,6 @@ export default {
     },
   },
   mounted() {
-
     this.checked = this.isColectionClosedValue;
     this.limit = this.tokenLimitValue;
   },

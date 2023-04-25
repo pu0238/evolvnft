@@ -42,7 +42,6 @@ export default {
       collections: [] as CollectionEntitie[],
       collectionAddress: undefined as string | undefined,
       singleCollection: undefined as CollectionEntitie | undefined,
-      //tokens: undefined as string | undefined,
     };
   },
   components: {

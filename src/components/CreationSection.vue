@@ -2,7 +2,7 @@
   <div>
     <CollectionSection v-if="step === 0" @next="nextStep" />
     <CollectionBuilder
-      v-if="step > 0 && step <= 6"
+      v-if="step > 0 && step <= 7"
       @next="nextStep"
       @back="previousStep"
       @acceptFiles="(files: Array<any>) => updateCollectionLogo(files)"
@@ -18,6 +18,7 @@ import { computed, reactive } from "vue";
 import { useStore } from "@nanostores/vue";
 import {
   collectionDescription,
+  collectionEvolvMetadata,
   collectionImg,
   collectionSymbol,
   collectionTitle,
@@ -38,6 +39,7 @@ import {
 import { isWalletConnected } from "../state/walletState";
 import { isWallet } from "../utils/wallet";
 import { uploadFile } from "../utils/uploader";
+import { createEvolveCollection } from "../utils/evolve";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -86,7 +88,11 @@ export default {
           prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
         }
       );
-
+      let ic_collection_id: null| number = null;
+      if (this.collectionEvolvMetadataValue){
+        ic_collection_id = await createEvolveCollection(accounts[0].address)
+      }
+      
       const register_collection = {
         name: this.collectionTitleValue,
         description: this.collectionDescriptionValue,
@@ -94,7 +100,7 @@ export default {
         thumbnail: arweaveUrl,
         open: !this.isColectionClosedValue,
         limit: this.isColectionClosedValue ? Number(this.tokenLimitValue) : 0,
-        ic_collection_id: null, //TODO: add IC collection id
+        ic_collection_id,
       };
 
       const { transactionHash } = await cosmSigner.execute(
@@ -104,13 +110,6 @@ export default {
         "auto"
       );
       console.log(`https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`)
-
-      const list_user_collections = {
-        address: accounts[0].address,
-      };
-      const data = await cosmSigner.queryContractSmart(CONTRACT_ADDRESS, {
-        list_user_collections,
-      });
     },
 
     updateCollectionLogo(files: Array<any>) {
@@ -124,7 +123,7 @@ export default {
     },
     nextStep() {
       this.step++;
-      if (this.step === 6) {
+      if (this.step === 7) {
         this.createCollection()
       }
     },
@@ -140,7 +139,8 @@ export default {
     const $collectionTitle = useStore(collectionTitle);
     const $collectionSymbol = useStore(collectionSymbol);
     const $collectionDescription = useStore(collectionDescription);
-
+    const $collectionEvolvMetadata = useStore(collectionEvolvMetadata);
+    
     return {
       isColectionClosedValue: computed(() => $isColectionClosed.value),
       tokenLimitValue: computed(() => $tokenLimit.value),
@@ -148,6 +148,7 @@ export default {
       collectionTitleValue: computed(() => $collectionTitle.value),
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
+      collectionEvolvMetadataValue: computed(() => $collectionEvolvMetadata.value),
     };
   },
 };

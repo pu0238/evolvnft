@@ -20,23 +20,24 @@
     <div class="w-full flex">
       <div class="mx-auto flex">
         <MetadataEditor
-          v-if="Object.keys(singleCollection.tokens).length > 0"
-          :owner="selectedToken.owner"
-          :tokenUri="selectedToken.token_uri"
-          :evolv="icCollectionId"
+          v-if="selectedToken"
+          :owner="selectedToken?.owner"
+          :tokenUri="selectedToken?.token_uri"
+          :selectedToken="selectedToken"
+          :evolv="singleCollection?.ic_collection_id"
         />
       </div>
     </div>
     <div
       class="mx-auto grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mt-10"
-      v-if="singleCollection"
+      v-if="Object.keys(singleCollection.tokens).length > 0"
     >
       <Token
         v-for="(token, key) in singleCollection.tokens"
         :key="key"
-        :owner="token.owner"
-        :tokenUri="token.token_uri"
-        :evolv="icCollectionId"
+        :owner="token?.owner"
+        :tokenUri="token?.token_uri"
+        :evolv="singleCollection?.ic_collection_id"
         @click="selectedToken = token"
       />
     </div>
@@ -52,7 +53,7 @@ export default {
   data() {
     return {
       selectedToken: {} as any,
-      icCollectionId: false 
+      tokens: {}
     };
   },
   emits: ["back"],
@@ -64,6 +65,9 @@ export default {
     back: {
       type: Function,
     },
+    collectionTokens: {
+      type: String,
+    },
   },
   components: {
     Token,
@@ -71,8 +75,15 @@ export default {
     MetadataEditor,
   },
   mounted() {
-    this.selectedToken = this.singleCollection.tokens[0];
-    this.icCollectionId = !!this.singleCollection.ic_collection_id;
+    console.log(this.collectionTokens);
+    
+    if(this.collectionTokens){
+      console.log(123, JSON.parse(this.collectionTokens))
+      this.tokens = JSON.parse(this.collectionTokens)
+      console.log(this.singleCollection.tokens['1'])
+    }
+
+    this.selectedToken = this.singleCollection.tokens['1'];
   },
 };
 </script>

@@ -97,7 +97,6 @@ export default {
   stroke-dasharray: 48;
   animation: locked 0.3s linear forwards;
   stroke: #fff;
-  
 }
 #inpLock:checked + label svg .lockb {
   fill: #fff;

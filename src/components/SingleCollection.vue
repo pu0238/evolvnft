@@ -5,6 +5,7 @@
       @close="() => (mintBox = !mintBox)"
       :collectionAddress="collectionAddress"
       :afterMint="loadCollectionData()"
+      :collection="collection"
     />
     <div class="flex-auto">
       <div class="flex-auto mb-8">
@@ -82,7 +83,7 @@ declare global {
 }
 
 export default {
-  emits: ["back", "singleCollection"],
+  emits: ["back", "singleCollection", "tokens"],
   components: {
     CollectionBaner,
     Actions,
@@ -149,7 +150,9 @@ export default {
   methods: {
     openBox(tag: string) {
       if (tag === "mint") this.mintBox = true;
-      if (tag === "evolv") this.$emit("singleCollection", this.collection);
+      if (tag === "evolv") {
+        this.$emit("singleCollection", this.collection);
+      }
     },
     async getCollection(): Promise<void | CollectionEntitie> {
       const offlineSigner = window.keplr?.getOfflineSigner(
@@ -158,7 +161,6 @@ export default {
       if (!offlineSigner) {
         return console.error("Failed to create offline signer");
       }
-      const accounts = await offlineSigner.getAccounts();
       const cosmSigner = await SigningArchwayClient.connectWithSigner(
         CONSTANTINE_INFO.rpc,
         offlineSigner,
@@ -179,7 +181,9 @@ export default {
     async loadCollectionData() {
       if (this.collectionAddress) {
         const collectionData = await this.getCollection();
-        collectionData && (this.collection = collectionData);
+        if (collectionData) {
+          this.collection = collectionData;
+        }
       }
     },
   },
