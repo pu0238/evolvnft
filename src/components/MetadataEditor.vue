@@ -204,11 +204,15 @@ export default {
             metadataUploadId
           );
           console.log("Metadata updated");
+          await this.sleep(2000);
           this.getMetadata(this.tokenUri).then((data) => {
             this.metadata = data;
           });
         }
       }
+    },
+    sleep(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
   mounted() {
