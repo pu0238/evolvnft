@@ -9,7 +9,7 @@ export interface CollectionEntitie {
   limit: null | number;
   open: boolean;
   owner: string;
-  ic_collection_id: null | string;
+  ic_collection_id: null | number;
   tokens: null | { [key: string]: CollectionToken };
   accumulated_rewards?: { [key: string]: string };
   rewards_percentage_fee?: number //2500 = 25%

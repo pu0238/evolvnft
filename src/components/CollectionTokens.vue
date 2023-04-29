@@ -20,11 +20,13 @@
     <div class="w-full flex">
       <div class="mx-auto flex">
         <MetadataEditor
-          v-if="selectedToken"
-          :owner="selectedToken?.owner"
-          :tokenUri="selectedToken?.token_uri"
+          v-if="selectedToken && singleCollection"
+          :owner="selectedToken.owner"
+          :tokenUri="selectedToken.token_uri"
           :selectedToken="selectedToken"
           :evolv="singleCollection?.ic_collection_id"
+          :selectedMetadata="selectedMetadata"
+          @evolved="$forceUpdate()"
         />
       </div>
     </div>
@@ -38,7 +40,7 @@
         :owner="token?.owner"
         :tokenUri="token?.token_uri"
         :evolv="singleCollection?.ic_collection_id"
-        @click="selectedToken = token"
+        @click="(matadata: any) => selectToken(matadata, token)"
       />
     </div>
   </div>
@@ -53,7 +55,8 @@ export default {
   data() {
     return {
       selectedToken: {} as any,
-      tokens: {}
+      tokens: {},
+      selectedMetadata: {},
     };
   },
   emits: ["back"],
@@ -74,16 +77,20 @@ export default {
     Button,
     MetadataEditor,
   },
+  methods: {
+    selectToken(metadata: any, token: any) {
+      this.selectedToken = token
+      this.selectedMetadata = metadata
+    },
+  },
   mounted() {
-    console.log(this.collectionTokens);
-    
-    if(this.collectionTokens){
-      console.log(123, JSON.parse(this.collectionTokens))
-      this.tokens = JSON.parse(this.collectionTokens)
-      console.log(this.singleCollection.tokens['1'])
+    if (this.collectionTokens) {
+      console.log(123, JSON.parse(this.collectionTokens));
+      this.tokens = JSON.parse(this.collectionTokens);
+      console.log(this.singleCollection.tokens["1"]);
     }
 
-    this.selectedToken = this.singleCollection.tokens['1'];
+    this.selectedToken = this.singleCollection.tokens["1"];
   },
 };
 </script>

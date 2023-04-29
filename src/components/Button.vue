@@ -17,6 +17,9 @@
         'ease-out duration-300': !isDisabled,
         'bg-transparent border-white text-white disabled:border-zinc-300 disabled:text-zinc-300 hover:text-indigo-500 hover:border-indigo-500':
           !isFilled && color === 'white',
+        'cursor-progress': state === 'progress',
+        'cursor-not-allowed': state === 'notAllowed',
+        'cursor-pointer': state === 'allowed',
       }"
       type="button"
       :disabled="isDisabled"
@@ -101,7 +104,14 @@ export default {
     },
   },
   props: {
-    evolv:{
+    state: {
+      type: String as PropType<"progress" | "notAllowed" | "allowed">,
+      default: "allowed",
+      required: false,
+      validator: (s: string) =>
+        ["progress", "notAllowed", "allowed"].includes(s),
+    },
+    evolv: {
       type: Boolean,
       default: false,
       required: false,

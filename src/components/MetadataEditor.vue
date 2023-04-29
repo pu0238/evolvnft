@@ -22,7 +22,7 @@
             heading="drop new metadata:"
             :acceptedTypes="acceptedTypes"
             :maxFiles="2"
-            @acceptFiles="joinUploadedMetadata"
+            @acceptFiles="(acceptFiles: any[]) => joinMetadata(acceptFiles)"
           />
           <div
             class="float-left w-full mt-4 h-24 overflow-auto"
@@ -84,10 +84,20 @@
     <div class="flex-auto w-full pt-4">
       <span class="float-right">
         <Button
-          content="evolv metadata"
+          :content="evolvInProgress ? 'evolving...' : 'evolv metadata!'"
           :evolv="true"
-          :isDisabled="!(Object.keys(filesToUpload).length > 0)"
+          :isDisabled="
+            (!(Object.keys(filesToUpload).length > 0) && !evolvInProgress) ||
+            evolvInProgress
+          "
           @click="editMetadata()"
+          :state="
+            evolvInProgress
+              ? 'progress'
+              : !(Object.keys(filesToUpload).length > 0)
+              ? 'notAllowed'
+              : 'allowed'
+          "
         />
       </span>
     </div>
@@ -100,12 +110,14 @@ import Button from "./Button.vue";
 import { editEvolveMetadata } from "../utils/evolve";
 import { CONSTANTINE_INFO } from "../utils/constant";
 import { uploadArray, uploadFile } from "../utils/uploader";
+import { joinMetadataAndImages } from "../utils/metadata";
 
 export default {
   data() {
     const imgTypes = ["image/jpeg", "image/png", "image/gif"];
     const jsonTypes = ["application/json"];
     return {
+      evolvInProgress: false,
       metadata: {} as any,
       jsonTypes,
       imgTypes,
@@ -118,7 +130,18 @@ export default {
     Uploader,
     Button,
   },
+  emits: ["evolved"],
   props: {
+    evolved: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    selectedMetadata: {
+      type: Object,
+      default: {},
+      required: true,
+    },
     owner: {
       type: String,
       default:
@@ -127,8 +150,6 @@ export default {
     },
     tokenUri: {
       type: String,
-      default:
-        "https://www.arweave.net/IWufcK8d3BZKyVM7iZhkKMvPlXcLvQWKoE0nWM4MCiw",
       required: true,
     },
     selectedToken: {
@@ -142,20 +163,12 @@ export default {
     },
   },
   methods: {
-    joinUploadedMetadata(files: any) {
-      const filesToUpload: { [key: string]: { image?: any; metadata?: any } } =
-        {};
-      files.forEach((file: any) => {
-        const fileName = file.name.split(".")[0];
-        if (this.imgTypes.includes(file.type)) {
-          if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-          filesToUpload[fileName]["image"] = file;
-        } else if (this.jsonTypes.includes(file.type)) {
-          if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-          filesToUpload[fileName]["metadata"] = file;
-        }
-      });
-      this.filesToUpload = filesToUpload;
+    joinMetadata(acceptFiles: any[]) {
+      this.filesToUpload = joinMetadataAndImages(
+        acceptFiles,
+        this.imgTypes,
+        this.jsonTypes
+      );
     },
     async getMetadata(url: string) {
       const response = await fetch(url);
@@ -163,6 +176,7 @@ export default {
       return data;
     },
     async editMetadata() {
+      this.evolvInProgress = true;
       for (const fileName in this.filesToUpload) {
         if (
           !this.filesToUpload[fileName].image &&
@@ -203,11 +217,11 @@ export default {
             metadataId,
             metadataUploadId
           );
+          this.metadata = await this.getMetadata(this.tokenUri);
           console.log("Metadata updated");
-          await this.sleep(2000);
-          this.getMetadata(this.tokenUri).then((data) => {
-            this.metadata = data;
-          });
+          this.evolvInProgress = false;
+          this.filesToUpload = {};
+          this.$emit("evolved", true);
         }
       }
     },
@@ -215,16 +229,24 @@ export default {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
-  mounted() {
-    this.getMetadata(this.tokenUri).then((data) => {
-      this.metadata = data;
-    });
+  async mounted() {
+    console.log(
+      333,
+      this.tokenUri ===
+        "https://www.arweave.net/IWufcK8d3BZKyVM7iZhkKMvPlXcLvQWKoE0nWM4MCiw"
+    );
+    console.log(333, this.tokenUri, this.metadata);
+    this.metadata = await this.getMetadata(this.tokenUri);
+    console.log(444, this.tokenUri, this.metadata);
   },
   watch: {
-    tokenUri: function (newVal) {
-      this.getMetadata(newVal).then((data) => {
-        this.metadata = data;
-      });
+    tokenUri: async function (newVal) {
+      if (Object.keys(this.selectedMetadata).length === 0) {
+        this.metadata = await this.getMetadata(newVal);
+      }
+    },
+    selectedMetadata: function (newVal) {
+      this.metadata = newVal;
     },
   },
 };

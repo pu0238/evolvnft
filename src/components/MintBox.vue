@@ -35,7 +35,7 @@
         class="float-left mt-8 w-full"
         heading="drop files below:"
         :acceptedTypes="acceptedTypes"
-        @acceptFiles="joinUploadedMetadata"
+        @acceptFiles="(acceptFiles: any[]) => joinMetadata(acceptFiles)"
       />
       <div
         class="float-left w-full mt-4 h-24 overflow-auto"
@@ -104,6 +104,12 @@ import {
 } from "../utils/constant";
 import { SigningArchwayClient } from "@archwayhq/arch3.js/build";
 import { getNextMetadataId, postEvolveMetadata } from "../utils/evolve";
+import {
+  buildMintObject,
+  joinMetadataAndImages,
+  uploadTokenMetadata,
+} from "../utils/metadata";
+import type { CollectionEntitie } from "../utils/types/CollectionItem";
 
 export default {
   emit: ["close", "afterMint"],
@@ -154,7 +160,11 @@ export default {
           prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
         }
       );
-      const tokens = await this.uploadData(accounts[0].address);
+      const tokens = await buildMintObject(
+        accounts[0].address,
+        this.filesToUpload,
+        this.collection as CollectionEntitie
+      );
       if (!tokens) return console.error("Failed to mint NFTs");
       const mint_tokens = {
         address: this.collectionAddress,
@@ -171,59 +181,12 @@ export default {
       );
       this.$emit("afterMint");
     },
-    async uploadData(accountAddress: string) {
-      const uploudedMetadata: { a: string; b: number; c: number }[] = [];
-      for (const fileName in this.filesToUpload) {
-        if (
-          this.filesToUpload[fileName].image &&
-          this.filesToUpload[fileName].metadata
-        ) {
-          const imageUploadId = await uploadFile(
-            this.filesToUpload[fileName].image
-          );
-          if (!imageUploadId) return console.error("Failed to upload image");
-          const metadata = await this.filesToUpload[fileName].metadata.text();
-          const parsedMetadata = JSON.parse(metadata);
-          parsedMetadata.image = `https://arweave.net/${imageUploadId}`;
-          const encodedMetadata = new Blob([JSON.stringify(parsedMetadata)]);
-          const metadataUploadId = await uploadArray(
-            encodedMetadata,
-            "application/json"
-          );
-          if (!metadataUploadId)
-            return console.error("Failed to upload metadata");
-          if (!this.collection.ic_collection_id) {
-            uploudedMetadata.push({ a: metadataUploadId, b: 0, c: 0 });
-          } else {
-            const metadataId = await postEvolveMetadata(
-              accountAddress,
-              this.collection.ic_collection_id,
-              metadataUploadId
-            );
-            uploudedMetadata.push({
-              a: accountAddress,
-              b: this.collection.ic_collection_id,
-              c: metadataId,
-            });
-          }
-        }
-      }
-      return uploudedMetadata;
-    },
-    joinUploadedMetadata(files: any) {
-      const filesToUpload: { [key: string]: { image?: any; metadata?: any } } =
-        {};
-      files.forEach((file: any) => {
-        const fileName = file.name.split(".")[0];
-        if (this.imgTypes.includes(file.type)) {
-          if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-          filesToUpload[fileName]["image"] = file;
-        } else if (this.jsonTypes.includes(file.type)) {
-          if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-          filesToUpload[fileName]["metadata"] = file;
-        }
-      });
-      this.filesToUpload = filesToUpload;
+    joinMetadata(acceptFiles: any[]) {
+      this.filesToUpload = joinMetadataAndImages(
+        acceptFiles,
+        this.imgTypes,
+        this.jsonTypes
+      );
     },
   },
   setup() {
