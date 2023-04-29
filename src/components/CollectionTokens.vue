@@ -85,9 +85,7 @@ export default {
   },
   mounted() {
     if (this.collectionTokens) {
-      console.log(123, JSON.parse(this.collectionTokens));
       this.tokens = JSON.parse(this.collectionTokens);
-      console.log(this.singleCollection.tokens["1"]);
     }
 
     this.selectedToken = this.singleCollection.tokens["1"];

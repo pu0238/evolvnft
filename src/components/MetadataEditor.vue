@@ -230,14 +230,7 @@ export default {
     },
   },
   async mounted() {
-    console.log(
-      333,
-      this.tokenUri ===
-        "https://www.arweave.net/IWufcK8d3BZKyVM7iZhkKMvPlXcLvQWKoE0nWM4MCiw"
-    );
-    console.log(333, this.tokenUri, this.metadata);
     this.metadata = await this.getMetadata(this.tokenUri);
-    console.log(444, this.tokenUri, this.metadata);
   },
   watch: {
     tokenUri: async function (newVal) {

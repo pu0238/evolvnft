@@ -83,8 +83,19 @@
       </div>
       <Button
         class="float-right mt-8"
-        content="Mint NFTs"
+        :content="mintingnProgress ? 'uploading...' : 'mint NFTs'"
+        :isDisabled="
+          (!(Object.keys(filesToUpload).length > 0) && !mintingnProgress) ||
+          mintingnProgress
+        "
         @click="mintNFTs()"
+        :state="
+          mintingnProgress
+            ? 'progress'
+            : !(Object.keys(filesToUpload).length > 0)
+            ? 'notAllowed'
+            : 'allowed'
+        "
       />
     </div>
   </div>
@@ -117,6 +128,7 @@ export default {
     const imgTypes = ["image/jpeg", "image/png", "image/gif"];
     const jsonTypes = ["application/json"];
     return {
+      mintingnProgress: false,
       jsonTypes,
       imgTypes,
       acceptedTypes: [...imgTypes, ...jsonTypes],
@@ -145,6 +157,7 @@ export default {
   },
   methods: {
     async mintNFTs() {
+      this.mintingnProgress = true;
       const offlineSigner = window.keplr?.getOfflineSigner(
         CONSTANTINE_INFO.chainId
       );
@@ -180,6 +193,8 @@ export default {
         `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`
       );
       this.$emit("afterMint");
+      this.filesToUpload = {};
+      this.mintingnProgress = false;
     },
     joinMetadata(acceptFiles: any[]) {
       this.filesToUpload = joinMetadataAndImages(

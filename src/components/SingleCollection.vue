@@ -186,7 +186,6 @@ export default {
       if (this.collectionAddress) {
         const collectionData = await this.getCollection();
         if (collectionData) {
-          console.log(collectionData);
           this.collection = collectionData;
         }
       }
