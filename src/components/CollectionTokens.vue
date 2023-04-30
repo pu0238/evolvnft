@@ -79,7 +79,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.singleCollection.tokens)
     this.selectedToken = this.singleCollection.tokens["1"];
   },
 };

@@ -19,7 +19,6 @@ export default defineConfig({
           global: "globalThis",
           "process.env.BROWSER": "true",
         },
-        /**/
         plugins: [
           NodeGlobalsPolyfillPlugin({
             process: true,

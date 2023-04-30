@@ -4,7 +4,11 @@
     :class="{ 'cursor-pointer': evolv }"
     @click="$emit('click', metadata)"
   >
-    <img class="w-32 mx-auto mb-2" :src="metadata.image" draggable="false" />
+    <img
+      class="w-32 mx-auto mb-2"
+      :src="metadata ? metadata.image : '/evolvnft-collection-logo.svg'"
+      draggable="false"
+    />
     <img
       class="w-10 mx-auto mb-2 absolute right-3 top-3"
       :class="{ hidden: !evolv }"
@@ -12,7 +16,9 @@
       draggable="false"
     />
     <p class="text-zinc-400 font-josefin text-xs">Token name:</p>
-    <h3 class="text-white font-cal text-lg text-center">{{ metadata.name }}</h3>
+    <h3 class="text-white font-cal text-lg text-center">
+      {{ metadata ? metadata.name : "Loading metadata..." }}
+    </h3>
     <p class="text-zinc-400 font-josefin text-xs">Owner:</p>
     <p class="text-zinc-200 font-josefin text-center">
       {{ owner.slice(0, 11) }}...{{
@@ -26,7 +32,7 @@
 export default {
   data() {
     return {
-      metadata: {} as any,
+      metadata: undefined as any,
     };
   },
   emits: ["click"],
