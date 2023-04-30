@@ -109,8 +109,8 @@ import Uploader from "./Uploader.vue";
 import Button from "./Button.vue";
 import { editEvolveMetadata } from "../utils/evolve";
 import { CONSTANTINE_INFO } from "../utils/constant";
-import { uploadArray, uploadFile } from "../utils/uploader";
 import { joinMetadataAndImages } from "../utils/metadata";
+import { uploadBlob } from "../utils/bundlrUploader";
 
 export default {
   data() {
@@ -130,13 +130,8 @@ export default {
     Uploader,
     Button,
   },
-  emits: ["evolved"],
+
   props: {
-    evolved: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
     selectedMetadata: {
       type: Object,
       default: {},
@@ -196,15 +191,16 @@ export default {
           }
           const accounts = await offlineSigner.getAccounts();
 
-          const imageUploadId = await uploadFile(
-            this.filesToUpload[fileName].image
+          const imageUploadId = await uploadBlob(
+            this.filesToUpload[fileName].image,
+            this.filesToUpload[fileName].image.type
           );
           if (!imageUploadId) return console.error("Failed to upload image");
           const metadata = await this.filesToUpload[fileName].metadata.text();
           const parsedMetadata = JSON.parse(metadata);
           parsedMetadata.image = `https://arweave.net/${imageUploadId}`;
           const encodedMetadata = new Blob([JSON.stringify(parsedMetadata)]);
-          const metadataUploadId = await uploadArray(
+          const metadataUploadId = await uploadBlob(
             encodedMetadata,
             "application/json"
           );
@@ -221,12 +217,8 @@ export default {
           console.log("Metadata updated");
           this.evolvInProgress = false;
           this.filesToUpload = {};
-          this.$emit("evolved", true);
         }
       }
-    },
-    sleep(ms: number) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
   async mounted() {

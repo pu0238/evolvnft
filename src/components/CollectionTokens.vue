@@ -18,16 +18,15 @@
       </p>
     </div>
     <div class="w-full flex">
-      <div class="mx-auto flex">
+      <div class="mx-auto flex" v-if="selectedToken && singleCollection">
         <MetadataEditor
-          v-if="selectedToken && singleCollection"
           :owner="selectedToken.owner"
           :tokenUri="selectedToken.token_uri"
           :selectedToken="selectedToken"
           :evolv="singleCollection?.ic_collection_id"
           :selectedMetadata="selectedMetadata"
-          @evolved="$forceUpdate()"
         />
+      <!---->
       </div>
     </div>
     <div
@@ -54,8 +53,7 @@ import MetadataEditor from "./MetadataEditor.vue";
 export default {
   data() {
     return {
-      selectedToken: {} as any,
-      tokens: {},
+      selectedToken: undefined as any,
       selectedMetadata: {},
     };
   },
@@ -68,9 +66,6 @@ export default {
     back: {
       type: Function,
     },
-    collectionTokens: {
-      type: String,
-    },
   },
   components: {
     Token,
@@ -79,15 +74,12 @@ export default {
   },
   methods: {
     selectToken(metadata: any, token: any) {
-      this.selectedToken = token
-      this.selectedMetadata = metadata
+      this.selectedToken = token;
+      this.selectedMetadata = metadata;
     },
   },
   mounted() {
-    if (this.collectionTokens) {
-      this.tokens = JSON.parse(this.collectionTokens);
-    }
-
+    console.log(this.singleCollection.tokens)
     this.selectedToken = this.singleCollection.tokens["1"];
   },
 };

@@ -1,12 +1,5 @@
 <template>
-  <div class="grid sm:flex">
-    <MintBox
-      v-if="mintBox"
-      @close="() => (mintBox = !mintBox)"
-      :collectionAddress="collectionAddress"
-      :afterMint="loadCollectionData()"
-      :collection="collection"
-    />
+  <div class="grid sm:flex w-full">
     <div class="flex-auto">
       <div class="flex-auto mb-8">
         <Button
@@ -17,7 +10,7 @@
           @click="$emit('back')"
         />
       </div>
-      <div class="flex-auto ml-8">
+      <div class="flex-auto ml-8 pb-4">
         <h1 class="text-5xl xl:text-6xl 2xl:text-7xl font-cal text-black">
           actions
         </h1>
@@ -25,10 +18,10 @@
           In this tab you can view and edit the NFTs you have created!
         </p>
       </div>
-      <div class="flex mx-auto mt-8">
-        <div class="grid gap-2 md:grid-cols-2 2xl:grid-cols-3 mx-auto">
+      <div class="w-full grid">
+        <div class="mx-auto">
           <CollectionBaner
-            class="sm:hidden mb-8 sm:h-[40rem]"
+            class="xl:hidden mb-8 xl:h-[40rem]"
             bgColor="black"
             :collectionImg="collection?.thumbnail || undefined"
             :collectionTitle="collection?.name"
@@ -37,6 +30,19 @@
             :rewardsPercentageFee="collection?.rewards_percentage_fee"
             :accumulatedRewards="collection?.accumulated_rewards"
           />
+        </div>
+        <div class="mx-auto">
+          <MintBox
+            v-if="mintBox"
+            @close="() => (mintBox = !mintBox)"
+            :collectionAddress="collectionAddress"
+            :afterMint="loadCollectionData()"
+            :collection="collection"
+          />
+        </div>
+      </div>
+      <div class="flex mx-auto mt-8">
+        <div class="grid gap-2 md:grid-cols-2 2xl:grid-cols-3 mx-auto">
           <div v-for="action in actions">
             <Actions
               :collectionImg="action.img"
@@ -49,9 +55,9 @@
         </div>
       </div>
     </div>
-    <div class="hidden sm:flex sm:order-last mx-auto">
+    <div class="hidden xl:flex xl:order-last mx-auto">
       <CollectionBaner
-        class="sm:h-[40rem]"
+        class="xl:h-[40rem]"
         bgColor="black"
         :collectionImg="collection?.thumbnail || undefined"
         :collectionTitle="collection?.name"

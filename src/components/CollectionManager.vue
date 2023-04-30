@@ -91,5 +91,9 @@ export default {
       isWalletConnected: computed(() => $collectionDescription.value),
     };
   },
+  watch: {
+    singleCollection: function (a){
+    }
+  }
 };
 </script>

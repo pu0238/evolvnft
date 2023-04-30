@@ -4,7 +4,7 @@ export async function createEvolveCollection(
   accountAddress: string
 ): Promise<number> {
   const result = await fetch(
-    `${CARNISTER_API_URL}/collection/${accountAddress}?canisterId=rrkah-fqaaa-aaaaa-aaaaq-cai`,
+    `${CARNISTER_API_URL}/collection/${accountAddress}`,
     {
       method: "POST",
     }
@@ -21,13 +21,28 @@ export async function postEvolveMetadata(
     arweave_hash: arweaveHash,
   });
   const result = await fetch(
-    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}?canisterId=rrkah-fqaaa-aaaaa-aaaaq-cai`,
+    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}`,
     {
       method: "POST",
       body: raw,
     }
   );
   return (await result.json()).metadataId;
+}
+
+export async function postEvolveMetadatav2(
+  accountAddress: string,
+  collectionId: number,
+  metadatas: {"arweave_hash": string}[]
+): Promise<number[]> {
+  const result = await fetch(
+    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}`,
+    {
+      method: "POST",
+      body: JSON.stringify({metadatas}),
+    }
+  );
+  return (await result.json()).metadataIds;
 }
 
 export async function editEvolveMetadata(
@@ -40,7 +55,7 @@ export async function editEvolveMetadata(
     arweave_hash: arweaveHash,
   });
   const result = await fetch(
-    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}/${metadataId}?canisterId=rrkah-fqaaa-aaaaa-aaaaq-cai`,
+    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}/${metadataId}`,
     {
       method: "POST",
       body: raw,
@@ -48,12 +63,13 @@ export async function editEvolveMetadata(
   );
   return (await result.json()).metadataId;
 }
+
 export async function getNextMetadataId(
   accountAddress: string,
   collectionId: number
 ): Promise<number> {
   const result = await fetch(
-    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}/next?canisterId=rrkah-fqaaa-aaaaa-aaaaq-cai`,
+    `${CARNISTER_API_URL}/collection/${accountAddress}/${collectionId}/next`,
     {
       method: "GET",
     }

@@ -32,14 +32,10 @@ import {
   DEFAULT_SIGNING_CLIENT_OPTIONS,
 } from "../utils/constant";
 import {
-  ArchwayClient,
   SigningArchwayClient,
-  SigningCosmWasmClientOptions,
 } from "@archwayhq/arch3.js";
-import { isWalletConnected } from "../state/walletState";
-import { isWallet } from "../utils/wallet";
-import { uploadFile } from "../utils/uploader";
 import { createEvolveCollection } from "../utils/evolve";
+import { uploadBlob } from "../utils/bundlrUploader";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -61,7 +57,7 @@ export default {
     async uploadImage() {
       const firstFile = this.acceptFiles[0] as unknown as any;
       if (!firstFile) return console.error("Failed to upload image");
-      const imageId = await uploadFile(firstFile);
+      const imageId = await uploadBlob(firstFile, firstFile.type);
       if (!imageId) return console.error("Failed to upload image");
       return `https://arweave.net/${imageId}`;
     },

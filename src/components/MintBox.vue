@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute z-10 left-1/2 -translate-x-2/4">
+  <div class="mx-auto">
     <div
       class="bg-black w-[20rem] sm:w-[28rem] md:w-[38rem] lg:w-[46rem] float-left p-8 sm:p-12 md:p-14 rounded-[3rem]"
     >
@@ -107,14 +107,12 @@ import { errorMessage, isErrorPopout } from "../state/error";
 import { computed } from "vue";
 import Uploader from "./Uploader.vue";
 import Button from "./Button.vue";
-import { uploadArray, uploadFile } from "../utils/uploader";
 import {
   CONSTANTINE_INFO,
   CONTRACT_ADDRESS,
   DEFAULT_SIGNING_CLIENT_OPTIONS,
 } from "../utils/constant";
 import { SigningArchwayClient } from "@archwayhq/arch3.js/build";
-import { getNextMetadataId, postEvolveMetadata } from "../utils/evolve";
 import {
   buildMintObject,
   joinMetadataAndImages,
