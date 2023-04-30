@@ -28,7 +28,7 @@ export async function uploadBlob(bytes: Blob, type: string) {
 
   const u8 = new Uint8Array(32);
   crypto.getRandomValues(u8);
-  const anchor = btoa(String.fromCharCode.apply(null, [...u8])).slice(0, 32);
+  const anchor = btoa(String.fromCharCode.apply(null, Object.values(u8))).slice(0, 32);
 
   const item = createData(bodyData, signer, {
     tags,

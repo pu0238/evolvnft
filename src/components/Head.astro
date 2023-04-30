@@ -23,4 +23,10 @@ const { title, description } = Astro.props;
   <link rel="stylesheet" href="/styles/style.css" />
 
   <title>{title}</title>
+  <script>
+    import buffer from "buffer";
+    const { Buffer } = buffer;
+
+    if (!window.Buffer) window.Buffer = Buffer;
+  </script>
 </head>

@@ -7,13 +7,19 @@ import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfil
 export default defineConfig({
   integrations: [vue({ appEntrypoint: "/src/pages/_app" }), tailwind()],
   vite: {
+    resolve: {
+      alias: {
+        crypto: "crypto-browserify",
+        stream: "stream-browserify",
+      },
+    },
     optimizeDeps: {
-      include: ["buffer", "arbundles"],
       esbuildOptions: {
         define: {
           global: "globalThis",
           "process.env.BROWSER": "true",
         },
+        /**/
         plugins: [
           NodeGlobalsPolyfillPlugin({
             process: true,
