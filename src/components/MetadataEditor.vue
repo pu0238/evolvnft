@@ -4,10 +4,16 @@
   >
     <div class="lg:flex lg:flex-row">
       <div class="lg:max-w-[20rem] lg:mr-16">
-        <img class="w-48 mx-auto" :src="metadata ? metadata.image : '/evolvnft-collection-logo.svg'" draggable="false" />
+        <img
+          class="w-48 mx-auto"
+          :src="metadata ? metadata.image : '/evolvnft-collection-logo.svg'"
+          draggable="false"
+        />
         <div class="text-white">
           <p class="text-zinc-400 font-josefin text-xs">Token name:</p>
-          <h1 class="text-3xl font-cal">{{ metadata ? metadata.name : 'Loading metadata...'}}</h1>
+          <h1 class="text-3xl font-cal">
+            {{ metadata ? metadata.name : "Loading metadata..." }}
+          </h1>
           <p class="text-zinc-400 font-josefin text-xs mt-1">Owner:</p>
           <p class="text-zinc-200 font-josefin">
             {{ owner.slice(0, 11) }}...{{
@@ -15,7 +21,9 @@
             }}
           </p>
           <p class="text-zinc-400 font-josefin text-xs mt-1">Description:</p>
-          <p class="text-md font-josefin">{{ metadata ? metadata.description : 'Loading metadata...'}}</p>
+          <p class="text-md font-josefin">
+            {{ metadata ? metadata.description : "Loading metadata..." }}
+          </p>
           <Uploader
             v-if="evolv"
             class="mt-8 w-full"
@@ -77,7 +85,11 @@
         class="bg-zinc-900 p-4 rounded-2xl w-auto overflow-auto h-full max-h-[25rem] lg:max-h-[35rem] lg:w-[35rem] mt-8"
       >
         <code class="text-white">
-          <pre>{{ metadata ? JSON.stringify(metadata, null, " ") : "Loading metadata..."}}</pre>
+          <pre>{{
+            metadata
+              ? JSON.stringify(metadata, null, " ")
+              : "Loading metadata..."
+          }}</pre>
         </code>
       </div>
     </div>
@@ -90,7 +102,11 @@
             (!(Object.keys(filesToUpload).length > 0) && !evolvInProgress) ||
             evolvInProgress
           "
-          @click="editMetadata()"
+          @click="
+            !evolvInProgress &&
+              Object.keys(filesToUpload).length === 1 &&
+              editMetadata()
+          "
           :state="
             evolvInProgress
               ? 'progress'

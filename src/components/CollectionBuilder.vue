@@ -91,7 +91,7 @@
             class="mt-4 md:mt-14 lg:mt-16"
             v-if="step === 4"
             heading="Drag image here:"
-            @acceptFiles="(files: Array<any>) => $emit('acceptFiles', files)"
+            @acceptFiles="(files: any[]) => emitAcceptFiles(files)"
           />
           <EvolvMetadata
             v-if="step === 5"
@@ -136,18 +136,54 @@
         v-if="step === 6"
       />
       <Button
+        :isDisabled="!collectionTitle"
         class="float-right"
-        content="menage collections"
+        content="next step"
         arrow="right"
-        href="/collection-manager"
-        v-else-if="step === 7"
+        @click="goNext"
+        v-else-if="step === 1"
+      />
+      <Button
+        :isDisabled="!collectionSymbol"
+        class="float-right"
+        content="next step"
+        arrow="right"
+        @click="goNext"
+        v-else-if="step === 2"
+      />
+      <Button
+        :isDisabled="!collectionDescription"
+        class="float-right"
+        content="next step"
+        arrow="right"
+        @click="goNext"
+        v-else-if="step === 3"
+      />
+      <Button
+        :isDisabled="acceptFilesData.length === 0"
+        class="float-right"
+        content="next step"
+        arrow="right"
+        @click="goNext"
+        v-else-if="step === 4"
       />
       <Button
         class="float-right"
         content="next step"
         arrow="right"
         @click="goNext"
-        v-else
+        v-else-if="step === 5"
+      />
+      <Button
+        class="float-right"
+        :content="
+          buildingCollection ? 'building collection...' : 'menage collections'
+        "
+        :href="buildingCollection ? undefined : '/collection-manager'"
+        arrow="right"
+        :state="buildingCollection ? 'progress' : 'allowed'"
+        :isDisabled="buildingCollection"
+        v-else-if="step === 7"
       />
     </div>
   </div>
@@ -185,16 +221,23 @@ export default {
       isColectionOpen: false,
       isColectionMetadataEvolv: false,
       tokenLimit: "",
+      acceptFilesData: [] as any[],
     };
   },
   methods: {
+    emitAcceptFiles(files: any[]) {
+      this.acceptFilesData = files;
+      this.$emit("acceptFiles", files);
+    },
     saveColectionData() {
       this.collectionImg && collectionImg.set(this.collectionImg);
       this.collectionTitle && collectionTitle.set(this.collectionTitle);
       this.collectionSymbol && collectionSymbol.set(this.collectionSymbol);
-      this.collectionDescription && collectionDescription.set(this.collectionDescription);
+      this.collectionDescription &&
+        collectionDescription.set(this.collectionDescription);
       this.isColectionOpen && isColectionClosed.set(this.isColectionOpen);
-      this.isColectionMetadataEvolv && collectionEvolvMetadata.set(this.isColectionMetadataEvolv);
+      this.isColectionMetadataEvolv &&
+        collectionEvolvMetadata.set(this.isColectionMetadataEvolv);
       this.tokenLimit && tokenLimit.set(this.tokenLimit);
     },
     goNext() {
@@ -218,6 +261,11 @@ export default {
     LockCollection,
   },
   props: {
+    buildingCollection: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
     textColor: {
       type: String,
       default: "white",
@@ -261,7 +309,9 @@ export default {
       collectionTitleValue: computed(() => $collectionTitle.value),
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
-      collectionEvolvMetadataValue: computed(() => $collectionEvolvMetadata.value),
+      collectionEvolvMetadataValue: computed(
+        () => $collectionEvolvMetadata.value
+      ),
     };
   },
 };

@@ -7,6 +7,7 @@
       @back="previousStep"
       @acceptFiles="(files: Array<any>) => updateCollectionLogo(files)"
       :step="step"
+      :buildingCollection="buildingCollection"
     />
   </div>
 </template>
@@ -31,9 +32,7 @@ import {
   CONTRACT_ADDRESS,
   DEFAULT_SIGNING_CLIENT_OPTIONS,
 } from "../utils/constant";
-import {
-  SigningArchwayClient,
-} from "@archwayhq/arch3.js";
+import { SigningArchwayClient } from "@archwayhq/arch3.js";
 import { createEvolveCollection } from "../utils/evolve";
 import { uploadBlob } from "../utils/bundlrUploader";
 
@@ -46,6 +45,7 @@ export default {
     return {
       step: 0,
       acceptFiles: [] as Array<any>,
+      buildingCollection: false,
     };
   },
   components: {
@@ -84,11 +84,11 @@ export default {
           prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
         }
       );
-      let ic_collection_id: null| number = null;
-      if (this.collectionEvolvMetadataValue){
-        ic_collection_id = await createEvolveCollection(accounts[0].address)
+      let ic_collection_id: null | number = null;
+      if (this.collectionEvolvMetadataValue) {
+        ic_collection_id = await createEvolveCollection(accounts[0].address);
       }
-      
+
       const register_collection = {
         name: this.collectionTitleValue,
         description: this.collectionDescriptionValue,
@@ -105,7 +105,9 @@ export default {
         { register_collection },
         "auto"
       );
-      console.log(`https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`)
+      console.log(
+        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`
+      );
     },
 
     updateCollectionLogo(files: Array<any>) {
@@ -117,10 +119,13 @@ export default {
         base64data && collectionImg.set(base64data);
       };
     },
-    nextStep() {
+    async nextStep() {
+      if (this.buildingCollection) return;
       this.step++;
       if (this.step === 7) {
-        this.createCollection()
+        this.buildingCollection = true;
+        await this.createCollection();
+        this.buildingCollection = false;
       }
     },
     previousStep() {
@@ -136,7 +141,7 @@ export default {
     const $collectionSymbol = useStore(collectionSymbol);
     const $collectionDescription = useStore(collectionDescription);
     const $collectionEvolvMetadata = useStore(collectionEvolvMetadata);
-    
+
     return {
       isColectionClosedValue: computed(() => $isColectionClosed.value),
       tokenLimitValue: computed(() => $tokenLimit.value),
@@ -144,7 +149,9 @@ export default {
       collectionTitleValue: computed(() => $collectionTitle.value),
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
-      collectionEvolvMetadataValue: computed(() => $collectionEvolvMetadata.value),
+      collectionEvolvMetadataValue: computed(
+        () => $collectionEvolvMetadata.value
+      ),
     };
   },
 };
