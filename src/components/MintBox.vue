@@ -4,7 +4,7 @@
       class="bg-black w-[20rem] sm:w-[28rem] md:w-[38rem] lg:w-[46rem] float-left p-8 sm:p-12 md:p-14 rounded-[3rem]"
     >
       <div class="w-full float-left flex items-center">
-        <img class="w-14 sm:w-20" src="/mint-white.svg" />
+        <img class="w-14 sm:w-20" src="/mint-white.svg" alt="Mint icon"/>
         <h2
           class="float-left ml-2 text-3xl sm:text-4xl font-cal text-white flex-auto"
         >

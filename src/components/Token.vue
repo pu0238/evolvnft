@@ -7,6 +7,7 @@
     <img
       class="w-32 mx-auto mb-2"
       :src="metadata ? metadata.image : '/evolvnft-collection-logo.svg'"
+      alt="NFT image"
       draggable="false"
     />
     <img
@@ -14,6 +15,7 @@
       :class="{ hidden: !evolv }"
       src="/edit-icon.svg"
       draggable="false"
+      alt="Edit icon"
     />
     <p class="text-zinc-400 font-josefin text-xs">Token name:</p>
     <h3 class="text-white font-cal text-lg text-center">

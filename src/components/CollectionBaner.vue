@@ -8,6 +8,7 @@
   >
     <div class="text-center">
       <img
+        alt="Collection image"
         class="w-32 lg:w-40 mx-auto"
         :src="collectionImg"
         draggable="false"

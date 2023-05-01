@@ -35,6 +35,7 @@
         draggable="false"
         class="hidden md:block lg:block w-[20rem] md:w-[18rem] lg:w-[23rem] xl:w-[30rem] my-8 lg:my-12 mx-auto"
         src="/collection-creation-header.png"
+        alt="Sample collection image"
       />
     </div>
     <div class="w-full float-left">

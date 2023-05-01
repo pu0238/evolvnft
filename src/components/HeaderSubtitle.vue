@@ -25,7 +25,7 @@ export default {
     content: {
       type: String,
       default:
-        "decentralized hub that allows you to easily create, manage and evolv your decentralized assets.",
+        "decentralized hub that allows you to easily create, manage and evolve your decentralized assets.",
       required: false,
     },
   },

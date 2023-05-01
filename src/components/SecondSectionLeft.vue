@@ -4,7 +4,7 @@
     <div class="my-8">
       <HeaderSubtitle
         textColor="white"
-        content="thanks to integration with several blockchains, we are able to provide tools for creating fully decentralized NFTs that can evolv, change over time or be leveled!"
+        content="thanks to integration with several blockchains, we are able to provide tools for creating fully decentralized evolving NFTs that, change over time or be leveled!"
       />
     </div>
     <Button

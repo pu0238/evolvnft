@@ -1,7 +1,7 @@
 <template>
   <div class="bg-black border border-black float-left p-6 lg:p-10 py-5 rounded-[2rem] w-[16rem] lg:w-80">
     <div class="text-center">
-      <img class="w-32 lg:w-40 mx-auto" :src="collectionImg" />
+      <img class="w-32 lg:w-40 mx-auto" :src="collectionImg" alt="Collection image"/>
       <h3 class="font-cal text-xl lg:text-2xl mt-2 mb-1 text-white">{{ collectionTitle }}</h3>
       <p class="font-josefin text-zinc-400">{{ collectionSymbol }}</p>
     </div>

@@ -4,7 +4,7 @@
     :class="{ 'cursor-pointer': active }"
   >
     <div class="text-center">
-      <img class="h-24 lg:h-32 xl:h-36 mx-auto" :src="collectionImg" />
+      <img class="h-24 lg:h-32 xl:h-36 mx-auto" :src="collectionImg" alt="Collection image" />
       <h3
         class="font-cal text-xl lg:text-2xl mt-4 mb-1 text-black"
         :class="{ 'text-black': active, 'text-gray-400': !active }"

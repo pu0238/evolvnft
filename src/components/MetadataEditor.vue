@@ -8,6 +8,7 @@
           class="w-48 mx-auto"
           :src="metadata ? metadata.image : '/evolvnft-collection-logo.svg'"
           draggable="false"
+          alt="Collection image"
         />
         <div class="text-white">
           <p class="text-zinc-400 font-josefin text-xs">Token name:</p>

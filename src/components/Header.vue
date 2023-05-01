@@ -6,6 +6,7 @@
         draggable="false"
         class="float-right hidden lg:block lg:w-96 xl:w-auto"
         src="/evolv-tree.svg"
+        alt="Evlolving tree"
       />
     </div>
   </header>
