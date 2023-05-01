@@ -5,7 +5,7 @@
       <div
         class="w-full grid md:grid-cols-3 gap-8 lg:gap-14 float-left py-10"
       >
-        <FooterButton content="twitter" :isDisabled="true" />
+        <FooterButton content="twitter" :isDisabled="false" href="https://twitter.com/evolv_nft"/>
         <FooterButton content="discord" :isDisabled="true" />
         <FooterButton content="telegram" :isDisabled="true" />
       </div>
