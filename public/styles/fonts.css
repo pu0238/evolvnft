@@ -7,6 +7,7 @@
   src: url("/fonts/CalSans/CalSans-SemiBold.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 /*
 * JosefinSans
@@ -17,34 +18,40 @@
   src: url("/fonts/JosefinSans/JosefinSans-Thin.ttf") format("truetype");
   font-weight: 100;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "JosefinSans";
   src: url("/fonts/JosefinSans/JosefinSans-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "JosefinSans";
   src: url("/fonts/JosefinSans/JosefinSans-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "JosefinSans";
   src: url("/fonts/JosefinSans/JosefinSans-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "JosefinSans";
   src: url("/fonts/JosefinSans/JosefinSans-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "JosefinSans";
   src: url("/fonts/JosefinSans/JosefinSans-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
