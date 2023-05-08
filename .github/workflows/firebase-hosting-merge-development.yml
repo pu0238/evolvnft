@@ -16,5 +16,5 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EVOLVENFT_B83DE }}'
-          channelId: development
+          channelId: development-evolvnft
           projectId: evolvenft-b83de
