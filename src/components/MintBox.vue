@@ -33,7 +33,7 @@
       </p>
       <Uploader
         class="float-left mt-8 w-full"
-        heading="drop files below:"
+        heading="drop files below: (max 100kb)"
         :acceptedTypes="acceptedTypes"
         @acceptFiles="(acceptFiles: any[]) => joinMetadata(acceptFiles)"
       />

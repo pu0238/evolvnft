@@ -70,27 +70,27 @@
             v-if="step === 1"
             class="mt-4 md:mt-14 lg:mt-16"
             placeholder="name like: Evolv NFT"
-            heading="Collecrion name:"
+            heading="Collection name:"
             v-model="collectionTitle"
           />
           <InputArea
             v-if="step === 2"
             class="mt-4 md:mt-14 lg:mt-16"
             placeholder="symbol like: EN"
-            heading="Collecrion symbol:"
+            heading="Collection symbol:"
             v-model="collectionSymbol"
           />
           <InputArea
             v-if="step === 3"
             class="mt-4 md:mt-14 lg:mt-16"
             placeholder="describe your collection here"
-            heading="Collecrion description:"
+            heading="Collection description:"
             v-model="collectionDescription"
           />
           <Uploader
             class="mt-4 md:mt-14 lg:mt-16"
             v-if="step === 4"
-            heading="Drag image here:"
+            heading="Drag image here: (max 100kb)"
             @acceptFiles="(files: any[]) => emitAcceptFiles(files)"
           />
           <EvolvMetadata
