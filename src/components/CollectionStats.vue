@@ -51,7 +51,6 @@ export default {
   },
   created() {
     getCollectionsStats().then((stats) => {
-      console.log(stats)
       this.collectionCount = stats.collections_count;
       this.tokensCount = stats.tokens_count;
     });
