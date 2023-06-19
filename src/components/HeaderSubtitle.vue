@@ -11,21 +11,20 @@
 </template>
 
 <script lang="ts">
-import { reactive } from "vue";
+import { reactive } from 'vue';
 
 export default {
-
   props: {
     textColor: {
       type: String,
-      default: () => "black",
+      default: () => 'black',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
     content: {
       type: String,
       default:
-        "decentralized hub that allows you to easily create, manage and evolve your decentralized assets.",
+        'decentralized hub that allows you to easily create, manage and evolve your decentralized assets.',
       required: false,
     },
   },

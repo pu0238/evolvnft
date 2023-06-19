@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts">
-import HeaderTitle from "./HeaderTitle.vue";
-import HeaderSubtitle from "./HeaderSubtitle.vue";
-import Button from "./Button.vue";
+import HeaderTitle from './HeaderTitle.vue';
+import HeaderSubtitle from './HeaderSubtitle.vue';
+import Button from './Button.vue';
 
 export default {
   components: { HeaderTitle, HeaderSubtitle, Button },

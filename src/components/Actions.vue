@@ -4,7 +4,11 @@
     :class="{ 'cursor-pointer': active }"
   >
     <div class="text-center">
-      <img class="h-24 lg:h-32 xl:h-36 mx-auto" :src="collectionImg" alt="Collection image" />
+      <img
+        class="h-24 lg:h-32 xl:h-36 mx-auto"
+        :src="collectionImg"
+        alt="Collection image"
+      />
       <h3
         class="font-cal text-xl lg:text-2xl mt-4 mb-1 text-black"
         :class="{ 'text-black': active, 'text-gray-400': !active }"
@@ -17,23 +21,23 @@
 </template>
 
 <script lang="ts">
-import { reactive } from "vue";
+import { reactive } from 'vue';
 
 export default {
   props: {
     collectionImg: {
       type: String,
-      default: () => "/mint-black.svg",
+      default: () => '/mint-black.svg',
       required: false,
     },
     collectionDescription: {
       type: String,
-      default: () => "Mint any amount of NFT from your collection",
+      default: () => 'Mint any amount of NFT from your collection',
       required: false,
     },
     collectionTitle: {
       type: String,
-      default: () => "mint NFT",
+      default: () => 'mint NFT',
       required: false,
     },
     active: {

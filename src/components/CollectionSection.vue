@@ -39,18 +39,23 @@
       />
     </div>
     <div class="w-full float-left">
-      <Button class="float-right" content="next step" arrow="right" @click="$emit('next')"/>
+      <Button
+        class="float-right"
+        content="next step"
+        arrow="right"
+        @click="$emit('next')"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import SecondSectionLeft from "./SecondSectionLeft.vue";
-import HeaderSubtitle from "./HeaderSubtitle.vue";
-import Button from "./Button.vue";
-import CollectionBaner from "./CollectionBaner.vue";
-import SecondSectionTitle from "./SecondSectionTitle.vue";
-import { reactive } from "vue";
+import SecondSectionLeft from './SecondSectionLeft.vue';
+import HeaderSubtitle from './HeaderSubtitle.vue';
+import Button from './Button.vue';
+import CollectionBaner from './CollectionBaner.vue';
+import SecondSectionTitle from './SecondSectionTitle.vue';
+import { reactive } from 'vue';
 
 export default {
   components: {
@@ -63,9 +68,9 @@ export default {
   props: {
     textColor: {
       type: String,
-      default: () => "white",
+      default: () => 'white',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
     next: {
       type: Function,

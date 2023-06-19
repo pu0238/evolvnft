@@ -26,7 +26,7 @@
 
 <script lang="ts">
 export default {
-  name: "LockButton",
+  name: 'LockButton',
   emits: ['update:checked'],
   props: {
     checked: {

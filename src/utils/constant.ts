@@ -1,21 +1,21 @@
-import { getSigningCosmosClientOptions } from "@archwayhq/arch3.js";
-import { GasPrice } from "@cosmjs/stargate";
+import { getSigningCosmosClientOptions } from '@archwayhq/arch3.js';
+import { GasPrice } from '@cosmjs/stargate';
 
 export const CONSTANTINE_INFO = {
   // Chain-id of the Cosmos SDK chain.
-  chainId: "constantine-3",
+  chainId: 'constantine-3',
   // The name of the chain to be displayed to the user.
-  chainName: "Constantine 3 Testnet",
+  chainName: 'Constantine 3 Testnet',
   // RPC endpoint of the chain.
-  rpc: "https://rpc.constantine.archway.tech",
+  rpc: 'https://rpc.constantine.archway.tech',
   // REST endpoint of the chain.
-  rest: "https://api.constantine.archway.tech",
+  rest: 'https://api.constantine.archway.tech',
   // Staking coin information
   stakeCurrency: {
     // Coin denomination to be displayed to the user.
-    coinDenom: "CONST",
+    coinDenom: 'CONST',
     // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-    coinMinimalDenom: "uconst",
+    coinMinimalDenom: 'uconst',
     // # of decimal points to convert minimal denomination to user-facing denomination.
     coinDecimals: 6,
     // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
@@ -42,20 +42,20 @@ export const CONSTANTINE_INFO = {
   //   bech32PrefixConsPub: string;
   // }
   bech32Config: {
-    bech32PrefixAccAddr: "archway",
-    bech32PrefixAccPub: "archwaypub",
-    bech32PrefixValAddr: "archwayvaloper",
-    bech32PrefixValPub: "archwayvaloperpub",
-    bech32PrefixConsAddr: "archwayvalcons",
-    bech32PrefixConsPub: "archwayvalconspub",
+    bech32PrefixAccAddr: 'archway',
+    bech32PrefixAccPub: 'archwaypub',
+    bech32PrefixValAddr: 'archwayvaloper',
+    bech32PrefixValPub: 'archwayvaloperpub',
+    bech32PrefixConsAddr: 'archwayvalcons',
+    bech32PrefixConsPub: 'archwayvalconspub',
   },
   // List of all coin/tokens used in this chain.
   currencies: [
     {
       // Coin denomination to be displayed to the user.
-      coinDenom: "CONST",
+      coinDenom: 'CONST',
       // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-      coinMinimalDenom: "uconst",
+      coinMinimalDenom: 'uconst',
       // # of decimal points to convert minimal denomination to user-facing denomination.
       coinDecimals: 6,
       // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
@@ -67,9 +67,9 @@ export const CONSTANTINE_INFO = {
   feeCurrencies: [
     {
       // Coin denomination to be displayed to the user.
-      coinDenom: "CONST",
+      coinDenom: 'CONST',
       // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-      coinMinimalDenom: "uconst",
+      coinMinimalDenom: 'uconst',
       // # of decimal points to convert minimal denomination to user-facing denomination.
       coinDecimals: 6,
       // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
@@ -92,21 +92,24 @@ export const CONSTANTINE_INFO = {
     average: 0.1,
     high: 0.2,
   },
-  faucets: ["https://faucet.constantine.archway.tech"],
-  features: ["cosmwasm"],
+  faucets: ['https://faucet.constantine.archway.tech'],
+  features: ['cosmwasm'],
 };
 
-export const DEFAULT_GAS_PRICE = GasPrice.fromString("0.02uconst");
+export const DEFAULT_GAS_PRICE = GasPrice.fromString('0.02uconst');
 
 export const DEFAULT_SIGNING_CLIENT_OPTIONS = getSigningCosmosClientOptions();
 
 // TODO: outdated
 export const CONTRACT_ADDRESS =
-  "archway1tale3le9llpctrml247kutd9u0fv7ls49td9nxtnma3dlu8mgsmsgsmtpe";
+  'archway1tale3le9llpctrml247kutd9u0fv7ls49td9nxtnma3dlu8mgsmsgsmtpe';
 
 export const CARNISTER_API_URL =
-  "https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1";
+  'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 
-export const COLLECTION_MANAGER_CONTRACT_ADDRESS = "archway1xnulf405laafzr0u4urpstwlzl55vvdnwenm4f2djanq5frsypyqsjwj4x"
-export const LAUNCHPAD_MANAGER_CONTRACT_ADDRESS = "archway1rll06439f3y506xsnmuukzt72n7ls8l4qytspc6hac6m4du84jvqc9xqp4"
-export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = "archway1hxkyhz23wzzpp5anmj0j8dk9hmm706e4yu4y39sfj9tzqmec70eq0ff077"
+export const COLLECTION_MANAGER_CONTRACT_ADDRESS =
+  'archway1xnulf405laafzr0u4urpstwlzl55vvdnwenm4f2djanq5frsypyqsjwj4x';
+export const LAUNCHPAD_MANAGER_CONTRACT_ADDRESS =
+  'archway1rll06439f3y506xsnmuukzt72n7ls8l4qytspc6hac6m4du84jvqc9xqp4';
+export const SYSTEM_CONTEXT_CONTRACT_ADDRESS =
+  'archway1hxkyhz23wzzpp5anmj0j8dk9hmm706e4yu4y39sfj9tzqmec70eq0ff077';

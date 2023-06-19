@@ -4,7 +4,7 @@
       class="bg-black w-[20rem] sm:w-[28rem] md:w-[38rem] lg:w-[46rem] float-left p-8 sm:p-12 md:p-14 rounded-[3rem]"
     >
       <div class="w-full float-left flex items-center">
-        <img class="w-14 sm:w-20" src="/mint-white.svg" alt="Mint icon"/>
+        <img class="w-14 sm:w-20" src="/mint-white.svg" alt="Mint icon" />
         <h2
           class="float-left ml-2 text-3xl sm:text-4xl font-cal text-white flex-auto"
         >
@@ -102,29 +102,29 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@nanostores/vue";
-import { errorMessage, isErrorPopout } from "../state/error";
-import { computed } from "vue";
-import Uploader from "./Uploader.vue";
-import Button from "./Button.vue";
+import { useStore } from '@nanostores/vue';
+import { errorMessage, isErrorPopout } from '../state/error';
+import { computed } from 'vue';
+import Uploader from './Uploader.vue';
+import Button from './Button.vue';
 import {
   CONSTANTINE_INFO,
   CONTRACT_ADDRESS,
   DEFAULT_SIGNING_CLIENT_OPTIONS,
-} from "../utils/constant";
-import { SigningArchwayClient } from "@archwayhq/arch3.js";
+} from '../utils/constant';
+import { SigningArchwayClient } from '@archwayhq/arch3.js';
 import {
   buildMintObject,
   joinMetadataAndImages,
   uploadTokenMetadata,
-} from "../utils/metadata";
-import type { CollectionEntitie } from "../utils/types/CollectionItem";
+} from '../utils/metadata';
+import type { CollectionEntitie } from '../utils/types/CollectionItem';
 
 export default {
-  emit: ["close", "afterMint"],
+  emit: ['close', 'afterMint'],
   data() {
-    const imgTypes = ["image/jpeg", "image/png", "image/gif"];
-    const jsonTypes = ["application/json"];
+    const imgTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const jsonTypes = ['application/json'];
     return {
       mintingnProgress: false,
       jsonTypes,
@@ -157,10 +157,10 @@ export default {
     async mintNFTs() {
       this.mintingnProgress = true;
       const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId
+        CONSTANTINE_INFO.chainId,
       );
       if (!offlineSigner) {
-        return console.error("Failed to create offline signer");
+        return console.error('Failed to create offline signer');
       }
       const accounts = await offlineSigner.getAccounts();
       const cosmSigner = await SigningArchwayClient.connectWithSigner(
@@ -169,14 +169,14 @@ export default {
         {
           ...DEFAULT_SIGNING_CLIENT_OPTIONS,
           prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        }
+        },
       );
       const tokens = await buildMintObject(
         accounts[0].address,
         this.filesToUpload,
-        this.collection as CollectionEntitie
+        this.collection as CollectionEntitie,
       );
-      if (!tokens) return console.error("Failed to mint NFTs");
+      if (!tokens) return console.error('Failed to mint NFTs');
       const mint_tokens = {
         address: this.collectionAddress,
         tokens,
@@ -185,12 +185,12 @@ export default {
         accounts[0].address,
         CONTRACT_ADDRESS,
         { mint_tokens },
-        "auto"
+        'auto',
       );
       console.log(
-        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`
+        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
       );
-      this.$emit("afterMint");
+      this.$emit('afterMint');
       this.filesToUpload = {};
       this.mintingnProgress = false;
     },
@@ -198,7 +198,7 @@ export default {
       this.filesToUpload = joinMetadataAndImages(
         acceptFiles,
         this.imgTypes,
-        this.jsonTypes
+        this.jsonTypes,
       );
     },
   },

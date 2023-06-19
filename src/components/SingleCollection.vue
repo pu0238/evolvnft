@@ -75,25 +75,25 @@ import {
   ArchwayClient,
   SigningArchwayClient,
   SigningCosmWasmClientOptions,
-} from "@archwayhq/arch3.js";
+} from '@archwayhq/arch3.js';
 import {
   CONSTANTINE_INFO,
   CONTRACT_ADDRESS,
   DEFAULT_SIGNING_CLIENT_OPTIONS,
-} from "../utils/constant";
-import type { Window as KeplrWindow } from "@keplr-wallet/types";
-import CollectionBaner from "./CollectionBaner.vue";
-import Actions from "./Actions.vue";
-import type { CollectionEntitie } from "../utils/types/CollectionItem";
-import MintBox from "./MintBox.vue";
-import Button from "./Button.vue";
+} from '../utils/constant';
+import type { Window as KeplrWindow } from '@keplr-wallet/types';
+import CollectionBaner from './CollectionBaner.vue';
+import Actions from './Actions.vue';
+import type { CollectionEntitie } from '../utils/types/CollectionItem';
+import MintBox from './MintBox.vue';
+import Button from './Button.vue';
 
 declare global {
   interface Window extends KeplrWindow {}
 }
 
 export default {
-  emits: ["back", "singleCollection", "tokens"],
+  emits: ['back', 'singleCollection', 'tokens'],
   components: {
     CollectionBaner,
     Actions,
@@ -106,40 +106,40 @@ export default {
       mintBox: false,
       actions: [
         {
-          img: "/mint-black.svg",
-          title: "mint NFT",
-          description: "Mint any amount of NFT from your collection",
+          img: '/mint-black.svg',
+          title: 'mint NFT',
+          description: 'Mint any amount of NFT from your collection',
           active: true,
-          tag: "mint",
+          tag: 'mint',
         },
         {
-          img: "/evolv-metadata-black.svg",
-          title: "evolv metadata",
-          description: "Evolv metadata of specific NFT",
+          img: '/evolv-metadata-black.svg',
+          title: 'evolv metadata',
+          description: 'Evolv metadata of specific NFT',
           active: true,
-          tag: "evolv",
+          tag: 'evolv',
         },
         {
-          img: "/launchpad-black.svg",
-          title: "join to launchpad",
-          description: "Apply for your collection to launchpad",
+          img: '/launchpad-black.svg',
+          title: 'join to launchpad',
+          description: 'Apply for your collection to launchpad',
           active: false,
-          tag: "launchpad",
+          tag: 'launchpad',
         },
         {
-          img: "/candie-machine-black.svg",
-          title: "candie machine",
+          img: '/candie-machine-black.svg',
+          title: 'candie machine',
           description:
-            "Add a certain number of your tokens to the candie machine",
+            'Add a certain number of your tokens to the candie machine',
           active: false,
-          tag: "candiemachine",
+          tag: 'candiemachine',
         },
         {
-          img: "/sdk-black.svg",
-          title: "sdk integration",
-          description: "Turn your NFT into game items or financial assets",
+          img: '/sdk-black.svg',
+          title: 'sdk integration',
+          description: 'Turn your NFT into game items or financial assets',
           active: false,
-          tag: "sdk",
+          tag: 'sdk',
         },
       ],
       collection: undefined as unknown as CollectionEntitie,
@@ -159,17 +159,17 @@ export default {
   },
   methods: {
     openBox(tag: string) {
-      if (tag === "mint") this.mintBox = true;
-      if (tag === "evolv") {
-        this.$emit("singleCollection", this.collection);
+      if (tag === 'mint') this.mintBox = true;
+      if (tag === 'evolv') {
+        this.$emit('singleCollection', this.collection);
       }
     },
     async getCollection(): Promise<void | CollectionEntitie> {
       const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId
+        CONSTANTINE_INFO.chainId,
       );
       if (!offlineSigner) {
-        return console.error("Failed to create offline signer");
+        return console.error('Failed to create offline signer');
       }
       const cosmSigner = await SigningArchwayClient.connectWithSigner(
         CONSTANTINE_INFO.rpc,
@@ -177,7 +177,7 @@ export default {
         {
           ...DEFAULT_SIGNING_CLIENT_OPTIONS,
           prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        }
+        },
       );
 
       const get_collection = {

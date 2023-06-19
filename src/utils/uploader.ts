@@ -1,28 +1,28 @@
 export async function uploadFile(file: any) {
   const bodyData = Object.values(new Uint8Array(await file.arrayBuffer()));
   if (bodyData.length === 0) {
-    return console.error("Failed to upload image");
+    return console.error('Failed to upload image');
   }
   const tags = [
     {
-      name: "Content-Type",
+      name: 'Content-Type',
       value: file.type,
     },
   ];
 
   const result = await fetch(
-    "https://tGY64E3EMTOBP20R85p9HAwtIHJImucrwPU8j4Z2EUg.exm.run",
+    'https://tGY64E3EMTOBP20R85p9HAwtIHJImucrwPU8j4Z2EUg.exm.run',
     {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         data: bodyData,
-        type: "buffer",
+        type: 'buffer',
         tags,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    }
+    },
   );
   const bodyResult = await result.json();
   const uploadId = bodyResult.data.execution.result.id as string;
@@ -32,28 +32,28 @@ export async function uploadFile(file: any) {
 export async function uploadArray(bytes: Blob, type: string) {
   const bodyData = Object.values(new Uint8Array(await bytes.arrayBuffer()));
   if (bodyData.length === 0) {
-    return console.error("Failed to upload image");
+    return console.error('Failed to upload image');
   }
   const tags = [
     {
-      name: "Content-Type",
+      name: 'Content-Type',
       value: type,
     },
   ];
 
   const result = await fetch(
-    "https://tGY64E3EMTOBP20R85p9HAwtIHJImucrwPU8j4Z2EUg.exm.run",
+    'https://tGY64E3EMTOBP20R85p9HAwtIHJImucrwPU8j4Z2EUg.exm.run',
     {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         data: bodyData,
-        type: "buffer",
+        type: 'buffer',
         tags,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    }
+    },
   );
   const bodyResult = await result.json();
   const uploadId = bodyResult.data.execution.result.id as string;

@@ -15,14 +15,14 @@
 </template>
 
 <script lang="ts">
-import { PropType, reactive } from "vue";
-import { useDropzone } from "vue3-dropzone";
+import { PropType, reactive } from 'vue';
+import { useDropzone } from 'vue3-dropzone';
 
 export default {
   props: {
     heading: {
       type: String,
-      default: () => "Input:",
+      default: () => 'Input:',
       required: false,
     },
     acceptFiles: {
@@ -31,7 +31,7 @@ export default {
     },
     acceptedTypes: {
       type: Array as PropType<string[]>,
-      default: () => ["image/jpeg", "image/png", "image/gif"],
+      default: () => ['image/jpeg', 'image/png', 'image/gif'],
       required: false,
     },
     maxFiles: {
@@ -44,7 +44,7 @@ export default {
     props = reactive(props);
     const onDrop = async (acceptFiles: any[], rejectReasons: any[]) => {
       const filteredAcceptFiles = acceptFiles.filter((file) =>
-        props.acceptedTypes.includes(file.type)
+        props.acceptedTypes.includes(file.type),
       );
       emit('acceptFiles', filteredAcceptFiles);
     };

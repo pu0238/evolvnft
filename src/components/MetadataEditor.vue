@@ -13,7 +13,7 @@
         <div class="text-white">
           <p class="text-zinc-400 font-josefin text-xs">Token name:</p>
           <h1 class="text-3xl font-cal">
-            {{ metadata ? metadata.name : "Loading metadata..." }}
+            {{ metadata ? metadata.name : 'Loading metadata...' }}
           </h1>
           <p class="text-zinc-400 font-josefin text-xs mt-1">Owner:</p>
           <p class="text-zinc-200 font-josefin">
@@ -23,7 +23,7 @@
           </p>
           <p class="text-zinc-400 font-josefin text-xs mt-1">Description:</p>
           <p class="text-md font-josefin">
-            {{ metadata ? metadata.description : "Loading metadata..." }}
+            {{ metadata ? metadata.description : 'Loading metadata...' }}
           </p>
           <Uploader
             v-if="evolv"
@@ -88,8 +88,8 @@
         <code class="text-white">
           <pre>{{
             metadata
-              ? JSON.stringify(metadata, null, " ")
-              : "Loading metadata..."
+              ? JSON.stringify(metadata, null, ' ')
+              : 'Loading metadata...'
           }}</pre>
         </code>
       </div>
@@ -122,17 +122,17 @@
 </template>
 
 <script lang="ts">
-import Uploader from "./Uploader.vue";
-import Button from "./Button.vue";
-import { editEvolveMetadata } from "../utils/evolve";
-import { CONSTANTINE_INFO } from "../utils/constant";
-import { joinMetadataAndImages } from "../utils/metadata";
-import { uploadBlob } from "../utils/bundlrUploader";
+import Uploader from './Uploader.vue';
+import Button from './Button.vue';
+import { editEvolveMetadata } from '../utils/evolve';
+import { CONSTANTINE_INFO } from '../utils/constant';
+import { joinMetadataAndImages } from '../utils/metadata';
+import { uploadBlob } from '../utils/bundlrUploader';
 
 export default {
   data() {
-    const imgTypes = ["image/jpeg", "image/png", "image/gif"];
-    const jsonTypes = ["application/json"];
+    const imgTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const jsonTypes = ['application/json'];
     return {
       evolvInProgress: false,
       metadata: undefined as any,
@@ -177,7 +177,7 @@ export default {
       this.filesToUpload = joinMetadataAndImages(
         acceptFiles,
         this.imgTypes,
-        this.jsonTypes
+        this.jsonTypes,
       );
     },
     async getMetadata(url: string) {
@@ -192,44 +192,44 @@ export default {
           !this.filesToUpload[fileName].image &&
           !this.filesToUpload[fileName].metadata
         ) {
-          console.error("No file selected");
+          console.error('No file selected');
         }
         const metadataUrl = new URL(this.selectedToken.token_uri);
-        const splitedPath = metadataUrl.pathname.split("/");
+        const splitedPath = metadataUrl.pathname.split('/');
         const metadataId = Number(splitedPath[splitedPath.length - 1]);
         if (this.evolv && metadataId) {
           const offlineSigner = window.keplr?.getOfflineSigner(
-            CONSTANTINE_INFO.chainId
+            CONSTANTINE_INFO.chainId,
           );
           if (!offlineSigner) {
-            return console.error("Failed to create offline signer");
+            return console.error('Failed to create offline signer');
           }
           const accounts = await offlineSigner.getAccounts();
 
           const imageUploadId = await uploadBlob(
             this.filesToUpload[fileName].image,
-            this.filesToUpload[fileName].image.type
+            this.filesToUpload[fileName].image.type,
           );
-          if (!imageUploadId) return console.error("Failed to upload image");
+          if (!imageUploadId) return console.error('Failed to upload image');
           const metadata = await this.filesToUpload[fileName].metadata.text();
           const parsedMetadata = JSON.parse(metadata);
           parsedMetadata.image = `https://arweave.net/${imageUploadId}`;
           const encodedMetadata = new Blob([JSON.stringify(parsedMetadata)]);
           const metadataUploadId = await uploadBlob(
             encodedMetadata,
-            "application/json"
+            'application/json',
           );
           if (!metadataUploadId)
-            return console.error("Failed to upload metadata");
+            return console.error('Failed to upload metadata');
 
           await editEvolveMetadata(
             accounts[0].address,
             this.evolv,
             metadataId,
-            metadataUploadId
+            metadataUploadId,
           );
           this.metadata = await this.getMetadata(this.tokenUri);
-          console.log("Metadata updated");
+          console.log('Metadata updated');
           this.evolvInProgress = false;
           this.filesToUpload = {};
         }

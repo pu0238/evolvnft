@@ -4,10 +4,10 @@ export default {
   component: NavItem,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'NavItem'
+  title: 'NavItem',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { NavItem },
   template: '<NavItem />',
 });

@@ -4,10 +4,10 @@ export default {
   component: LockCollection,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'LockCollection'
+  title: 'LockCollection',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { LockCollection },
   template: '<LockCollection />',
 });

@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import ThirdSectionTitle from "./ThirdSectionTitle.vue";
-import HeaderSubtitle from "./HeaderSubtitle.vue";
-import Button from "./Button.vue";
+import ThirdSectionTitle from './ThirdSectionTitle.vue';
+import HeaderSubtitle from './HeaderSubtitle.vue';
+import Button from './Button.vue';
 
 export default {
   components: { ThirdSectionTitle, HeaderSubtitle, Button },

@@ -190,16 +190,16 @@
 </template>
 
 <script lang="ts">
-import SecondSectionLeft from "./SecondSectionLeft.vue";
-import HeaderSubtitle from "./HeaderSubtitle.vue";
-import Button from "./Button.vue";
-import CollectionBaner from "./CollectionBaner.vue";
-import SecondSectionTitle from "./SecondSectionTitle.vue";
-import InputArea from "./InputArea.vue";
-import Uploader from "./Uploader.vue";
-import LockCollection from "./LockCollection.vue";
-import { computed, reactive } from "vue";
-import { useStore } from "@nanostores/vue";
+import SecondSectionLeft from './SecondSectionLeft.vue';
+import HeaderSubtitle from './HeaderSubtitle.vue';
+import Button from './Button.vue';
+import CollectionBaner from './CollectionBaner.vue';
+import SecondSectionTitle from './SecondSectionTitle.vue';
+import InputArea from './InputArea.vue';
+import Uploader from './Uploader.vue';
+import LockCollection from './LockCollection.vue';
+import { computed, reactive } from 'vue';
+import { useStore } from '@nanostores/vue';
 import {
   collectionDescription,
   collectionEvolvMetadata,
@@ -208,8 +208,8 @@ import {
   collectionTitle,
   isColectionClosed,
   tokenLimit,
-} from "../state/collectionState";
-import EvolvMetadata from "./EvolvMetadata.vue";
+} from '../state/collectionState';
+import EvolvMetadata from './EvolvMetadata.vue';
 
 export default {
   data() {
@@ -220,14 +220,14 @@ export default {
       collectionDescription: undefined,
       isColectionOpen: false,
       isColectionMetadataEvolv: false,
-      tokenLimit: "",
+      tokenLimit: '',
       acceptFilesData: [] as any[],
     };
   },
   methods: {
     emitAcceptFiles(files: any[]) {
       this.acceptFilesData = files;
-      this.$emit("acceptFiles", files);
+      this.$emit('acceptFiles', files);
     },
     saveColectionData() {
       this.collectionImg && collectionImg.set(this.collectionImg);
@@ -242,11 +242,11 @@ export default {
     },
     goNext() {
       this.saveColectionData();
-      this.$emit("next");
+      this.$emit('next');
     },
     goBack() {
       this.saveColectionData();
-      this.$emit("back");
+      this.$emit('back');
     },
   },
   components: {
@@ -268,9 +268,9 @@ export default {
     },
     textColor: {
       type: String,
-      default: () => "white",
+      default: () => 'white',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
     emitedTokenLimit: {
       type: String,
@@ -291,7 +291,7 @@ export default {
       type: Boolean,
     },
   },
-  emits: ["next", "back", "acceptFiles"],
+  emits: ['next', 'back', 'acceptFiles'],
   setup(props) {
     props = reactive(props);
     const $isColectionClosed = useStore(isColectionClosed);
@@ -310,7 +310,7 @@ export default {
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
       collectionEvolvMetadataValue: computed(
-        () => $collectionEvolvMetadata.value
+        () => $collectionEvolvMetadata.value,
       ),
     };
   },

@@ -113,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { reactive } from "vue";
+import { reactive } from 'vue';
 
 export default {
   props: {
@@ -127,30 +127,30 @@ export default {
     },
     collectionImg: {
       type: String,
-      default: () => "/evolvnft-collection-logo.svg",
+      default: () => '/evolvnft-collection-logo.svg',
       required: false,
     },
     collectionSymbol: {
       type: String,
-      default: () => "EN",
+      default: () => 'EN',
       required: false,
     },
     collectionTitle: {
       type: String,
-      default: () => "Evolv NFT",
+      default: () => 'Evolv NFT',
       required: false,
     },
     collectionDescription: {
       type: String,
       default:
-        "this is example description of your digital asset. it should be short and clear.",
+        'this is example description of your digital asset. it should be short and clear.',
       required: false,
     },
     bgColor: {
       type: String,
-      default: () => "white",
+      default: () => 'white',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
   },
   setup(props) {

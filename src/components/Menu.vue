@@ -40,15 +40,15 @@
 </template>
 
 <script lang="ts">
-import { computed, PropType, reactive } from "vue";
-import NavBar from "./NavBar.vue";
-import Logo from "./Logo.vue";
-import Button from "./Button.vue";
-import { useStore } from "@nanostores/vue";
-import { isMenuOpen } from "../state/menuState";
-import { isWallet, sharedConnect } from "../utils/wallet";
-import { isWalletConnected } from "../state/walletState";
-import ErrorLog from "./ErrorLog.vue";
+import { computed, PropType, reactive } from 'vue';
+import NavBar from './NavBar.vue';
+import Logo from './Logo.vue';
+import Button from './Button.vue';
+import { useStore } from '@nanostores/vue';
+import { isMenuOpen } from '../state/menuState';
+import { isWallet, sharedConnect } from '../utils/wallet';
+import { isWalletConnected } from '../state/walletState';
+import ErrorLog from './ErrorLog.vue';
 
 export default {
   components: { NavBar, Logo, Button, ErrorLog },
@@ -69,10 +69,10 @@ export default {
         }[]
       >,
       default: () => [
-        { isComingSoon: false, content: "solution" },
-        { isComingSoon: false, content: "use cases" },
-        { isComingSoon: true, content: "ecosystem" },
-        { isComingSoon: false, content: "community" },
+        { isComingSoon: false, content: 'solution' },
+        { isComingSoon: false, content: 'use cases' },
+        { isComingSoon: true, content: 'ecosystem' },
+        { isComingSoon: false, content: 'community' },
       ],
       required: true,
     },

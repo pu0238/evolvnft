@@ -103,8 +103,8 @@
 </template>
 
 <script lang="ts">
-import { PropType, reactive } from "vue";
-import { openIfConnected } from "../utils/wallet";
+import { PropType, reactive } from 'vue';
+import { openIfConnected } from '../utils/wallet';
 
 export default {
   methods: {
@@ -116,11 +116,11 @@ export default {
   },
   props: {
     state: {
-      type: String as PropType<"progress" | "notAllowed" | "allowed">,
-      default: () => "allowed",
+      type: String as PropType<'progress' | 'notAllowed' | 'allowed'>,
+      default: () => 'allowed',
       required: false,
       validator: (s: string) =>
-        ["progress", "notAllowed", "allowed"].includes(s),
+        ['progress', 'notAllowed', 'allowed'].includes(s),
     },
     evolv: {
       type: Boolean,
@@ -139,23 +139,23 @@ export default {
     },
     content: {
       type: String,
-      default: () => "Click me!",
+      default: () => 'Click me!',
       required: true,
     },
     color: {
-      type: String as PropType<"indigo" | "black" | "white">,
-      default: () => "indigo",
+      type: String as PropType<'indigo' | 'black' | 'white'>,
+      default: () => 'indigo',
       required: false,
       validator: (color: string) =>
-        ["indigo", "black", "white"].includes(color),
+        ['indigo', 'black', 'white'].includes(color),
     },
     isComingSoon: {
       type: Boolean,
       default: () => false,
     },
     arrow: {
-      type: String as PropType<"left" | "right">,
-      default: () => "",
+      type: String as PropType<'left' | 'right'>,
+      default: () => '',
       required: false,
     },
     href: {

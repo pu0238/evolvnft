@@ -30,8 +30,8 @@
 
 <script lang="ts">
 export default {
-  name: "EvolvButton",
-  emits: ["update:checked"],
+  name: 'EvolvButton',
+  emits: ['update:checked'],
   props: {
     checked: {
       type: Boolean,
