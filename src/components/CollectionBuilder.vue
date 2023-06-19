@@ -263,12 +263,12 @@ export default {
   props: {
     buildingCollection: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
     textColor: {
       type: String,
-      default: "white",
+      default: () => "white",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
     },

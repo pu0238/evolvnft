@@ -151,7 +151,7 @@ export default {
   props: {
     selectedMetadata: {
       type: Object,
-      default: {},
+      default: () => {},
       required: true,
     },
     owner: {
@@ -164,7 +164,7 @@ export default {
     },
     selectedToken: {
       type: Object,
-      default: {},
+      default: () => {},
       required: true,
     },
     evolv: {

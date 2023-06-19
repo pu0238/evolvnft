@@ -41,12 +41,12 @@ export default {
   props: {
     evolv: {
       type: Number,
-      default: false,
+      default: () => false,
       required: false,
     },
     key: {
       type: String,
-      default: "0",
+      default: () => "0",
       required: true,
     },
     owner: {

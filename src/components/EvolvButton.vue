@@ -35,7 +35,7 @@ export default {
   props: {
     checked: {
       type: Boolean,
-      default: false,
+      default: () => false,
     },
   },
 };

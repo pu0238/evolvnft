@@ -53,27 +53,27 @@ export default {
   props: {
     isComingSoon: {
       type: Boolean,
-      default: false,
+      default: () => false,
     },
     content: {
       type: String,
-      default: "Menu item!",
+      default: () => "Menu item!",
       required: true,
     },
     textColor: {
       type: String,
-      default: "black",
+      default: () => "black",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
     },
     href: {
       type: String,
-      default: undefined,
+      default: () => undefined,
       required: false,
     },
     isWalletStricted: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },

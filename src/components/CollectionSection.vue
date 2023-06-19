@@ -63,7 +63,7 @@ export default {
   props: {
     textColor: {
       type: String,
-      default: "white",
+      default: () => "white",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
     },

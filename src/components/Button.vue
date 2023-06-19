@@ -117,55 +117,55 @@ export default {
   props: {
     state: {
       type: String as PropType<"progress" | "notAllowed" | "allowed">,
-      default: "allowed",
+      default: () => "allowed",
       required: false,
       validator: (s: string) =>
         ["progress", "notAllowed", "allowed"].includes(s),
     },
     evolv: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
     isDisabled: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
     isFilled: {
       type: Boolean,
-      default: true,
+      default: () => true,
       required: false,
     },
     content: {
       type: String,
-      default: "Click me!",
+      default: () => "Click me!",
       required: true,
     },
     color: {
       type: String as PropType<"indigo" | "black" | "white">,
-      default: "indigo",
+      default: () => "indigo",
       required: false,
       validator: (color: string) =>
         ["indigo", "black", "white"].includes(color),
     },
     isComingSoon: {
       type: Boolean,
-      default: false,
+      default: () => false,
     },
     arrow: {
       type: String as PropType<"left" | "right">,
-      default: "",
+      default: () => "",
       required: false,
     },
     href: {
       type: String,
-      default: undefined,
+      default: () => undefined,
       required: false,
     },
     isWalletStricted: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },

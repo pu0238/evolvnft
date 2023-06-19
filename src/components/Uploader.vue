@@ -22,7 +22,7 @@ export default {
   props: {
     heading: {
       type: String,
-      default: "Input:",
+      default: () => "Input:",
       required: false,
     },
     acceptFiles: {
@@ -31,7 +31,7 @@ export default {
     },
     acceptedTypes: {
       type: Array as PropType<string[]>,
-      default: ["image/jpeg", "image/png", "image/gif"],
+      default: () => ["image/jpeg", "image/png", "image/gif"],
       required: false,
     },
     maxFiles: {

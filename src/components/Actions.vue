@@ -23,22 +23,22 @@ export default {
   props: {
     collectionImg: {
       type: String,
-      default: "/mint-black.svg",
+      default: () => "/mint-black.svg",
       required: false,
     },
     collectionDescription: {
       type: String,
-      default: "Mint any amount of NFT from your collection",
+      default: () => "Mint any amount of NFT from your collection",
       required: false,
     },
     collectionTitle: {
       type: String,
-      default: "mint NFT",
+      default: () => "mint NFT",
       required: false,
     },
     active: {
       type: Boolean,
-      default: true,
+      default: () => true,
       required: false,
     },
   },

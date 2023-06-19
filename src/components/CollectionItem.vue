@@ -15,17 +15,17 @@ export default {
   props: {
     collectionImg: {
       type: String,
-      default: "/evolvnft-collection-logo.svg",
+      default: () => "/evolvnft-collection-logo.svg",
       required: false,
     },
     collectionSymbol: {
       type: String,
-      default: "EN",
+      default: () => "EN",
       required: false,
     },
     collectionTitle: {
       type: String,
-      default: "Evolv NFT",
+      default: () => "Evolv NFT",
       required: false,
     },
   },

@@ -127,17 +127,17 @@ export default {
     },
     collectionImg: {
       type: String,
-      default: "/evolvnft-collection-logo.svg",
+      default: () => "/evolvnft-collection-logo.svg",
       required: false,
     },
     collectionSymbol: {
       type: String,
-      default: "EN",
+      default: () => "EN",
       required: false,
     },
     collectionTitle: {
       type: String,
-      default: "Evolv NFT",
+      default: () => "Evolv NFT",
       required: false,
     },
     collectionDescription: {
@@ -148,7 +148,7 @@ export default {
     },
     bgColor: {
       type: String,
-      default: "white",
+      default: () => "white",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
     },

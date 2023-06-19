@@ -1,3 +1,9 @@
 <script>
   window.global = window;
 </script>
+<script>
+  import buffer from "buffer";
+  const { Buffer } = buffer;
+
+  if (!window.Buffer) {window.Buffer = Buffer;}
+</script>

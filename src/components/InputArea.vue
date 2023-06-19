@@ -25,21 +25,21 @@ export default {
   props: {
     placeholder: {
       type: String,
-      default: "Placeholder",
+      default: () => "Placeholder",
       required: false,
     },
     heading: {
       type: String,
-      default: "Input:",
+      default: () => "Input:",
       required: false,
     },
     modelValue: {
       type: String,
-      default: "",
+      default: () => "",
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: () => false,
     },
   },
   emits: ["update:modelValue"],

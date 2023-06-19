@@ -65,13 +65,13 @@ export default {
     },
     textColor: {
       type: String,
-      default: "black",
+      default: () => "black",
       required: false,
       validator: (color: string) => ["white", "black"].includes(color),
     },
     isWalletStricted: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },

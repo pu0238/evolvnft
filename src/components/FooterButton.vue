@@ -80,12 +80,12 @@ export default {
     },
     content: {
       type: String,
-      default: "twitter",
+      default: () => "twitter",
       required: true,
     },
     isDisabled: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },
