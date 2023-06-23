@@ -1,22 +1,22 @@
-import { postEvolveMetadata, postEvolveMetadatav2 } from "./evolve";
-import type { CollectionEntitie } from "./types/CollectionItem";
-import { sleep } from "./schared";
-import { uploadBlob } from "./bundlrUploader";
+import { postEvolveMetadata, postEvolveMetadatav2 } from './evolve';
+import type { CollectionEntitie } from './types/CollectionItem';
+import { sleep } from './schared';
+import { uploadBlob } from './bundlrUploader';
 
 export function joinMetadataAndImages(
   files: any[],
   imgTypes: string[],
-  jsonTypes: string[]
+  jsonTypes: string[],
 ) {
   const filesToUpload: { [key: string]: { image?: any; metadata?: any } } = {};
   files.forEach((file: any) => {
-    const fileName = file.name.split(".")[0];
+    const fileName = file.name.split('.')[0];
     if (imgTypes.includes(file.type)) {
       if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-      filesToUpload[fileName]["image"] = file;
+      filesToUpload[fileName]['image'] = file;
     } else if (jsonTypes.includes(file.type)) {
       if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-      filesToUpload[fileName]["metadata"] = file;
+      filesToUpload[fileName]['metadata'] = file;
     }
   });
   return filesToUpload;
@@ -33,14 +33,14 @@ export async function uploadTokenMetadata(filesToUpload: {
     imageIds.push(
       uploadBlob(
         filesToUpload[fileName].image,
-        filesToUpload[fileName].image.type
-      )
+        filesToUpload[fileName].image.type,
+      ),
     );
   }
 
   const resolvedImageIds = await Promise.all(imageIds);
   for (const imageId of resolvedImageIds) {
-    if (!imageId) return console.error("Failed to upload images");
+    if (!imageId) return console.error('Failed to upload images');
   }
 
   let imageIndex = 0;
@@ -56,11 +56,11 @@ export async function uploadTokenMetadata(filesToUpload: {
     imageIndex++;
     parsedMetadata.image = `https://arweave.net/${imageUploadId}`;
     const encodedMetadata = new Blob([JSON.stringify(parsedMetadata)]);
-    promiseIds.push(uploadBlob(encodedMetadata, "application/json"));
+    promiseIds.push(uploadBlob(encodedMetadata, 'application/json'));
   }
   const uploadedMetadataIds: (string | void)[] = await Promise.all(promiseIds);
   for (const metadataId of uploadedMetadataIds) {
-    if (!metadataId) return console.error("Failed to upload metadata");
+    if (!metadataId) return console.error('Failed to upload metadata');
   }
   return uploadedMetadataIds;
 }
@@ -70,10 +70,10 @@ export async function buildMintObject(
   filesToUpload: {
     [key: string]: { image?: any; metadata?: any };
   },
-  collection: CollectionEntitie
+  collection: CollectionEntitie,
 ) {
   const tokensMetadata = await uploadTokenMetadata(filesToUpload);
-  if (!tokensMetadata) return console.error("Failed to upload images");
+  if (!tokensMetadata) return console.error('Failed to upload images');
 
   let mintObject: { a: string; b: number; c: number }[] = [];
   if (!collection.ic_collection_id) {
@@ -84,13 +84,13 @@ export async function buildMintObject(
     }));
   } else {
     const metadataList: { arweave_hash: string }[] = tokensMetadata.map(
-      (metadata) => ({ arweave_hash: metadata as string})
+      (metadata) => ({ arweave_hash: metadata as string }),
     );
-    const collectionId = collection.ic_collection_id
+    const collectionId = collection.ic_collection_id;
     const result = await postEvolveMetadatav2(
       accountAddress,
       collectionId,
-      metadataList
+      metadataList,
     );
     mintObject = result.map((metadataId) => ({
       a: accountAddress,
@@ -98,6 +98,6 @@ export async function buildMintObject(
       c: metadataId,
     }));
   }
-  
+
   return mintObject;
 }

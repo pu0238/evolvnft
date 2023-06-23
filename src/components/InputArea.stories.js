@@ -4,10 +4,10 @@ export default {
   component: InputArea,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'InputArea'
+  title: 'InputArea',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { InputArea },
   template: '<InputArea />',
 });

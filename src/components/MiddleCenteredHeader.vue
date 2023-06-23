@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts">
-import HeaderTitle from "./HeaderTitle.vue";
-import HeaderSubtitle from "./HeaderSubtitle.vue";
-import Button from "./Button.vue";
-import { reactive } from "vue";
+import HeaderTitle from './HeaderTitle.vue';
+import HeaderSubtitle from './HeaderSubtitle.vue';
+import Button from './Button.vue';
+import { reactive } from 'vue';
 
 export default {
   components: { HeaderTitle, HeaderSubtitle, Button },
@@ -24,9 +24,9 @@ export default {
   props: {
     textColor: {
       type: String,
-      default: "black",
+      default: () => 'black',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
   },
   setup(props) {

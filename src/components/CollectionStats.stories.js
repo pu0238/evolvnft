@@ -1,14 +1,14 @@
-import LockButton from './LockButton.vue';
+import CollectionStats from './CollectionStats.vue';
 
 export default {
-  component: LockButton,
+  component: CollectionStats,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'LockButton',
+  title: 'CollectionStats',
 };
 
 const Template = (args) => ({
-  components: { LockButton },
-  template: '<LockButton />',
+  components: { CollectionStats },
+  template: '<CollectionStats />',
 });
 export const Default = Template.bind({});

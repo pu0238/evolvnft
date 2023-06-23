@@ -4,10 +4,10 @@ export default {
   component: MiddleCenteredHeader,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'MiddleCenteredHeader'
+  title: 'MiddleCenteredHeader',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { MiddleCenteredHeader },
   template: '<MiddleCenteredHeader />',
 });

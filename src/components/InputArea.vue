@@ -18,34 +18,34 @@
 </template>
 
 <script lang="ts">
-import { reactive } from "vue";
+import { reactive } from 'vue';
 
 export default {
   components: {},
   props: {
     placeholder: {
       type: String,
-      default: "Placeholder",
+      default: () => 'Placeholder',
       required: false,
     },
     heading: {
       type: String,
-      default: "Input:",
+      default: () => 'Input:',
       required: false,
     },
     modelValue: {
       type: String,
-      default: "",
+      default: () => '',
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: () => false,
     },
   },
-  emits: ["update:modelValue"],
+  emits: ['update:modelValue'],
   methods: {
     changeInput(event: any) {
-      this.$emit("update:modelValue", event.target.value);
+      this.$emit('update:modelValue', event.target.value);
     },
   },
   setup(props) {

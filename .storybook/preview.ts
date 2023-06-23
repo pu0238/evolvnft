@@ -1,10 +1,10 @@
 //👇 Configures Storybook to log the actions( onArchiveTask and onPinTask ) in the UI.
-import { withThemeByDataAttribute } from "@storybook/addon-styling";
-import { themes } from "@storybook/theming";
-import "./tailwind.css";
+import { withThemeByDataAttribute } from '@storybook/addon-styling';
+import { themes } from '@storybook/theming';
+import './tailwind.css';
 
 export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
+  actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {
       color: /(background|color)$/i,
@@ -13,9 +13,9 @@ export const parameters = {
   },
   darkMode: {
     // Override the default dark theme
-    dark: { ...themes.dark, appBg: "black" },
+    dark: { ...themes.dark, appBg: 'black' },
     // Override the default light theme
-    light: { ...themes.normal, appBg: "red" },
+    light: { ...themes.normal, appBg: 'red' },
   },
 };
 
@@ -24,10 +24,10 @@ export const parameters = {
 export const decorators = [
   withThemeByDataAttribute({
     themes: {
-      light: "light",
-      dark: "dark",
+      light: 'light',
+      dark: 'dark',
     },
-    defaultTheme: "light",
-    attributeName: "data-mode",
+    defaultTheme: 'light',
+    attributeName: 'data-mode',
   }),
 ];

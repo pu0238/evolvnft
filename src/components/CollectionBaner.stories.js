@@ -4,10 +4,10 @@ export default {
   component: CollectionBaner,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'CollectionBaner'
+  title: 'CollectionBaner',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { CollectionBaner },
   template: '<CollectionBaner />',
 });
