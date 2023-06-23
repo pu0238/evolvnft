@@ -9,7 +9,7 @@
     >
       <input v-bind="getInputProps()" />
       <p v-if="isDragActive">drop file here ...</p>
-      <p v-else>drag files here! (max 100kb)</p>
+      <p v-else>drag files here! (max 100kb per file)</p>
     </div>
   </div>
 </template>
