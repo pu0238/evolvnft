@@ -90,7 +90,7 @@
           <Uploader
             class="mt-4 md:mt-14 lg:mt-16"
             v-if="step === 4"
-            heading="Drag image here: (max 100kb)"
+            heading="Drag image here:"
             @acceptFiles="(files: any[]) => emitAcceptFiles(files)"
           />
           <EvolvMetadata

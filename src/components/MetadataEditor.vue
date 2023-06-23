@@ -28,7 +28,7 @@
           <Uploader
             v-if="evolv"
             class="mt-8 w-full"
-            heading="drop new metadata: (max 100kb)"
+            heading="drop new metadata:"
             :acceptedTypes="acceptedTypes"
             :maxFiles="2"
             @acceptFiles="(acceptFiles: any[]) => joinMetadata(acceptFiles)"
