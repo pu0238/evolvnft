@@ -128,6 +128,7 @@ import { editEvolveMetadata } from '../utils/evolve';
 import { CONSTANTINE_INFO } from '../utils/constant';
 import { joinMetadataAndImages } from '../utils/metadata';
 import { uploadBlob } from '../utils/bundlrUploader';
+import { getArchwaySigner } from '../utils/wallet';
 
 export default {
   data() {
@@ -198,13 +199,7 @@ export default {
         const splitedPath = metadataUrl.pathname.split('/');
         const metadataId = Number(splitedPath[splitedPath.length - 1]);
         if (this.evolv && metadataId) {
-          const offlineSigner = window.keplr?.getOfflineSigner(
-            CONSTANTINE_INFO.chainId,
-          );
-          if (!offlineSigner) {
-            return console.error('Failed to create offline signer');
-          }
-          const accounts = await offlineSigner.getAccounts();
+          const { signerAddress, archwaySigner } = await getArchwaySigner();
 
           const imageUploadId = await uploadBlob(
             this.filesToUpload[fileName].image,
@@ -223,7 +218,7 @@ export default {
             return console.error('Failed to upload metadata');
 
           await editEvolveMetadata(
-            accounts[0].address,
+            signerAddress,
             this.evolv,
             metadataId,
             metadataUploadId,

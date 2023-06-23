@@ -1,10 +1,6 @@
 import type {
-  AccountData,
   Window as KeplrWindow,
-  OfflineAminoSigner,
-  OfflineDirectSigner,
 } from '@keplr-wallet/types';
-import { useStore } from '@nanostores/vue';
 import { isWalletConnected } from '../state/walletState';
 import { CONSTANTINE_INFO } from './constant';
 import { errorMessage, isErrorPopout } from '../state/error';
@@ -55,18 +51,24 @@ export function openIfConnected(url: string) {
   }
 }
 
-export async function getOfflineSigner(): Promise<SigningArchwayClient> {
+export async function getArchwaySigner(): Promise<{
+  signerAddress: string;
+  archwaySigner: SigningArchwayClient;
+}> {
   const offlineSigner = window.keplr?.getOfflineSigner(
     CONSTANTINE_INFO.chainId,
   );
   if (!offlineSigner) {
     throw console.error('Failed to create offline signer');
   }
-
-  return await SigningArchwayClient.connectWithSigner(
+  const accounts = await offlineSigner.getAccounts();
+  const signerAddress = accounts[0].address;
+  const archwaySigner = await SigningArchwayClient.connectWithSigner(
     CONSTANTINE_INFO.rpc,
     offlineSigner,
   );
+
+  return { signerAddress: signerAddress, archwaySigner: archwaySigner };
 }
 
 export async function getQueryClient(): Promise<ArchwayClient> {

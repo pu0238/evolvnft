@@ -87,7 +87,7 @@
             'text-zinc-200': bgColor === 'black',
           }"
         >
-          {{ reward }} {{ denom }}
+          {{ applyDecimal(reward) }} u{{ denom.slice(1) }}
         </p>
       </div>
       <h4
@@ -114,8 +114,12 @@
 
 <script lang="ts">
 import { reactive } from 'vue';
+import { applyDecimal } from '../utils/arch';
 
 export default {
+  methods: {
+    applyDecimal
+  },
   props: {
     rewardsPercentageFee: {
       type: Number,

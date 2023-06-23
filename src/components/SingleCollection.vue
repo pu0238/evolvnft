@@ -71,22 +71,14 @@
 </template>
 
 <script lang="ts">
-import {
-  ArchwayClient,
-  SigningArchwayClient,
-  SigningCosmWasmClientOptions,
-} from '@archwayhq/arch3.js';
-import {
-  CONSTANTINE_INFO,
-  CONTRACT_ADDRESS,
-  DEFAULT_SIGNING_CLIENT_OPTIONS,
-} from '../utils/constant';
+import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
 import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import CollectionBaner from './CollectionBaner.vue';
 import Actions from './Actions.vue';
 import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import MintBox from './MintBox.vue';
 import Button from './Button.vue';
+import { getArchwaySigner } from '../utils/wallet';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -165,27 +157,17 @@ export default {
       }
     },
     async getCollection(): Promise<void | CollectionEntitie> {
-      const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId,
-      );
-      if (!offlineSigner) {
-        return console.error('Failed to create offline signer');
-      }
-      const cosmSigner = await SigningArchwayClient.connectWithSigner(
-        CONSTANTINE_INFO.rpc,
-        offlineSigner,
-        {
-          ...DEFAULT_SIGNING_CLIENT_OPTIONS,
-          prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        },
-      );
+      const { signerAddress, archwaySigner } = await getArchwaySigner();
 
       const get_collection = {
         address: this.collectionAddress,
       };
-      const data = await cosmSigner.queryContractSmart(CONTRACT_ADDRESS, {
-        get_collection,
-      });
+      const data = await archwaySigner.queryContractSmart(
+        COLLECTION_MANAGER_CONTRACT_ADDRESS,
+        {
+          get_collection,
+        },
+      );
       return data;
     },
     async loadCollectionData() {

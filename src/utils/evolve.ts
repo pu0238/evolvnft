@@ -1,9 +1,7 @@
-import { OfflineAminoSigner, OfflineDirectSigner } from '@keplr-wallet/types';
 import {
   CARNISTER_API_URL,
   COLLECTION_MANAGER_CONTRACT_ADDRESS,
 } from './constant';
-import { SigningArchwayClient } from '@archwayhq/arch3.js';
 import { getQueryClient } from './wallet';
 
 export async function createEvolveCollection(
@@ -89,6 +87,9 @@ export async function getLaunchpad(): Promise<string> {
     COLLECTION_MANAGER_CONTRACT_ADDRESS,
     Uint8Array.from(Buffer.from('state')),
   );
+  if (!state) {
+    throw console.error('Failed to get launchpad');
+  }
   const text = Buffer.from(state).toString('utf-8');
 
   return JSON.parse(text).launchpad_addr;

@@ -107,18 +107,10 @@ import { errorMessage, isErrorPopout } from '../state/error';
 import { computed } from 'vue';
 import Uploader from './Uploader.vue';
 import Button from './Button.vue';
-import {
-  CONSTANTINE_INFO,
-  CONTRACT_ADDRESS,
-  DEFAULT_SIGNING_CLIENT_OPTIONS,
-} from '../utils/constant';
-import { SigningArchwayClient } from '@archwayhq/arch3.js';
-import {
-  buildMintObject,
-  joinMetadataAndImages,
-  uploadTokenMetadata,
-} from '../utils/metadata';
+import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
+import { buildMintObject, joinMetadataAndImages } from '../utils/metadata';
 import type { CollectionEntitie } from '../utils/types/CollectionItem';
+import { getArchwaySigner } from '../utils/wallet';
 
 export default {
   emit: ['close', 'afterMint'],
@@ -156,23 +148,9 @@ export default {
   methods: {
     async mintNFTs() {
       this.mintingnProgress = true;
-      const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId,
-      );
-      if (!offlineSigner) {
-        return console.error('Failed to create offline signer');
-      }
-      const accounts = await offlineSigner.getAccounts();
-      const cosmSigner = await SigningArchwayClient.connectWithSigner(
-        CONSTANTINE_INFO.rpc,
-        offlineSigner,
-        {
-          ...DEFAULT_SIGNING_CLIENT_OPTIONS,
-          prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        },
-      );
+      const { signerAddress, archwaySigner } = await getArchwaySigner();
       const tokens = await buildMintObject(
-        accounts[0].address,
+        signerAddress,
         this.filesToUpload,
         this.collection as CollectionEntitie,
       );
@@ -181,9 +159,9 @@ export default {
         address: this.collectionAddress,
         tokens,
       };
-      const { transactionHash } = await cosmSigner.execute(
-        accounts[0].address,
-        CONTRACT_ADDRESS,
+      const { transactionHash } = await archwaySigner.execute(
+        signerAddress,
+        COLLECTION_MANAGER_CONTRACT_ADDRESS,
         { mint_tokens },
         'auto',
       );

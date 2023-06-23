@@ -28,13 +28,11 @@ import {
 } from '../state/collectionState';
 import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import {
-  CONSTANTINE_INFO,
-  CONTRACT_ADDRESS,
-  DEFAULT_SIGNING_CLIENT_OPTIONS,
+  COLLECTION_MANAGER_CONTRACT_ADDRESS,
 } from '../utils/constant';
-import { SigningArchwayClient } from '@archwayhq/arch3.js';
 import { createEvolveCollection } from '../utils/evolve';
 import { uploadBlob } from '../utils/bundlrUploader';
+import { getArchwaySigner } from '../utils/wallet';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -69,24 +67,10 @@ export default {
       }
       collectionImg.set(arweaveUrl);
 
-      const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId,
-      );
-      if (!offlineSigner) {
-        return console.error('Failed to create offline signer');
-      }
-      const accounts = await offlineSigner.getAccounts();
-      const cosmSigner = await SigningArchwayClient.connectWithSigner(
-        CONSTANTINE_INFO.rpc,
-        offlineSigner,
-        {
-          ...DEFAULT_SIGNING_CLIENT_OPTIONS,
-          prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        },
-      );
+      const { signerAddress, archwaySigner} = await getArchwaySigner()
       let ic_collection_id: null | number = null;
       if (this.collectionEvolvMetadataValue) {
-        ic_collection_id = await createEvolveCollection(accounts[0].address);
+        ic_collection_id = await createEvolveCollection(signerAddress);
       }
 
       const register_collection = {
@@ -99,9 +83,9 @@ export default {
         ic_collection_id,
       };
 
-      const { transactionHash } = await cosmSigner.execute(
-        accounts[0].address,
-        CONTRACT_ADDRESS,
+      const { transactionHash } = await archwaySigner.execute(
+        signerAddress,
+        COLLECTION_MANAGER_CONTRACT_ADDRESS,
         { register_collection },
         'auto',
       );
