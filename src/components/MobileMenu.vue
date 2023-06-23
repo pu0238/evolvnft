@@ -1,6 +1,9 @@
 <template>
   <div class="fixed block w-full md:hidden">
-    <div v-if="isMenuOpenValue" class="fixed top-0 w-full h-full bg-white px-6 py-4">
+    <div
+      v-if="isMenuOpenValue"
+      class="fixed top-0 w-full h-full bg-white px-6 py-4"
+    >
       <div class="mx-10">
         <div class="mt-14 grid container text-center mx-auto cursor-pointer">
           <div class="p-4" @click="toogleMenu">
@@ -32,15 +35,15 @@
 </template>
 
 <script lang="ts">
-import { computed, PropType, reactive } from "vue";
-import NavBar from "./NavBar.vue";
-import Logo from "./Logo.vue";
-import Button from "./Button.vue";
-import type { Window as KeplrWindow } from "@keplr-wallet/types";
-import { useStore } from "@nanostores/vue";
-import { isMenuOpen } from "../state/menuState";
-import { isWallet, sharedConnect } from "../utils/wallet";
-import { isWalletConnected } from "../state/walletState";
+import { computed, PropType, reactive } from 'vue';
+import NavBar from './NavBar.vue';
+import Logo from './Logo.vue';
+import Button from './Button.vue';
+import type { Window as KeplrWindow } from '@keplr-wallet/types';
+import { useStore } from '@nanostores/vue';
+import { isMenuOpen } from '../state/menuState';
+import { isWallet, sharedConnect } from '../utils/wallet';
+import { isWalletConnected } from '../state/walletState';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -65,10 +68,10 @@ export default {
         }[]
       >,
       default: () => [
-        { isComingSoon: false, content: "solution" },
-        { isComingSoon: false, content: "use cases" },
-        { isComingSoon: true, content: "ecosystem" },
-        { isComingSoon: false, content: "community" },
+        { isComingSoon: false, content: 'solution' },
+        { isComingSoon: false, content: 'use cases' },
+        { isComingSoon: true, content: 'ecosystem' },
+        { isComingSoon: false, content: 'community' },
       ],
       required: true,
     },

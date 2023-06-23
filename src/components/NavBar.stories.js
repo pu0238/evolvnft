@@ -4,10 +4,10 @@ export default {
   component: NavBar,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'NavBar'
+  title: 'NavBar',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { NavBar },
   template: '<NavBar />',
 });

@@ -46,9 +46,9 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@nanostores/vue";
-import { errorMessage, isErrorPopout } from "../state/error";
-import { computed } from "vue";
+import { useStore } from '@nanostores/vue';
+import { errorMessage, isErrorPopout } from '../state/error';
+import { computed } from 'vue';
 
 export default {
   props: {},

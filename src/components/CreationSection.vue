@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts">
-import CollectionSection from "./CollectionSection.vue";
-import CollectionBuilder from "./CollectionBuilder.vue";
-import { computed, reactive } from "vue";
-import { useStore } from "@nanostores/vue";
+import CollectionSection from './CollectionSection.vue';
+import CollectionBuilder from './CollectionBuilder.vue';
+import { computed, reactive } from 'vue';
+import { useStore } from '@nanostores/vue';
 import {
   collectionDescription,
   collectionEvolvMetadata,
@@ -25,16 +25,14 @@ import {
   collectionTitle,
   isColectionClosed,
   tokenLimit,
-} from "../state/collectionState";
-import type { Window as KeplrWindow } from "@keplr-wallet/types";
+} from '../state/collectionState';
+import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import {
-  CONSTANTINE_INFO,
-  CONTRACT_ADDRESS,
-  DEFAULT_SIGNING_CLIENT_OPTIONS,
-} from "../utils/constant";
-import { SigningArchwayClient } from "@archwayhq/arch3.js";
-import { createEvolveCollection } from "../utils/evolve";
-import { uploadBlob } from "../utils/bundlrUploader";
+  COLLECTION_MANAGER_CONTRACT_ADDRESS,
+} from '../utils/constant';
+import { createEvolveCollection } from '../utils/evolve';
+import { uploadBlob } from '../utils/bundlrUploader';
+import { getArchwaySigner } from '../utils/wallet';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -56,37 +54,23 @@ export default {
   methods: {
     async uploadImage() {
       const firstFile = this.acceptFiles[0] as unknown as any;
-      if (!firstFile) return console.error("Failed to upload image");
+      if (!firstFile) return console.error('Failed to upload image');
       const imageId = await uploadBlob(firstFile, firstFile.type);
-      if (!imageId) return console.error("Failed to upload image");
+      if (!imageId) return console.error('Failed to upload image');
       return `https://arweave.net/${imageId}`;
     },
 
     async createCollection() {
       const arweaveUrl = await this.uploadImage();
       if (!arweaveUrl) {
-        return console.error("Failed to upload image");
+        return console.error('Failed to upload image');
       }
       collectionImg.set(arweaveUrl);
 
-      const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId
-      );
-      if (!offlineSigner) {
-        return console.error("Failed to create offline signer");
-      }
-      const accounts = await offlineSigner.getAccounts();
-      const cosmSigner = await SigningArchwayClient.connectWithSigner(
-        CONSTANTINE_INFO.rpc,
-        offlineSigner,
-        {
-          ...DEFAULT_SIGNING_CLIENT_OPTIONS,
-          prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        }
-      );
+      const { signerAddress, archwaySigner} = await getArchwaySigner()
       let ic_collection_id: null | number = null;
       if (this.collectionEvolvMetadataValue) {
-        ic_collection_id = await createEvolveCollection(accounts[0].address);
+        ic_collection_id = await createEvolveCollection(signerAddress);
       }
 
       const register_collection = {
@@ -99,14 +83,14 @@ export default {
         ic_collection_id,
       };
 
-      const { transactionHash } = await cosmSigner.execute(
-        accounts[0].address,
-        CONTRACT_ADDRESS,
+      const { transactionHash } = await archwaySigner.execute(
+        signerAddress,
+        COLLECTION_MANAGER_CONTRACT_ADDRESS,
         { register_collection },
-        "auto"
+        'auto',
       );
       console.log(
-        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`
+        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
       );
     },
 
@@ -150,7 +134,7 @@ export default {
       collectionSymbolValue: computed(() => $collectionSymbol.value),
       collectionDescriptionValue: computed(() => $collectionDescription.value),
       collectionEvolvMetadataValue: computed(
-        () => $collectionEvolvMetadata.value
+        () => $collectionEvolvMetadata.value,
       ),
     };
   },

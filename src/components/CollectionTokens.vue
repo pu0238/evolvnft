@@ -26,7 +26,7 @@
           :evolv="singleCollection?.ic_collection_id"
           :selectedMetadata="selectedMetadata"
         />
-      <!---->
+        <!---->
       </div>
     </div>
     <div
@@ -46,9 +46,9 @@
 </template>
 
 <script lang="ts">
-import Token from "./Token.vue";
-import Button from "./Button.vue";
-import MetadataEditor from "./MetadataEditor.vue";
+import Token from './Token.vue';
+import Button from './Button.vue';
+import MetadataEditor from './MetadataEditor.vue';
 
 export default {
   data() {
@@ -57,7 +57,7 @@ export default {
       selectedMetadata: {},
     };
   },
-  emits: ["back"],
+  emits: ['back'],
   props: {
     singleCollection: {
       type: Object,
@@ -79,7 +79,7 @@ export default {
     },
   },
   mounted() {
-    this.selectedToken = this.singleCollection.tokens["1"];
+    this.selectedToken = this.singleCollection.tokens['1'];
   },
 };
 </script>

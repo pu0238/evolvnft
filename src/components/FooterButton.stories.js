@@ -4,10 +4,10 @@ export default {
   component: FooterButton,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'FooterButton'
+  title: 'FooterButton',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { FooterButton },
   template: '<FooterButton />',
 });

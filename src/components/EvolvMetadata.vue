@@ -18,16 +18,16 @@
 </template>
 
 <script lang="ts">
-import EvolvButton from "./EvolvButton.vue";
-import { computed, reactive } from "vue";
-import { collectionEvolvMetadata,  } from "../state/collectionState";
-import { useStore } from "@nanostores/vue";
+import EvolvButton from './EvolvButton.vue';
+import { computed, reactive } from 'vue';
+import { collectionEvolvMetadata } from '../state/collectionState';
+import { useStore } from '@nanostores/vue';
 
 export default {
   data() {
     return {
       checked: false,
-      limit: "",
+      limit: '',
     };
   },
   methods: {
@@ -45,7 +45,9 @@ export default {
     props = reactive(props);
     const $collectionEvolvMetadata = useStore(collectionEvolvMetadata);
     return {
-      collectionEvolvMetadataValue: computed(() => $collectionEvolvMetadata.value),
+      collectionEvolvMetadataValue: computed(
+        () => $collectionEvolvMetadata.value,
+      ),
     };
   },
 };
