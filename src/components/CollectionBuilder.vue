@@ -177,7 +177,7 @@
       <Button
         class="float-right"
         :content="
-          buildingCollection ? 'building collection...' : 'menage collections'
+          buildingCollection ? 'building collection...' : 'manage collections'
         "
         :href="buildingCollection ? undefined : '/collection-manager'"
         arrow="right"
