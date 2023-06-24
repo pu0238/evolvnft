@@ -1,6 +1,6 @@
 <template>
-  <nav>
-    <ul>
+  <nav class="mx-auto">
+    <ul class="lg:float-left">
       <NavItem
         v-for="(item, index) in navItems"
         :isComingSoon="item.isComingSoon"

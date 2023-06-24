@@ -24,7 +24,7 @@ const leftNavItems = [
   { isComingSoon: false, content: "community", href:"https://discord.gg/mugHDDzv", targetBlank: true},
 ];
 const rightNavItems = [
-  { isComingSoon: true, content: "create", href: "/create", isWalletStricted: true},
+  { isComingSoon: false, content: "create", href: "/create", isWalletStricted: true},
   { isComingSoon: false, content: "manage", href: "/collection-manager", isWalletStricted: true},
 ];
 
@@ -37,10 +37,10 @@ const rightNavItems = [
 >
   <div class="container mx-auto">
     <div class="px-8 mx-auto lg:mb-16">
-      <Menu class="my-8" client:visible navItems={leftNavItems} rightNavItems="rightNavItems" />
+      <Menu class="my-8" client:visible leftNavItems={leftNavItems} rightNavItems={rightNavItems} />
       <slot />
     </div>
-    <MobileMenu client:visible navItems={navItems} />
+    <MobileMenu client:visible navItems={[...navItems, ...rightNavItems]} />
   </div>
   <Footer class="w-full float-left" />
 </Main>
