@@ -1,4 +1,3 @@
-import { getSigningCosmosClientOptions } from '@archwayhq/arch3.js';
 import { GasPrice } from '@cosmjs/stargate';
 
 const CURRENCY = {
@@ -32,8 +31,6 @@ export const CONSTANTINE_INFO = {
 };
 
 export const DEFAULT_GAS_PRICE = GasPrice.fromString('0.02uconst');
-
-export const DEFAULT_SIGNING_CLIENT_OPTIONS = getSigningCosmosClientOptions();
 
 export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';

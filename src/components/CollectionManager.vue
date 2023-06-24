@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <SingleCollection
       v-if="collectionAddress && !singleCollection"
       :collectionAddress="collectionAddress"
@@ -12,24 +12,44 @@
       @back="singleCollection = undefined"
     />
     <CollectionsList
-      v-else
+      v-else-if="collections.length > 0"
       :collections="collections"
       @collectionDetails="(address: string) => openCollection(address)"
     />
+    <div v-else>
+      <div class="flex">
+        <h1
+          class="text-5xl xl:text-6xl 2xl:text-7xl font-cal text-black mx-auto"
+        >
+          <span class="text-indigo-500">No</span> collections
+          <span class="text-indigo-500">found</span>
+        </h1>
+      </div>
+      <div class="flex">
+        <HeaderSubtitle
+          class="mx-auto"
+          content="make sure your wallet is connected!"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { useStore } from '@nanostores/vue';
-import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
-import CollectionItem from './CollectionItem.vue';
-import { isWalletConnected } from '../state/walletState';
-import { computed } from 'vue';
-import { getArchwaySigner, isWallet } from '../utils/wallet';
-import CollectionsList from './CollectionsList.vue';
-import SingleCollection from './SingleCollection.vue';
-import CollectionTokens from './CollectionTokens.vue';
+import { useStore } from "@nanostores/vue";
+import {
+  COLLECTION_MANAGER_CONTRACT_ADDRESS
+} from "../utils/constant";
+import type { CollectionEntitie } from "../utils/types/CollectionItem";
+import CollectionItem from "./CollectionItem.vue";
+import { isWalletConnected } from "../state/walletState";
+import { computed } from "vue";
+import { isWallet } from "../utils/wallet";
+import CollectionsList from "./CollectionsList.vue";
+import SingleCollection from "./SingleCollection.vue";
+import CollectionTokens from "./CollectionTokens.vue";
+import HeaderSubtitle from "./HeaderSubtitle.vue";
+import { getArchwaySigner } from '../utils/wallet';
 
 export default {
   data() {
@@ -44,6 +64,7 @@ export default {
     CollectionsList,
     SingleCollection,
     CollectionTokens,
+    HeaderSubtitle,
   },
   methods: {
     openCollection(address: string) {
@@ -64,8 +85,10 @@ export default {
     },
   },
   async mounted() {
-    const collections = await this.getWalletCollections();
-    collections && (this.collections = collections);
+    if (isWalletConnected) {
+      const collections = await this.getWalletCollections();
+      collections && (this.collections = collections);
+    }
   },
   setup() {
     isWallet();

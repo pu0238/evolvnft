@@ -3,8 +3,8 @@ import type {
 } from '@keplr-wallet/types';
 import { isWalletConnected } from '../state/walletState';
 import { CONSTANTINE_INFO } from './constant';
-import { errorMessage, isErrorPopout } from '../state/error';
 import { ArchwayClient, SigningArchwayClient } from '@archwayhq/arch3.js';
+import { errorMessage } from '../state/error';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -14,8 +14,7 @@ export async function sharedConnect() {
   const isWalletConnectedValue = localStorage.getItem('isWalletConnected');
   const { keplr } = window;
   if (!keplr) {
-    alert('You need to install Keplr');
-    return;
+    throw errorMessage.set('You need to install Keplr');
   }
   if (isWalletConnectedValue === 'true') {
     await keplr.disable(CONSTANTINE_INFO.chainId);
@@ -39,7 +38,6 @@ export function isWallet(): boolean {
 export function isWalletPopup(): boolean {
   if (isWallet()) {
     errorMessage.set('Connect your wallet to the page to continue!');
-    isErrorPopout.set(true);
     return false;
   }
   return true;
@@ -47,8 +45,9 @@ export function isWalletPopup(): boolean {
 
 export function openIfConnected(url: string) {
   if (isWallet()) {
-    window.open(url, '_self');
+    return window.open(url, '_self');
   }
+  errorMessage.set("wallet not connected")
 }
 
 export async function getArchwaySigner(): Promise<{
@@ -59,7 +58,7 @@ export async function getArchwaySigner(): Promise<{
     CONSTANTINE_INFO.chainId,
   );
   if (!offlineSigner) {
-    throw console.error('Failed to create offline signer');
+    throw errorMessage.set('Failed to create offline signer');
   }
   const accounts = await offlineSigner.getAccounts();
   const signerAddress = accounts[0].address;

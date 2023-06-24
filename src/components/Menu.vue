@@ -1,12 +1,11 @@
 <template>
   <div>
-    <ErrorLog />
     <div
-      class="w-full float-left md:drop-shadow-md bg-white px-6 py-4 rounded-full mt-6"
+      class="w-full float-left lg:drop-shadow-md bg-white px-6 py-4 rounded-full mt-6"
     >
       <Logo textColor="black" class="float-left" />
-      <div class="hidden md:block">
-        <NavBar :navItems="navItems" textColor="black" />
+      <div class="hidden lg:inline justify-between">
+        <NavBar class="float-left my-2" :navItems="leftNavItems" textColor="black" />
         <Button
           :isDisabled="false"
           :isFilled="true"
@@ -15,9 +14,10 @@
           class="float-right"
           @click="sharedConnect"
         />
+        <NavBar class="float-right my-2 mr-4" :navItems="rightNavItems" textColor="black" />
       </div>
       <a
-        class="float-right md:hidden pt-3 select-none cursor-pointer"
+        class="float-right lg:hidden pt-3 select-none cursor-pointer"
         @click="toogleMenu"
       >
         <svg
@@ -48,10 +48,9 @@ import { useStore } from '@nanostores/vue';
 import { isMenuOpen } from '../state/menuState';
 import { isWallet, sharedConnect } from '../utils/wallet';
 import { isWalletConnected } from '../state/walletState';
-import ErrorLog from './ErrorLog.vue';
 
 export default {
-  components: { NavBar, Logo, Button, ErrorLog },
+  components: { NavBar, Logo, Button },
   methods: {
     sharedConnect,
     toogleMenu() {
@@ -59,13 +58,32 @@ export default {
     },
   },
   props: {
-    navItems: {
+    leftNavItems: {
       type: Array as PropType<
         {
           isComingSoon: boolean;
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
+          targetBlank: boolean | undefined
+        }[]
+      >,
+      default: () => [
+        { isComingSoon: false, content: "solution" },
+        { isComingSoon: false, content: "use cases" },
+        { isComingSoon: true, content: "ecosystem" },
+        { isComingSoon: false, content: "community" },
+      ],
+      required: true,
+    },
+    rightNavItems: {
+      type: Array as PropType<
+        {
+          isComingSoon: boolean;
+          content: string;
+          href: string | undefined;
+          isWalletStricted: boolean;
+          targetBlank: boolean | undefined
         }[]
       >,
       default: () => [

@@ -1,7 +1,7 @@
 <template>
-  <li>
+  <li class="float-none my-1 lg:my-0 lg:float-left">
     <a
-      class="relative bottom-0 block md:inline float-none md:float-left py-2 mx-2 font-semibold font-josefin text-lg"
+      class="relative bottom-0 block md:inline py-2 mx-2 font-semibold font-josefin text-lg lg:text-base"
       :class="{
         'text-white': textColor === 'white',
         'text-black': textColor === 'black',
@@ -9,6 +9,7 @@
         'hover:text-indigo-500 ease-out duration-300': !isComingSoon,
       }"
       :href="isWalletStricted ? undefined : href"
+      :target="targetBlank ? '_blank' : undefined"
       @click="openIfWalletIsConnected()"
     >
       {{ content }}
@@ -39,6 +40,7 @@
 </template>
 
 <script lang="ts">
+import { errorMessage } from '../state/error';
 import { openIfConnected } from '../utils/wallet';
 import { reactive } from 'vue';
 
@@ -46,7 +48,7 @@ export default {
   methods: {
     openIfWalletIsConnected() {
       if (this.href && this.isWalletStricted) {
-        openIfConnected(this.href);
+        return openIfConnected(this.href);
       }
     },
   },
@@ -76,6 +78,11 @@ export default {
       default: () => false,
       required: false,
     },
+    targetBlank: {
+      type: Boolean,
+      default: false,
+      required: false,
+    }
   },
   setup(props) {
     props = reactive(props);

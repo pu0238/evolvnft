@@ -1,6 +1,6 @@
 <template>
-  <nav>
-    <ul>
+  <nav class="mx-auto">
+    <ul class="lg:float-left">
       <NavItem
         v-for="(item, index) in navItems"
         :isComingSoon="item.isComingSoon"
@@ -8,6 +8,7 @@
         textColor="black"
         :href="item.href"
         :isWalletStricted="item.isWalletStricted"
+        :targetBlank="item.targetBlank"
         @click="scrollToElement"
       />
     </ul>
@@ -53,6 +54,7 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
+          targetBlank: boolean | undefined
         }[]
       >,
       default: () => [
