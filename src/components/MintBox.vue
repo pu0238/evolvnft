@@ -112,7 +112,7 @@ import {
   CONTRACT_ADDRESS,
   DEFAULT_SIGNING_CLIENT_OPTIONS,
 } from "../utils/constant";
-import { SigningArchwayClient } from "@archwayhq/arch3.js/build";
+import { SigningArchwayClient } from "@archwayhq/arch3.js";
 import {
   buildMintObject,
   joinMetadataAndImages,

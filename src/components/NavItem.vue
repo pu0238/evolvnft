@@ -9,6 +9,7 @@
         'hover:text-indigo-500 ease-out duration-300': !isComingSoon,
       }"
       :href="isWalletStricted ? undefined : href"
+      :target="targetBlank ? '_blank' : undefined"
       @click="openIfWalletIsConnected()"
     >
       {{ content }}
@@ -76,6 +77,11 @@ export default {
       default: false,
       required: false,
     },
+    targetBlank: {
+      type: Boolean,
+      default: false,
+      required: false,
+    }
   },
   setup(props) {
     props = reactive(props);

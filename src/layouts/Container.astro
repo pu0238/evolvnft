@@ -15,6 +15,19 @@ const navItems = [
   //{ isComingSoon: true, content: "community" },
   { isComingSoon: false, content: "manager", href: "/collection-manager", isWalletStricted: true},
 ];
+
+const leftNavItems = [
+  { isComingSoon: false, content: "launchpad", href: "/launchpad" },
+  { isComingSoon: true, content: "market" },
+  { isComingSoon: true, content: "all collections" },
+  { isComingSoon: true, content: "activity" },
+  { isComingSoon: false, content: "community", href:"https://discord.gg/mugHDDzv", targetBlank: true},
+];
+const rightNavItems = [
+  { isComingSoon: true, content: "create", href: "/create", isWalletStricted: true},
+  { isComingSoon: false, content: "manage", href: "/collection-manager", isWalletStricted: true},
+];
+
 ---
 
 <Main
@@ -24,7 +37,7 @@ const navItems = [
 >
   <div class="container mx-auto">
     <div class="px-8 mx-auto lg:mb-16">
-      <Menu class="my-8" client:visible navItems={navItems} />
+      <Menu class="my-8" client:visible navItems={leftNavItems} rightNavItems="rightNavItems" />
       <slot />
     </div>
     <MobileMenu client:visible navItems={navItems} />

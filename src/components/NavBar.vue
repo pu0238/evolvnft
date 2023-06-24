@@ -8,6 +8,7 @@
         textColor="black"
         :href="item.href"
         :isWalletStricted="item.isWalletStricted"
+        :targetBlank="item.targetBlank"
         @click="scrollToElement"
       />
     </ul>
@@ -53,6 +54,7 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
+          targetBlank: boolean | undefined
         }[]
       >,
       default: () => [

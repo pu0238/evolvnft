@@ -66,6 +66,7 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
+          targetBlank: boolean | undefined
         }[]
       >,
       default: () => [

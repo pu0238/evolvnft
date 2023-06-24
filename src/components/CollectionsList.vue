@@ -29,18 +29,8 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@nanostores/vue";
-import {
-  CONSTANTINE_INFO,
-  CONTRACT_ADDRESS,
-  DEFAULT_SIGNING_CLIENT_OPTIONS,
-} from "../utils/constant";
 import type { CollectionEntitie } from "../utils/types/CollectionItem";
 import CollectionItem from "./CollectionItem.vue";
-import { SigningArchwayClient } from "@archwayhq/arch3.js";
-import { isWalletConnected } from "../state/walletState";
-import { computed } from "vue";
-import { isWallet } from "../utils/wallet";
 
 export default {
   components: {
