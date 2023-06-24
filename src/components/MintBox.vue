@@ -103,7 +103,7 @@
 
 <script lang="ts">
 import { useStore } from '@nanostores/vue';
-import { errorMessage, isErrorPopout } from '../state/error';
+import { errorMessage } from '../state/error';
 import { computed } from 'vue';
 import Uploader from './Uploader.vue';
 import Button from './Button.vue';
@@ -181,11 +181,9 @@ export default {
     },
   },
   setup() {
-    const $isErrorPopout = useStore(isErrorPopout);
     const $errorMessage = useStore(errorMessage);
 
     return {
-      isErrorPopoutValue: computed(() => $isErrorPopout.value),
       errorMessageValue: computed(() => $errorMessage.value),
     };
   },

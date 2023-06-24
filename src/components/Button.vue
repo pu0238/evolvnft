@@ -110,7 +110,7 @@ export default {
   methods: {
     openIfWalletIsConnected() {
       if (this.href && this.isWalletStricted) {
-        openIfConnected(this.href);
+        return openIfConnected(this.href);
       }
     },
   },

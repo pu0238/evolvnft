@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts">
+import { errorMessage } from '../state/error';
 import { openIfConnected } from '../utils/wallet';
 import { reactive } from 'vue';
 
@@ -47,7 +48,7 @@ export default {
   methods: {
     openIfWalletIsConnected() {
       if (this.href && this.isWalletStricted) {
-        openIfConnected(this.href);
+        return openIfConnected(this.href);
       }
     },
   },

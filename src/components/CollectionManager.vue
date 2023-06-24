@@ -42,7 +42,6 @@ import {
 } from "../utils/constant";
 import type { CollectionEntitie } from "../utils/types/CollectionItem";
 import CollectionItem from "./CollectionItem.vue";
-import { SigningArchwayClient } from "@archwayhq/arch3.js";
 import { isWalletConnected } from "../state/walletState";
 import { computed } from "vue";
 import { isWallet } from "../utils/wallet";

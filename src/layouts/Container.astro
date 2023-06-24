@@ -3,6 +3,7 @@ import Main from "../layouts/Main.astro";
 import Menu from "../components/Menu.vue";
 import Footer from "../components/Footer.vue";
 import MobileMenu from "../components/MobileMenu.vue";
+import ErrorContainer from "../components/ErrorContainer.vue";
 
 const leftNavItems = [
   { isComingSoon: false, content: "launchpad", href: "/launchpad" },
@@ -30,5 +31,6 @@ const rightNavItems = [
     </div>
     <MobileMenu client:visible navItems={[...leftNavItems, ...rightNavItems]} />
   </div>
+  <ErrorContainer client:visible />
   <Footer class="w-full float-left" />
 </Main>

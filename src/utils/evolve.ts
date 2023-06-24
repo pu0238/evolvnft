@@ -1,3 +1,4 @@
+import { errorMessage } from '../state/error';
 import {
   CARNISTER_API_URL,
   COLLECTION_MANAGER_CONTRACT_ADDRESS,
@@ -88,7 +89,7 @@ export async function getLaunchpad(): Promise<string> {
     Uint8Array.from(Buffer.from('state')),
   );
   if (!state) {
-    throw console.error('Failed to get launchpad');
+    throw errorMessage.set('Failed to get launchpad');
   }
   const text = Buffer.from(state).toString('utf-8');
 

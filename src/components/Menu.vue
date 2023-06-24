@@ -1,6 +1,5 @@
 <template>
   <div>
-    <ErrorLog />
     <div
       class="w-full float-left lg:drop-shadow-md bg-white px-6 py-4 rounded-full mt-6"
     >
@@ -49,10 +48,9 @@ import { useStore } from '@nanostores/vue';
 import { isMenuOpen } from '../state/menuState';
 import { isWallet, sharedConnect } from '../utils/wallet';
 import { isWalletConnected } from '../state/walletState';
-import ErrorLog from './ErrorLog.vue';
 
 export default {
-  components: { NavBar, Logo, Button, ErrorLog },
+  components: { NavBar, Logo, Button },
   methods: {
     sharedConnect,
     toogleMenu() {
