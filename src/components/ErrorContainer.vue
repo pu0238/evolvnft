@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     removeLatestElement() {
-      this.errors.pop();
+      this.errors.shift();
     },
     hideError() {
       setTimeout(this.removeLatestElement, this.duration);
