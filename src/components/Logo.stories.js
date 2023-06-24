@@ -4,10 +4,10 @@ export default {
   component: Logo,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'Logo'
+  title: 'Logo',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { Logo },
   template: '<Logo />',
 });

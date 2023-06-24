@@ -39,41 +39,41 @@
 </template>
 
 <script lang="ts">
-import { openIfConnected } from "../utils/wallet";
-import { reactive } from "vue";
+import { openIfConnected } from '../utils/wallet';
+import { reactive } from 'vue';
 
 export default {
   methods: {
     openIfWalletIsConnected() {
-      if(this.href && this.isWalletStricted) {
-        openIfConnected(this.href)
+      if (this.href && this.isWalletStricted) {
+        openIfConnected(this.href);
       }
     },
   },
   props: {
     isComingSoon: {
       type: Boolean,
-      default: false,
+      default: () => false,
     },
     content: {
       type: String,
-      default: "Menu item!",
+      default: () => 'Menu item!',
       required: true,
     },
     textColor: {
       type: String,
-      default: "black",
+      default: () => 'black',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
     href: {
       type: String,
-      default: undefined,
+      default: () => undefined,
       required: false,
     },
     isWalletStricted: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },

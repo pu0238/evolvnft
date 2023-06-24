@@ -4,10 +4,10 @@ export default {
   component: HeaderSubtitle,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'HeaderSubtitle'
+  title: 'HeaderSubtitle',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { HeaderSubtitle },
   template: '<HeaderSubtitle />',
 });

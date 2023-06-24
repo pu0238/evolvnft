@@ -4,10 +4,10 @@ export default {
   component: SvgTelegram,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'SvgTelegram'
+  title: 'SvgTelegram',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { SvgTelegram },
   template: '<SvgTelegram />',
 });
