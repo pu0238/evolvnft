@@ -4,10 +4,10 @@ export default {
   component: EvolvMetadata,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'EvolvMetadata'
+  title: 'EvolvMetadata',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { EvolvMetadata },
   template: '<EvolvMetadata />',
 });

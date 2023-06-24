@@ -26,17 +26,17 @@
 </template>
 
 <script lang="ts">
-import LockButton from "./LockButton.vue";
-import InputArea from "./InputArea.vue";
-import { computed, reactive } from "vue";
-import { isColectionClosed, tokenLimit } from "../state/collectionState";
-import { useStore } from "@nanostores/vue";
+import LockButton from './LockButton.vue';
+import InputArea from './InputArea.vue';
+import { computed, reactive } from 'vue';
+import { isColectionClosed, tokenLimit } from '../state/collectionState';
+import { useStore } from '@nanostores/vue';
 
 export default {
   data() {
     return {
       checked: false,
-      limit: "",
+      limit: '',
     };
   },
   methods: {

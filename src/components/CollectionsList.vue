@@ -29,8 +29,8 @@
 </template>
 
 <script lang="ts">
-import type { CollectionEntitie } from "../utils/types/CollectionItem";
-import CollectionItem from "./CollectionItem.vue";
+import type { CollectionEntitie } from '../utils/types/CollectionItem';
+import CollectionItem from './CollectionItem.vue';
 
 export default {
   components: {
@@ -46,6 +46,6 @@ export default {
       required: true,
     },
   },
-  emits: ["collectionDetails"],
+  emits: ['collectionDetails'],
 };
 </script>

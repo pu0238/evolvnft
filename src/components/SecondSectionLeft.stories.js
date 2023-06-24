@@ -4,10 +4,10 @@ export default {
   component: SecondSectionLeft,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'SecondSectionLeft'
+  title: 'SecondSectionLeft',
 };
 
-const Template = args => ({
+const Template = (args) => ({
   components: { SecondSectionLeft },
   template: '<SecondSectionLeft />',
 });

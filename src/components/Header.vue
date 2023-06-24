@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import HeaderLeft from "./HeaderLeft.vue";
+import HeaderLeft from './HeaderLeft.vue';
 
 export default {
   components: { HeaderLeft },

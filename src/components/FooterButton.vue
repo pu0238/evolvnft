@@ -62,10 +62,10 @@
 </template>
 
 <script lang="ts">
-import SvgTwitter from "./SvgTwitter.vue";
-import SvgDiscord from "./SvgDiscord.vue";
-import SvgTelegram from "./SvgTelegram.vue";
-import { reactive } from "vue";
+import SvgTwitter from './SvgTwitter.vue';
+import SvgDiscord from './SvgDiscord.vue';
+import SvgTelegram from './SvgTelegram.vue';
+import { reactive } from 'vue';
 
 export default {
   components: {
@@ -80,12 +80,12 @@ export default {
     },
     content: {
       type: String,
-      default: "twitter",
+      default: () => 'twitter',
       required: true,
     },
     isDisabled: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },

@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@nanostores/vue";
-import { computed, PropType, reactive } from "vue";
-import { isMenuOpen } from "../state/menuState";
-import NavItem from "./NavItem.vue";
+import { useStore } from '@nanostores/vue';
+import { computed, PropType, reactive } from 'vue';
+import { isMenuOpen } from '../state/menuState';
+import NavItem from './NavItem.vue';
 
 export default {
   components: { NavItem },
@@ -27,14 +27,14 @@ export default {
     scrollToElement(event: any) {
       if (!event.target.innerText) return;
       const el = document.getElementById(
-        `${this.camalize(event.target.innerText)}`
+        `${this.camalize(event.target.innerText)}`,
       );
-      const html = document.querySelector("html");
+      const html = document.querySelector('html');
       if (!html || !el) return;
       this.isMenuOpenValue && this.toogleMenu();
       html.scrollTo({
         top: el.getBoundingClientRect().top,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     },
     camalize(str: string) {
@@ -58,22 +58,22 @@ export default {
         }[]
       >,
       default: () => [
-        { isComingSoon: false, content: "solution" },
-        { isComingSoon: false, content: "use cases" },
-        { isComingSoon: true, content: "ecosystem" },
-        { isComingSoon: false, content: "community" },
+        { isComingSoon: false, content: 'solution' },
+        { isComingSoon: false, content: 'use cases' },
+        { isComingSoon: true, content: 'ecosystem' },
+        { isComingSoon: false, content: 'community' },
       ],
       required: true,
     },
     textColor: {
       type: String,
-      default: "black",
+      default: () => 'black',
       required: false,
-      validator: (color: string) => ["white", "black"].includes(color),
+      validator: (color: string) => ['white', 'black'].includes(color),
     },
     isWalletStricted: {
       type: Boolean,
-      default: false,
+      default: () => false,
       required: false,
     },
   },

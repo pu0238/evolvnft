@@ -53,4 +53,11 @@ const { title, description } = Astro.props;
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
   </script>
+  <script>
+    window.keplr.defaultOptions = {
+    sign: {
+        preferNoSetFee: true,
+    }
+}
+  </script>
 </head>

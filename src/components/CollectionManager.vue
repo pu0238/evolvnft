@@ -38,9 +38,7 @@
 <script lang="ts">
 import { useStore } from "@nanostores/vue";
 import {
-  CONSTANTINE_INFO,
-  CONTRACT_ADDRESS,
-  DEFAULT_SIGNING_CLIENT_OPTIONS,
+  COLLECTION_MANAGER_CONTRACT_ADDRESS
 } from "../utils/constant";
 import type { CollectionEntitie } from "../utils/types/CollectionItem";
 import CollectionItem from "./CollectionItem.vue";
@@ -52,6 +50,7 @@ import CollectionsList from "./CollectionsList.vue";
 import SingleCollection from "./SingleCollection.vue";
 import CollectionTokens from "./CollectionTokens.vue";
 import HeaderSubtitle from "./HeaderSubtitle.vue";
+import { getArchwaySigner } from '../utils/wallet';
 
 export default {
   data() {
@@ -73,27 +72,16 @@ export default {
       this.collectionAddress = address;
     },
     async getWalletCollections(): Promise<void | CollectionEntitie[]> {
-      const offlineSigner = window.keplr?.getOfflineSigner(
-        CONSTANTINE_INFO.chainId
-      );
-      if (!offlineSigner) {
-        return console.error("Failed to create offline signer");
-      }
-      const accounts = await offlineSigner.getAccounts();
+      const { signerAddress, archwaySigner } = await getArchwaySigner();
       const list_user_collections = {
-        address: accounts[0].address,
+        address: signerAddress,
       };
-      const cosmSigner = await SigningArchwayClient.connectWithSigner(
-        CONSTANTINE_INFO.rpc,
-        offlineSigner,
+      const data = await archwaySigner.queryContractSmart(
+        COLLECTION_MANAGER_CONTRACT_ADDRESS,
         {
-          ...DEFAULT_SIGNING_CLIENT_OPTIONS,
-          prefix: CONSTANTINE_INFO.stakeCurrency.coinDenom,
-        }
+          list_user_collections,
+        },
       );
-      const data = await cosmSigner.queryContractSmart(CONTRACT_ADDRESS, {
-        list_user_collections,
-      });
       return data;
     },
   },
@@ -110,9 +98,6 @@ export default {
     return {
       isWalletConnected: computed(() => $collectionDescription.value),
     };
-  },
-  watch: {
-    singleCollection: function (a) {},
   },
 };
 </script>

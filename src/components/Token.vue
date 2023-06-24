@@ -19,7 +19,7 @@
     />
     <p class="text-zinc-400 font-josefin text-xs">Token name:</p>
     <h3 class="text-white font-cal text-lg text-center">
-      {{ metadata ? metadata.name : "Loading metadata..." }}
+      {{ metadata ? metadata.name : 'Loading metadata...' }}
     </h3>
     <p class="text-zinc-400 font-josefin text-xs">Owner:</p>
     <p class="text-zinc-200 font-josefin text-center">
@@ -37,28 +37,28 @@ export default {
       metadata: undefined as any,
     };
   },
-  emits: ["click"],
+  emits: ['click'],
   props: {
     evolv: {
       type: Number,
-      default: false,
+      default: () => false,
       required: false,
     },
     key: {
       type: String,
-      default: "0",
+      default: () => '0',
       required: true,
     },
     owner: {
       type: String,
       default:
-        "archway1cf0vx6855x9wfgfpdvu356zz4ufctfd2a58g84ntxywr298qa0gqryr4cv",
+        'archway1cf0vx6855x9wfgfpdvu356zz4ufctfd2a58g84ntxywr298qa0gqryr4cv',
       required: true,
     },
     tokenUri: {
       type: String,
       default:
-        "https://www.arweave.net/IWufcK8d3BZKyVM7iZhkKMvPlXcLvQWKoE0nWM4MCiw",
+        'https://www.arweave.net/IWufcK8d3BZKyVM7iZhkKMvPlXcLvQWKoE0nWM4MCiw',
       required: true,
     },
   },
