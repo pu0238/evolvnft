@@ -4,7 +4,7 @@
     >
       <div class="text-center">
         <img
-          class="w-12 mx-auto"
+          class="w-full mx-auto"
           :src="collectionImg"
           alt="Collection image"
         />
