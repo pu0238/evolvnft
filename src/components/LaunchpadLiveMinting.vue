@@ -4,44 +4,49 @@
       🟣live minting
     </h1>
   </div>
-  <div class="grid grid-cols-2 gap-4 relative">
-    <div class="relative rounded-xl overflow-hidden h-96 w-96 py-2">
+  <div class="grid md:grid-cols-2 gap-4 relative">
+    <div class="relative rounded-xl overflow-hidden -py-1 float-right">
       <div
-        class="overflow-hidden flex rounded-xl bg-zinc-300 float-left p-3 m-6"
+        class="overflow-hidden flex rounded-xl bg-zinc-300 float-right p-3 m-6"
       >
         <span v-for="img in collectionImages">
-          <img :src="img" class="flex-none scale-100" />
+          <img :src="img" />
         </span>
       </div>
       <LaunchpadCollectionLogo class="absolute" />
     </div>
 
     <div>
-      <div class="mb-1">
-        <h3 class="font-cal text-3xl">
-          {{ collectionName }}
-        </h3>
-        <p class="font-josefin text-sm">supply: {{ collectionSupply }}</p>
-      </div>
-      <!-- <div class="my-2 lg:my-8">
-        <p class="text-md md:text-lg lg:text-xl font-josefin">
-            
-        <div class="text-black text-2xl font-cal py-10">evolving beasts </div>
-        <br />
-          supply 999
-          <br />
-          do not hesitate, choose the type of token you are interested in and
-          start your decentralized adventure!
-        </p> 
-        
-      </div> -->
+      <div class="mb-1 overflow-hidden flex-none py-9">
+        <h3 class="font-cal text-3xl">{{ collectionName }}</h3>
+        <p class="font-josefin text-sm -mt-2 -ml-2 px-2 mb-3 font-normal">
+          supply: {{ collectionSupply }}
+        </p>
 
-      <Button
-        :isFilled="true"
-        content="upcoming projects"
-        color="indigo"
-        class="mr-2 float-right"
-      />
+        <LaunchpadLiveMintingParameter
+          parameterTitle="mint price"
+          :parameterSubtitle="collectionMintPrice"
+        />
+        <LaunchpadLiveMintingParameter
+          parameterTitle="end date"
+          :parameterSubtitle="collectionEndData"
+        />
+        <LaunchpadLiveMintingParameter
+          parameterTitle="end time"
+          :parameterSubtitle="collectionEndTime"
+        />
+        <LaunchpadLiveMintingParameter
+          parameterTitle="project links"
+          :parameterSubtitle="collectionProjectLinks"
+        />
+
+        <Button
+          :isFilled="true"
+          content="upcoming projects"
+          color="indigo"
+          class="mr-2 float-right"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -50,8 +55,13 @@
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
 import LaunchpadLiveMintingParameter from './LaunchpadLiveMintingParameter.vue';
+
 export default {
-  components: { Button, LaunchpadCollectionLogo, LaunchpadLiveMintingParameter },
+  components: {
+    Button,
+    LaunchpadCollectionLogo,
+    LaunchpadLiveMintingParameter,
+  },
   props: {
     collectionImages: {
       type: Array<string>,
@@ -71,6 +81,26 @@ export default {
     collectionSupply: {
       type: Number,
       default: () => 0,
+      required: true,
+    },
+    collectionMintPrice: {
+      type: String,
+      default: () => '',
+      required: true,
+    },
+    collectionEndData: {
+      type: String,
+      default: () => '',
+      required: true,
+    },
+    collectionEndTime: {
+      type: String,
+      default: () => '',
+      required: true,
+    },
+    collectionProjectLinks: {
+      type: String,
+      default: () => '',
       required: true,
     },
   },
