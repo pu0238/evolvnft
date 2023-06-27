@@ -32,7 +32,7 @@
         }"
       />
       <span class="mx-2 flex-auto text-left">
-        <span class="float-left relative"
+        <span class="float-left relative -z-10"
           >{{ content }}
           <span
             v-if="isDisabled"

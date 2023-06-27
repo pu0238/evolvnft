@@ -27,12 +27,14 @@ import {
   tokenLimit,
 } from '../state/collectionState';
 import type { Window as KeplrWindow } from '@keplr-wallet/types';
-import {
-  COLLECTION_MANAGER_CONTRACT_ADDRESS,
-} from '../utils/constant';
+import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
 import { createEvolveCollection } from '../utils/evolve';
 import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';
+// @ts-ignore
+import JSConfetti from 'js-confetti';
+
+const confetti = new JSConfetti();
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -52,6 +54,21 @@ export default {
   },
 
   methods: {
+    showConfetti() {
+      confetti.addConfetti({
+        confettiColors: [
+          '#312e81',
+          '#3730a3',
+          '#4338ca',
+          '#4f46e5',
+          '#6366f1',
+          '#818cf8',
+          '#a5b4fc',
+          '#c7d2fe',
+          '#e0e7ff',
+        ],
+      });
+    },
     async uploadImage() {
       const firstFile = this.acceptFiles[0] as unknown as any;
       if (!firstFile) return console.error('Failed to upload image');
@@ -67,7 +84,7 @@ export default {
       }
       collectionImg.set(arweaveUrl);
 
-      const { signerAddress, archwaySigner} = await getArchwaySigner()
+      const { signerAddress, archwaySigner } = await getArchwaySigner();
       let ic_collection_id: null | number = null;
       if (this.collectionEvolvMetadataValue) {
         ic_collection_id = await createEvolveCollection(signerAddress);
@@ -92,6 +109,7 @@ export default {
       console.log(
         `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
       );
+      this.showConfetti();
     },
 
     updateCollectionLogo(files: Array<any>) {

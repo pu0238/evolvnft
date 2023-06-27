@@ -1,14 +1,14 @@
-import LaunchPadHeader from './LaunchPadHeader.vue';
+import LaunchpadHeader from './LaunchpadHeader.vue';
 
 export default {
-  component: LaunchPadHeader,
+  component: LaunchpadHeader,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'LaunchPadHeader',
+  title: 'LaunchpadHeader',
 };
 
 const Template = (args) => ({
-  components: { LaunchPadHeader },
-  template: '<LaunchPadHeader />',
+  components: { LaunchpadHeader },
+  template: '<LaunchpadHeader />',
 });
 export const Default = Template.bind({});
