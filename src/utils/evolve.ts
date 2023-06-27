@@ -1,7 +1,8 @@
 import { errorMessage } from '../state/error';
+import { collectionManagerContractAddress, launchpadManagerContractAddress } from '../state/stateCache';
 import {
   CARNISTER_API_URL,
-  COLLECTION_MANAGER_CONTRACT_ADDRESS,
+  SYSTEM_CONTEXT_CONTRACT_ADDRESS,
 } from './constant';
 import { getQueryClient } from './wallet';
 
@@ -82,32 +83,40 @@ export async function getNextMetadataId(
   return (await result.json()).nextMetadataId;
 }
 
-export async function getLaunchpad(): Promise<string> {
-  const queryClient = await getQueryClient();
-  const state = await queryClient.queryContractRaw(
-    COLLECTION_MANAGER_CONTRACT_ADDRESS,
-    Uint8Array.from(Buffer.from('state')),
-  );
-  if (!state) {
-    throw errorMessage.set('Failed to get launchpad');
-  }
-  const text = Buffer.from(state).toString('utf-8');
-
-  return JSON.parse(text).launchpad_addr;
-}
-
 export async function getCollectionsStats() {
   const queryClient = await getQueryClient();
+  const collectionManagerContract = await getCollectionManager();
 
   return await queryClient.queryContractSmart(
-    COLLECTION_MANAGER_CONTRACT_ADDRESS,
+    collectionManagerContract,
     { get_stats: {} },
   );
 }
 
-export async function getLaunchpadStats() {
+export async function getCollectionManager(): Promise<string> {
+  const collectionManager = collectionManagerContractAddress.get();
+  if (collectionManager) {
+    return collectionManager;
+  }
   const queryClient = await getQueryClient();
-  const launchpad = await getLaunchpad();
+  const state: { address: string } = await queryClient.queryContractSmart(
+    SYSTEM_CONTEXT_CONTRACT_ADDRESS,
+    { get_collection_manager: {} },
+  );
+  collectionManagerContractAddress.set(state.address);
+  return state.address;
+}
 
-  return await queryClient.queryContractSmart(launchpad, { get_stats: {} });
+export async function getLaunchpadManager(): Promise<string> {
+  const launchpadManager = launchpadManagerContractAddress.get();
+  if (launchpadManager) {
+    return launchpadManager;
+  }
+  const queryClient = await getQueryClient();
+  const state: { address: string } = await queryClient.queryContractSmart(
+    SYSTEM_CONTEXT_CONTRACT_ADDRESS,
+    { get_launchpad_manager: {} },
+  );
+  launchpadManagerContractAddress.set(state.address);
+  return state.address;
 }

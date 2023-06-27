@@ -25,28 +25,28 @@ const { title, description } = Astro.props;
 
   <title>{title}</title>
   <script>
-    import buffer from "buffer";
+    import buffer from 'buffer';
     const { Buffer } = buffer;
 
     if (!window.Buffer) window.Buffer = Buffer;
   </script>
   <script type="module">
     // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-analytics.js";
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js';
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-analytics.js';
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-      apiKey: "AIzaSyCj84PtplvrkqC0IWMKINt39sv2w2u9qZc",
-      authDomain: "evolvenft-b83de.firebaseapp.com",
-      projectId: "evolvenft-b83de",
-      storageBucket: "evolvenft-b83de.appspot.com",
-      messagingSenderId: "653349598940",
-      appId: "1:653349598940:web:24785ae0b55e9054992619",
-      measurementId: "G-HK3JHSMHQT",
+      apiKey: 'AIzaSyCj84PtplvrkqC0IWMKINt39sv2w2u9qZc',
+      authDomain: 'evolvenft-b83de.firebaseapp.com',
+      projectId: 'evolvenft-b83de',
+      storageBucket: 'evolvenft-b83de.appspot.com',
+      messagingSenderId: '653349598940',
+      appId: '1:653349598940:web:24785ae0b55e9054992619',
+      measurementId: 'G-HK3JHSMHQT',
     };
 
     // Initialize Firebase
@@ -55,9 +55,9 @@ const { title, description } = Astro.props;
   </script>
   <script>
     window.keplr.defaultOptions = {
-    sign: {
+      sign: {
         preferNoSetFee: true,
-    }
-}
+      },
+    };
   </script>
 </head>

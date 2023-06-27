@@ -71,7 +71,6 @@
 </template>
 
 <script lang="ts">
-import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
 import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import CollectionBaner from './CollectionBaner.vue';
 import Actions from './Actions.vue';
@@ -79,6 +78,7 @@ import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import MintBox from './MintBox.vue';
 import Button from './Button.vue';
 import { getArchwaySigner } from '../utils/wallet';
+import { getCollectionManager } from '../utils/evolve';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -162,8 +162,10 @@ export default {
       const get_collection = {
         address: this.collectionAddress,
       };
+
+      const collectionManagerContract = await getCollectionManager();
       const data = await archwaySigner.queryContractSmart(
-        COLLECTION_MANAGER_CONTRACT_ADDRESS,
+        collectionManagerContract,
         {
           get_collection,
         },

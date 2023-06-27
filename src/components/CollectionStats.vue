@@ -42,7 +42,7 @@ import SecondSectionLeft from './SecondSectionLeft.vue';
 import HeaderSubtitle from './HeaderSubtitle.vue';
 import Button from './Button.vue';
 
-import { getCollectionsStats, getLaunchpadStats } from '../utils/evolve';
+import { getCollectionsStats } from '../utils/evolve';
 
 export default {
   data() {
@@ -53,8 +53,8 @@ export default {
   },
   created() {
     getCollectionsStats().then((stats) => {
-      this.collectionCount = stats.collections_count;
-      this.tokensCount = stats.tokens_count;
+      this.collectionCount = stats.collectionsCount;
+      this.tokensCount = stats.tokensCount;
     });
   },
   components: { SecondSectionLeft, HeaderSubtitle, Button },

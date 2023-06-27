@@ -107,10 +107,10 @@ import { errorMessage } from '../state/error';
 import { computed } from 'vue';
 import Uploader from './Uploader.vue';
 import Button from './Button.vue';
-import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
 import { buildMintObject, joinMetadataAndImages } from '../utils/metadata';
 import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { getArchwaySigner } from '../utils/wallet';
+import { getCollectionManager } from '../utils/evolve';
 
 export default {
   emit: ['close', 'afterMint'],
@@ -159,9 +159,11 @@ export default {
         address: this.collectionAddress,
         tokens,
       };
+
+      const collectionManagerContract = await getCollectionManager();
       const { transactionHash } = await archwaySigner.execute(
         signerAddress,
-        COLLECTION_MANAGER_CONTRACT_ADDRESS,
+        collectionManagerContract,
         { mint_tokens },
         'auto',
       );

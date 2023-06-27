@@ -27,8 +27,7 @@ import {
   tokenLimit,
 } from '../state/collectionState';
 import type { Window as KeplrWindow } from '@keplr-wallet/types';
-import { COLLECTION_MANAGER_CONTRACT_ADDRESS } from '../utils/constant';
-import { createEvolveCollection } from '../utils/evolve';
+import { createEvolveCollection, getCollectionManager } from '../utils/evolve';
 import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';
 // @ts-ignore
@@ -100,9 +99,10 @@ export default {
         ic_collection_id,
       };
 
+      const collectionManagerContract = await getCollectionManager();
       const { transactionHash } = await archwaySigner.execute(
         signerAddress,
-        COLLECTION_MANAGER_CONTRACT_ADDRESS,
+        collectionManagerContract,
         { register_collection },
         'auto',
       );

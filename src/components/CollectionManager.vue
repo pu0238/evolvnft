@@ -37,9 +37,6 @@
 
 <script lang="ts">
 import { useStore } from "@nanostores/vue";
-import {
-  COLLECTION_MANAGER_CONTRACT_ADDRESS
-} from "../utils/constant";
 import type { CollectionEntitie } from "../utils/types/CollectionItem";
 import CollectionItem from "./CollectionItem.vue";
 import { isWalletConnected } from "../state/walletState";
@@ -50,6 +47,7 @@ import SingleCollection from "./SingleCollection.vue";
 import CollectionTokens from "./CollectionTokens.vue";
 import HeaderSubtitle from "./HeaderSubtitle.vue";
 import { getArchwaySigner } from '../utils/wallet';
+import { getCollectionManager } from "../utils/evolve";
 
 export default {
   data() {
@@ -75,8 +73,10 @@ export default {
       const list_user_collections = {
         address: signerAddress,
       };
+
+      const collectionManagerContract = await getCollectionManager();
       const data = await archwaySigner.queryContractSmart(
-        COLLECTION_MANAGER_CONTRACT_ADDRESS,
+        collectionManagerContract,
         {
           list_user_collections,
         },
