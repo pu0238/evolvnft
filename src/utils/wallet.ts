@@ -1,6 +1,4 @@
-import type {
-  Window as KeplrWindow,
-} from '@keplr-wallet/types';
+import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import { isWalletConnected } from '../state/walletState';
 import { CONSTANTINE_INFO } from './constant';
 import { ArchwayClient, SigningArchwayClient } from '@archwayhq/arch3.js';
@@ -43,11 +41,11 @@ export function isWalletPopup(): boolean {
   return true;
 }
 
-export function openIfConnected(url: string) {
+export function openIfConnected(url?: string) {
   if (isWallet()) {
-    return window.open(url, '_self');
+    if (url) return window.open(url, '_self');
   }
-  errorMessage.set("wallet not connected")
+  errorMessage.set('wallet not connected');
 }
 
 export async function getArchwaySigner(): Promise<{

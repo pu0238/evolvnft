@@ -1,10 +1,12 @@
 import { errorMessage } from '../state/error';
-import { collectionManagerContractAddress, launchpadManagerContractAddress } from '../state/stateCache';
 import {
-  CARNISTER_API_URL,
-  SYSTEM_CONTEXT_CONTRACT_ADDRESS,
-} from './constant';
-import { getQueryClient } from './wallet';
+  collectionManagerContractAddress,
+  launchpadManagerContractAddress,
+} from '../state/stateCache';
+import { CARNISTER_API_URL, SYSTEM_CONTEXT_CONTRACT_ADDRESS } from './constant';
+import type { CollectionEntitie } from './types/CollectionItem';
+import { getArchwaySigner, getQueryClient } from './wallet';
+import _ from 'lodash';
 
 export async function createEvolveCollection(
   accountAddress: string,
@@ -83,15 +85,7 @@ export async function getNextMetadataId(
   return (await result.json()).nextMetadataId;
 }
 
-export async function getCollectionsStats() {
-  const queryClient = await getQueryClient();
-  const collectionManagerContract = await getCollectionManager();
-
-  return await queryClient.queryContractSmart(
-    collectionManagerContract,
-    { get_stats: {} },
-  );
-}
+// Managers
 
 export async function getCollectionManager(): Promise<string> {
   const collectionManager = collectionManagerContractAddress.get();
@@ -119,4 +113,61 @@ export async function getLaunchpadManager(): Promise<string> {
   );
   launchpadManagerContractAddress.set(state.address);
   return state.address;
+}
+
+// Stats
+
+export async function getCollectionsStats() {
+  const queryClient = await getQueryClient();
+  const collectionManagerContract = await getCollectionManager();
+
+  return await queryClient.queryContractSmart(collectionManagerContract, {
+    get_stats: {},
+  });
+}
+
+// Launchpad
+
+export async function getLaunchpadEntries(limit = 10, start_from?: string) {
+  const queryClient = await getQueryClient();
+  const launchpadManager = await getLaunchpadManager();
+  const res = await queryClient.queryContractSmart(launchpadManager, {
+    list_launchpad_entries: { limit, start_from },
+  });
+
+  return {... _.groupBy(res.data, 'status'), next: res.nextPage};
+}
+
+// Collections
+
+export async function getWalletCollections(): Promise<void | CollectionEntitie[]> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const list_user_collections = {
+    address: signerAddress,
+  };
+
+  const collectionManagerContract = await getCollectionManager();
+  const data = await archwaySigner.queryContractSmart(
+    collectionManagerContract,
+    {
+      list_user_collections,
+    },
+  );
+  return data;
+}
+
+export async function getCollection(address: string): Promise<CollectionEntitie> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const get_collection = {
+    address,
+  };
+
+  const collectionManagerContract = await getCollectionManager();
+  const data = await archwaySigner.queryContractSmart(
+    collectionManagerContract,
+    {
+      get_collection,
+    },
+  );
+  return data;
 }

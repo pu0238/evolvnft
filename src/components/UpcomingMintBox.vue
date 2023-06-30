@@ -1,14 +1,14 @@
 <template>
   <div
-    class="grid grid-cols-1 px-4 place-content-center bg-black w-[400px] h-[315px] rounded-2xl"
+    class="grid grid-cols-1 sm:px-4 place-content-center bg-black h-[315px] rounded-2xl"
   >
     <div>
       <div class="px-6 pb-7 grid-cols-2">
         <LaunchpadCollectionLogo
-          class="bg-white h-[100px] w-[100px] rounded-3xl"
+          class="bg-white h-[64px] w-[64px] sm:h-[100px] sm:w-[100px] rounded-3xl"
         />
-        <div>
-          <div class="text-white text-2xl font-cal pt-2 float-left pl-4">
+        <div class="grid">
+          <div class="text-white text-base sm:text-md lg:text-2xl font-cal pt-2 float-left pl-4">
             evolving beasts
           </div>
           <p
@@ -18,7 +18,7 @@
           </p>
         </div>
       </div>
-      <div class="pt-20 m-4 pl-3">
+      <div class="md:pt-6 m-4 pl-3">
         <UpcomingMintBoxParameter
           subtitleColor="white"
           parameterTitle="mint price"
@@ -43,7 +43,9 @@
       <div>
         <Button
           :isFilled="true"
-          content="upcoming projects >"
+          :content="status === 'ongoing' ? 'open launchpad >' : status === 'upcoming' ? 'add to calendar' : 'open collection >' "
+          :is-coming-soon="status === 'upcoming'"
+          :is-disabled="status === 'upcoming'"
           color="indigo"
           class="mr-2 float-right pr-4"
         />
@@ -52,6 +54,7 @@
   </div>
 </template>
 <script lang="ts">
+import type { PropType } from 'vue';
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
 import UpcomingMintBoxParameter from './UpcomingMintBoxParameter.vue';
@@ -87,6 +90,13 @@ export default {
       type: String,
       default: () => 'twitch.tv/BiedaczeG',
       required: true,
+    },
+    status: {
+      type: String as PropType<'ongoing' | 'upcoming' | 'finished'>,
+      default: () => 'ongoing',
+      required: false,
+      validator: (s: string) =>
+        ['ongoing', 'upcoming', 'finished'].includes(s),
     },
   },
 };
