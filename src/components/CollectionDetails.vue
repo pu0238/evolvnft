@@ -1,17 +1,26 @@
 <template>
   <div class="grid sm:flex w-full">
     <div class="flex-auto mt-20 mx-10">
-      <BlackExpandable title="mint NFT">df</BlackExpandable>
-      <BlackExpandable title="mint NFT">df</BlackExpandable>
-      <BlackExpandable title="mint NFT">df</BlackExpandable>
-
+      <ExpandableMint
+        :collectionAddress="collectionAddress"
+        :collection="collection"
+      />
+      <ExpandableRewards
+        :collectionAddress="collection?.address"
+        :rewardPercentage="collection?.rewards_percentage_fee"
+        :splitRewards="false"
+      />
+      <ExpandableLaunchpad
+        :collectionAddress="collectionAddress"
+        :collection="collection"
+      />
     </div>
     <div class="hidden xl:grid xl:order-last mx-auto">
       <Button
         content="back"
         arrow="left"
         color="black"
-        class="mb-4 flex-none ml-auto"
+        class="mb-4 float-right ml-auto w-fit h-fit"
         @click="$emit('back')"
       />
       <CollectionBaner
@@ -34,13 +43,19 @@ import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import CollectionBaner from './CollectionBaner.vue';
 import Button from './Button.vue';
 import BlackExpandable from './BlackExpandable.vue';
+import ExpandableMint from './ExpandableMint.vue';
+import ExpandableRewards from './ExpandableRewards.vue';
+import ExpandableLaunchpad from './ExpandableLaunchpad.vue';
 
 export default {
   emits: ['back'],
   components: {
+    ExpandableLaunchpad,
     CollectionBaner,
     Button,
-    BlackExpandable
+    BlackExpandable,
+    ExpandableMint,
+    ExpandableRewards,
   },
   data() {
     return {

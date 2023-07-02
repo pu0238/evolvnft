@@ -122,7 +122,7 @@ export default {
       jsonTypes,
       imgTypes,
       acceptedTypes: [...imgTypes, ...jsonTypes],
-      filesToUpload: {} as { [key: string]: { image?: any; metadata?: any } },
+      filesToUpload: {} as { [key: string]: { image?: Blob; metadata?: string } },
     };
   },
   components: {
@@ -159,7 +159,6 @@ export default {
         address: this.collectionAddress,
         tokens,
       };
-
       const collectionManagerContract = await getCollectionManager();
       const { transactionHash } = await archwaySigner.execute(
         signerAddress,
@@ -174,8 +173,8 @@ export default {
       this.filesToUpload = {};
       this.mintingnProgress = false;
     },
-    joinMetadata(acceptFiles: any[]) {
-      this.filesToUpload = joinMetadataAndImages(
+    async joinMetadata(acceptFiles: any[]) {
+      this.filesToUpload = await joinMetadataAndImages(
         acceptFiles,
         this.imgTypes,
         this.jsonTypes,
