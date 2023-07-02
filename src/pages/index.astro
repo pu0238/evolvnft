@@ -1,26 +1,26 @@
 ---
-import CollectionStats from "../components/CollectionStats.vue";
-import Header from "../components/Header.vue";
-import MiddleCenteredHeader from "../components/MiddleCenteredHeader.vue";
-import SecondSection from "../components/SecondSection.vue";
-import ThirdSectionLeft from "../components/ThirdSectionLeft.vue";
-import Container from "../layouts/Container.astro";
+import CollectionStats from '../components/CollectionStats.vue';
+import Header from '../components/Header.vue';
+import MiddleCenteredHeader from '../components/MiddleCenteredHeader.vue';
+import SecondSection from '../components/SecondSection.vue';
+import ThirdSectionLeft from '../components/ThirdSectionLeft.vue';
+import Container from '../layouts/Container.astro';
 ---
 
 <Container>
   <section class="w-full float-left">
-    <Header class="mx-4 float-left md:my-8 lg:my-20" client:visible/>
+    <Header class="mx-4 float-left md:my-8 lg:my-20" client:visible />
   </section>
   <section class="w-full float-left flex justify-center mb-8 md:mb-12 lg:mb-20">
-    <CollectionStats client:visible/>
+    <CollectionStats client:visible />
   </section>
   <section class="w-full float-left flex justify-center">
     <MiddleCenteredHeader class="mx-4 float-left max-w-3xl" />
   </section>
   <section class="w-full float-left flex justify-center">
-    <SecondSection class="my-8 sm:my-16 md:my-20" client:visible/>
+    <SecondSection class="my-8 sm:my-16 md:my-20" client:visible />
   </section>
   <section class="w-full float-left">
-    <ThirdSectionLeft class="mx-4" client:visible/>
+    <ThirdSectionLeft class="mx-4" client:visible />
   </section>
 </Container>

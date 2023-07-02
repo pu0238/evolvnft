@@ -135,12 +135,14 @@ export async function getLaunchpadEntries(limit = 10, start_from?: string) {
     list_launchpad_entries: { limit, start_from },
   });
 
-  return {... _.groupBy(res.data, 'status'), next: res.nextPage};
+  return { ..._.groupBy(res.data, 'status'), next: res.nextPage };
 }
 
 // Collections
 
-export async function getWalletCollections(): Promise<void | CollectionEntitie[]> {
+export async function getWalletCollections(): Promise<
+  void | CollectionEntitie[]
+> {
   const { signerAddress, archwaySigner } = await getArchwaySigner();
   const list_user_collections = {
     address: signerAddress,
@@ -156,7 +158,9 @@ export async function getWalletCollections(): Promise<void | CollectionEntitie[]
   return data;
 }
 
-export async function getCollection(address: string): Promise<CollectionEntitie> {
+export async function getCollection(
+  address: string,
+): Promise<CollectionEntitie> {
   const { signerAddress, archwaySigner } = await getArchwaySigner();
   const get_collection = {
     address,

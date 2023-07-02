@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-black rounded-[2rem] px-8 py-4 grid my-4" @click="isOpen = !isOpen">
+  <div
+    class="bg-black rounded-[2rem] px-8 py-4 grid my-4"
+    @click="isOpen = !isOpen"
+  >
     <div class="w-full flex items-center">
       <span
         class="flex-auto text-white font-josefin ease-out duration-300 font-semibold"

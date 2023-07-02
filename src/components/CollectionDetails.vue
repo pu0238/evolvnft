@@ -4,7 +4,6 @@
       <BlackExpandable title="mint NFT">df</BlackExpandable>
       <BlackExpandable title="mint NFT">df</BlackExpandable>
       <BlackExpandable title="mint NFT">df</BlackExpandable>
-
     </div>
     <div class="hidden xl:grid xl:order-last mx-auto">
       <Button
@@ -40,7 +39,7 @@ export default {
   components: {
     CollectionBaner,
     Button,
-    BlackExpandable
+    BlackExpandable,
   },
   data() {
     return {

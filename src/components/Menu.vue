@@ -5,7 +5,11 @@
     >
       <Logo textColor="black" class="float-left" />
       <div class="hidden lg:inline justify-between">
-        <NavBar class="float-left my-2" :navItems="leftNavItems" textColor="black" />
+        <NavBar
+          class="float-left my-2"
+          :navItems="leftNavItems"
+          textColor="black"
+        />
         <Button
           :isDisabled="false"
           :isFilled="true"
@@ -14,7 +18,11 @@
           class="float-right"
           @click="sharedConnect"
         />
-        <NavBar class="float-right my-2 mr-4" :navItems="rightNavItems" textColor="black" />
+        <NavBar
+          class="float-right my-2 mr-4"
+          :navItems="rightNavItems"
+          textColor="black"
+        />
       </div>
       <a
         class="float-right lg:hidden pt-3 select-none cursor-pointer"
@@ -65,14 +73,14 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
-          targetBlank: boolean | undefined
+          targetBlank: boolean | undefined;
         }[]
       >,
       default: () => [
-        { isComingSoon: false, content: "solution" },
-        { isComingSoon: false, content: "use cases" },
-        { isComingSoon: true, content: "ecosystem" },
-        { isComingSoon: false, content: "community" },
+        { isComingSoon: false, content: 'solution' },
+        { isComingSoon: false, content: 'use cases' },
+        { isComingSoon: true, content: 'ecosystem' },
+        { isComingSoon: false, content: 'community' },
       ],
       required: true,
     },
@@ -83,7 +91,7 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
-          targetBlank: boolean | undefined
+          targetBlank: boolean | undefined;
         }[]
       >,
       default: () => [
