@@ -1,6 +1,6 @@
 <template>
   <div class="border-r-2 border-zink-300 w-fit pr-8 py-4 float-left flex-none">
-    <h4 class="font-cal text-2xl">for user</h4>
+    <h4 class="font-cal text-2xl">for users</h4>
     <ul>
       <li
         v-for="item in forUser"
@@ -28,7 +28,7 @@
         </span>
       </li>
     </ul>
-    <h4 class="font-cal text-2xl">for creator</h4>
+    <h4 class="font-cal text-2xl">for creators</h4>
     <ul>
       <li
         v-for="item in forCreator"

@@ -126,7 +126,7 @@ import Uploader from './Uploader.vue';
 import Button from './Button.vue';
 import { editEvolveMetadata } from '../utils/evolve';
 import { CONSTANTINE_INFO } from '../utils/constant';
-import { joinMetadataAndImages } from '../utils/metadata';
+import { joinMetadataAndImages, uploadStringMetadata } from '../utils/metadata';
 import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';
 
@@ -174,8 +174,8 @@ export default {
     },
   },
   methods: {
-    joinMetadata(acceptFiles: any[]) {
-      this.filesToUpload = joinMetadataAndImages(
+    async joinMetadata(acceptFiles: any[]) {
+      this.filesToUpload = await joinMetadataAndImages(
         acceptFiles,
         this.imgTypes,
         this.jsonTypes,
@@ -209,10 +209,8 @@ export default {
           const metadata = await this.filesToUpload[fileName].metadata.text();
           const parsedMetadata = JSON.parse(metadata);
           parsedMetadata.image = `https://arweave.net/${imageUploadId}`;
-          const encodedMetadata = new Blob([JSON.stringify(parsedMetadata)]);
-          const metadataUploadId = await uploadBlob(
-            encodedMetadata,
-            'application/json',
+          const metadataUploadId = await uploadStringMetadata(
+            JSON.stringify(parsedMetadata),
           );
           if (!metadataUploadId)
             return console.error('Failed to upload metadata');

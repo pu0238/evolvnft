@@ -1,23 +1,9 @@
 <template>
-  <BlackExpandable title="mint NFT">
+  <BlackExpandable title="launchpad application">
     <div class="mx-4 my-6 grid">
       <p class="font-josefin font-normal text-sm">
-        Here you can pre-mint some tokens to your collection. They will
-        immediately get transferred to your wallet. Preminted tokens count
-        towards your collection's total supply and they will NOT be available
-        for use in launchpad. We support
-        <a
-          are
-          optional
-          data
-          describing
-          your
-          N
-          href="https://docs.opensea.io/docs/metadata-standards"
-          class="text-indigo-500 font-semibold"
-          target="_blank"
-          >opensea metadata standard.</a
-        >
+        Manage your launchpad application, and allocate tokens to be minted
+        (claimed) by the users during the minting event
       </p>
       <div class="mt-4 flex justify-end">
         <p class="font-josefin font-normal text-sm mr-2">Advance mode:</p>
@@ -33,9 +19,14 @@
           ></div>
         </label>
       </div>
+      <div class="w-full mb-2 grid mt-4">
+        <div class="grid items-center">
+          <p class="font-josefin mr-2">Delegate tokens to launchpad:</p>
+        </div>
+      </div>
       <div v-if="advanceMode" class="grid">
         <Uploader
-          class="mt-8 h-44 mb-10"
+          class="mt-2 h-44 mb-10"
           heading="drop files below:"
           :acceptedTypes="[...imgTypes, ...jsonTypes]"
           @acceptFiles="(acceptFiles: any[]) => advanceDrop(acceptFiles)"
@@ -84,7 +75,7 @@
             </span>
           </span>
         </div>
-        <span class="text-xs font-josefin mt-2"
+        <span class="text-xs font-josefin mt-2 mb-4"
           >In the advanced version, you should drop the paired metadata along
           with the assigned images. For the pairing procedure to run correctly,
           the images must have the same name as the metadata. For example:
@@ -119,7 +110,7 @@
             </svg>
             <img
               alt="NFT image"
-              class="w-48 h-48 mt-8"
+              class="w-48 h-48 mt-2"
               :src="imageBase64"
               v-if="singleImage && imageBase64"
             />
@@ -262,19 +253,24 @@
                 id="attributeInput"
               />
             </div>
-            <span class="text-xs font-josefin mt-2"
-              >attributes are optional data describing your NFT. Example "Eyes:
-              blue" or "King".</span
-            >
           </div>
+        </div>
+      </div>
+      <span class="text-xs font-josefin mt-2"
+        >delegate your tokens to the launchpad so that the smart contract will
+        draw random tokens on mint event.</span
+      >
+      <div class="w-full mb-2 grid mt-8">
+        <div class="grid items-center">
+          <p class="font-josefin mr-2">Apply to launchpad</p>
         </div>
       </div>
       <div class="mt-4">
         <Button
           class="float-right mt-8"
-          :content="mintingnProgress ? 'minting...' : 'mint NFT'"
+          :content="mintingnProgress ? 'delegating...' : 'delegate tokens'"
           :isDisabled="mintingnProgress"
-          @click="mint"
+          @click="allocateTokens"
           :state="mintingnProgress ? 'progress' : 'allowed'"
         />
       </div>
@@ -287,10 +283,10 @@ import Button from './Button.vue';
 import BlackExpandable from './BlackExpandable.vue';
 import { readFileAsDataURL } from '../utils/metadata';
 import type { CollectionEntitie } from '../utils/types/CollectionItem';
-import { mintNFTs } from '../utils/evolve';
 import Uploader from './Uploader.vue';
 import { errorMessage } from '../state/error';
 import { joinMetadataAndImages } from '../utils/metadata';
+import { allocateTokens, getLaunchpadEntrie } from '../utils/evolve';
 
 export default {
   components: {
@@ -407,9 +403,9 @@ export default {
         collection,
       });
     },
-    async advanceMint() {
+    async advanceAllocateTokens() {
       this.mintingnProgress = true;
-      await mintNFTs(
+      await allocateTokens(
         this.collectionAddress,
         this.filesToUpload,
         this.collection as CollectionEntitie,
@@ -417,12 +413,12 @@ export default {
       this.filesToUpload = {};
       this.mintingnProgress = false;
     },
-    async mint() {
+    async allocateTokens() {
       if (this.collection === undefined) {
         throw errorMessage.set('Failed to load collection data');
       }
       if (this.advanceMode) {
-        return await this.advanceMint();
+        return await this.advanceAllocateTokens();
       }
       if (this.singleImage === undefined) {
         throw errorMessage.set('Add image to your NFT!');
@@ -436,8 +432,8 @@ export default {
       this.mintingnProgress = true;
       const filesToUpload = {
         '1': { image: this.singleImage, metadata: this.singleMetadata },
-      };
-      await mintNFTs(
+      }; 
+      await allocateTokens(
         this.collectionAddress,
         filesToUpload,
         this.collection as CollectionEntitie,
@@ -452,5 +448,13 @@ export default {
       );
     },
   },
+  watch:{
+    async collectionAddress(a) {
+      await getLaunchpadEntrie(a)
+    }
+  },
+  async mounted(){
+    await getLaunchpadEntrie(this.collectionAddress)
+  }
 };
 </script>

@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="bg-black rounded-[2rem] px-8 py-4 grid my-4"
-    @click="isOpen = !isOpen"
-  >
-    <div class="w-full flex items-center">
+  <div class="bg-black rounded-[2rem] px-8 py-4 grid my-4">
+    <div class="w-full flex items-center" @click="isOpen = !isOpen">
       <span
         class="flex-auto text-white font-josefin ease-out duration-300 font-semibold"
         :class="{ 'text-2xl': isOpen, 'text-xl': !isOpen }"
@@ -28,10 +25,10 @@
       </span>
     </div>
     <div
-      class="text-white relative overflow-hidden ease-out h-auto"
+      class="text-white relative overflow-hidden ease-out"
       :class="{
-        'duration-[300ms] max-h-0': !isOpen,
-        'duration-[3000ms] max-h-screen': isOpen,
+        'max-h-0': !isOpen,
+        'h-auto': isOpen,
       }"
     >
       <slot />

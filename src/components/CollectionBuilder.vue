@@ -88,9 +88,10 @@
             v-model="collectionDescription"
           />
           <Uploader
-            class="mt-4 md:mt-14 lg:mt-16"
+            class="mt-4 md:mt-14 lg:mt-16 h-44"
             v-if="step === 4"
             heading="Drag image here:"
+            dropboxText2="PNG, JPG or GIF (max 100kb)"
             @acceptFiles="(files: any[]) => emitAcceptFiles(files)"
           />
           <EvolvMetadata
