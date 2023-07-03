@@ -87,13 +87,14 @@
             heading="Collection description:"
             v-model="collectionDescription"
           />
-          <Uploader
-            class="mt-4 md:mt-14 lg:mt-16 h-44"
-            v-if="step === 4"
-            heading="Drag image here:"
-            dropboxText2="PNG, JPG or GIF (max 100kb)"
-            @acceptFiles="(files: any[]) => emitAcceptFiles(files)"
-          />
+          <div class="h-36" v-if="step === 4">
+            <Uploader
+              class="mt-4 md:mt-14 lg:mt-16"
+              heading="Drag image here:"
+              dropboxText2="PNG, JPG or GIF (max 100kb)"
+              @acceptFiles="(files: any[]) => emitAcceptFiles(files)"
+            />
+          </div>
           <EvolvMetadata
             v-if="step === 5"
             class="mt-4 md:mt-14 lg:mt-16"
@@ -178,9 +179,9 @@
       <Button
         class="float-right"
         :content="
-          buildingCollection ? 'building collection...' : 'manage collections'
+          buildingCollection ? 'building collection...' : 'dashboard'
         "
-        :href="buildingCollection ? undefined : '/collection-manager'"
+        :href="buildingCollection ? undefined : '/dashboard#my%20collections'"
         arrow="right"
         :state="buildingCollection ? 'progress' : 'allowed'"
         :isDisabled="buildingCollection"

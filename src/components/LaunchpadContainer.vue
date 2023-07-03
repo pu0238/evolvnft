@@ -1,18 +1,15 @@
 <template>
   <div class="grid">
-    <div v-if="liveMinting.length >= 1">
-      <h1 class="text-black text-5xl xl:text-6xl 2xl:text-7xl font-cal py-10">
-        🟣live minting
-      </h1>
+    <div v-if="finished.length >= 1">
       <LaunchpadLiveMinting
-        :collectionImages="liveMinting[0].collectionImages"
-        :collectionImg="liveMinting[0].collectionImg"
-        :collectionName="liveMinting[0].collectionName"
-        :collectionSupply="liveMinting[0].collectionSupply"
-        :collectionMintPrice="liveMinting[0].collectionMintPrice"
-        :collectionEndData="liveMinting[0].collectionEndData"
-        :collectionEndTime="liveMinting[0].collectionEndTime"
-        :collectionProjectLinks="liveMinting[0].collectionProjectLinks"
+        :collectionImages="finished[0].collectionImages"
+        :collectionImg="finished[0].collectionImg"
+        :collectionName="finished[0].collectionName"
+        :collectionSupply="finished[0].collectionSupply"
+        :collectionMintPrice="finished[0].collectionMintPrice"
+        :collectionEndData="finished[0].collectionEndData"
+        :collectionEndTime="finished[0].collectionEndTime"
+        :collectionProjectLinks="finished[0].collectionProjectLinks"
       />
       <div
         class="grid lg:grid-cols-2 xl:grid-cols-3 gap-4"
@@ -82,11 +79,26 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import LaunchpadLiveMinting from './LaunchpadLiveMinting.vue';
 import UpcomingMintBox from './UpcomingMintBox.vue';
 import { getLaunchpadEntries } from '../utils/evolve';
-
+/**
+ * 
+:denom="finished[0].costDenom"
+:name="finished[0].name"
+:description="finished[0].description"
+:endTime="finished[0].endTime"
+:startTime="finished[0].startTime"
+:discordUrl="finished[0].discordUrl"
+:twitterUrl="finished[0].twitterUrl"
+:projectUrl="finished[0].twitterUrl"
+:thumbnail="finished[0].thumbnail"
+:tokenCost="finished[0].tokenCost"
+:supply="finished[0].totalTokens"
+:preview="finished[0].preview"
+:soldTokens="finished[0].soldTokens"
+ */
 export default {
   components: { LaunchpadLiveMinting, UpcomingMintBox },
   data() {
@@ -123,12 +135,41 @@ export default {
           collectionProjectLinks: 'ddf',
         },
       ],
+      finished: [] as any[],
+      ongoing: [] as any[],
+      upcoming: [] as any[],
+      next: null as null | string,
     };
   },
-  mounted() {
-    getLaunchpadEntries().then((a) => {
-      console.log(a);
-    });
+  methods: {
+    setLaunchpadEntries(launchpadEntries: {
+      finished?: any[] | undefined;
+      ongoing?: any[] | undefined;
+      upcoming?: any[] | undefined;
+      next: string;
+    }) {
+      this.next = launchpadEntries.next;
+      
+      if (launchpadEntries.finished)
+        this.finished.push(...launchpadEntries.finished);
+      if (launchpadEntries.ongoing)
+        this.ongoing.push(...launchpadEntries.ongoing);
+      if (launchpadEntries.upcoming)
+        this.upcoming.push(...launchpadEntries.upcoming);
+    },
+    async loadLaunchpadEntries() {
+      const launchpadEntries = await getLaunchpadEntries();
+      this.setLaunchpadEntries(launchpadEntries);
+
+      while (this.next) {
+        const launchpadEntries = await getLaunchpadEntries(this.next);
+        this.setLaunchpadEntries(launchpadEntries);
+      }
+    },
+  },
+  async mounted() {
+    await this.loadLaunchpadEntries();
+    console.log(this.finished);
   },
 };
 </script>

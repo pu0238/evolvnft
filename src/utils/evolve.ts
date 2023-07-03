@@ -120,6 +120,15 @@ export async function getCollectionsStats() {
   });
 }
 
+export async function getCollectionsStatsForAddress(address: string) {
+  const queryClient = await getQueryClient();
+  const collectionManagerContract = await getCollectionManager();
+
+  return await queryClient.queryContractSmart(collectionManagerContract, {
+    get_user_stats: { address },
+  });
+}
+
 export async function getWalletCollections(): Promise<
   void | CollectionEntitie[]
 > {
@@ -243,6 +252,16 @@ export async function applyForLanuchpad(
  *  ==== LaunchpadManager ====
  *
  */
+
+export async function getLaunchpadStatsForAddress(address: string) {
+  const queryClient = await getQueryClient();
+  const launchpadManager = await getLaunchpadManager();
+
+  return await queryClient.queryContractSmart(launchpadManager, {
+    get_user_stats: { address },
+  });
+}
+
 export async function getAllocatedTokensNum(
   collectionAddress: string,
 ): Promise<number> {
@@ -268,7 +287,15 @@ export async function getLaunchpadManager(): Promise<string> {
   return state.address;
 }
 
-export async function getLaunchpadEntries(limit = 10, start_from?: string) {
+export async function getLaunchpadEntries(
+  start_from?: string,
+  limit = 20,
+): Promise<{
+  finished?: any[];
+  ongoing?: any[];
+  upcoming?: any[];
+  next: string;
+}> {
   const queryClient = await getQueryClient();
   const launchpadManager = await getLaunchpadManager();
   const res = await queryClient.queryContractSmart(launchpadManager, {
@@ -340,4 +367,28 @@ export async function withdrawalRewards(
   console.log(
     `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
   );
+}
+
+export async function getOwnedTokensIds(
+  collectionAddress: string,
+  ownerAddress: string,
+): Promise<string[]> {
+  const queryClient = await getQueryClient();
+
+  const { tokens } = await queryClient.queryContractSmart(collectionAddress, {
+    tokens: { owner: ownerAddress },
+  });
+  return tokens;
+}
+
+export async function getOwnedTokens(
+  ownerAddress: string,
+): Promise<string[]> {
+  const queryClient = await getQueryClient();
+
+  const collectionManagerContract = await getCollectionManager();
+  const { tokens } = await queryClient.queryContractSmart(collectionManagerContract, {
+    list_owned_tokens: { address: ownerAddress },
+  });
+  return tokens;
 }

@@ -125,7 +125,7 @@
 import Uploader from './Uploader.vue';
 import Button from './Button.vue';
 import { editEvolveMetadata } from '../utils/evolve';
-import { CONSTANTINE_INFO } from '../utils/constant';
+import { NETWORK_INFO } from '../utils/constant';
 import { joinMetadataAndImages, uploadStringMetadata } from '../utils/metadata';
 import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';

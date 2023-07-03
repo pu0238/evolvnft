@@ -122,7 +122,7 @@
               v-else
               class="mt-8"
               dropboxText="drag image here!"
-              dropboxText2="JSON (max 100kb)"
+              dropboxText2="PNG, JPG or GIF (max 100kb)"
               heading=""
               :isSquare="true"
               :acceptedTypes="imgTypes"
@@ -147,7 +147,7 @@
               v-else
               class="mt-8"
               dropboxText="drag metadata here!"
-              dropboxText2="PNG, JPG or GIF (max 100kb)"
+              dropboxText2="JSON (max 100kb)"
               heading=""
               :acceptedTypes="jsonTypes"
               @acceptFiles="(acceptFiles: any[]) => dropMetadata(acceptFiles)"

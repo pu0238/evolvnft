@@ -74,9 +74,16 @@ export default {
           walletStricted: true,
         },
         {
+          name: 'my NFTs',
+          img: '/icons/dashboard/nfts.svg',
+          walletStricted: true,
+          disabled: true,
+        },
+        {
           name: 'launchpad',
           img: '/icons/dashboard/launchpad.svg',
           walletStricted: true,
+          disabled: true,
         },
         {
           name: 'marketplace',

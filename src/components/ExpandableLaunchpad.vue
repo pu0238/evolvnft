@@ -126,7 +126,7 @@
               v-else
               class="mt-8"
               dropboxText="drag image here!"
-              dropboxText2="JSON (max 100kb)"
+              dropboxText2="PNG, JPG or GIF (max 100kb)"
               heading=""
               :isSquare="true"
               :acceptedTypes="imgTypes"
@@ -151,7 +151,7 @@
               v-else
               class="mt-8"
               dropboxText="drag metadata here!"
-              dropboxText2="PNG, JPG or GIF (max 100kb)"
+              dropboxText2="JSON (max 100kb)"
               heading=""
               :acceptedTypes="jsonTypes"
               @acceptFiles="(acceptFiles: any[]) => dropMetadata(acceptFiles)"
@@ -365,7 +365,11 @@ import {
   allocateTokens,
   applyForLanuchpad,
   getAllocatedTokensNum,
+  getOwnedTokens,
 } from '../utils/evolve';
+import { getArchwaySigner } from '../utils/wallet';
+import CollectionsListStories from './CollectionsList.stories';
+import { SYSTEM_CONTEXT_CONTRACT_ADDRESS } from '../utils/constant';
 
 export default {
   components: {
@@ -542,10 +546,10 @@ export default {
     },
   },
   async mounted() {
-    this.allocatedTokenNumber = await getAllocatedTokensNum(
+    const allocatedTokensNum = await getAllocatedTokensNum(
       this.collectionAddress,
     );
-    console.log(this.allocatedTokenNumber);
+    this.allocatedTokenNumber = allocatedTokensNum || 0;
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div class="grid sm:flex w-full">
-    <div class="flex-auto mt-20 mx-10">
+  <div class="flex w-full flex-wrap-reverse xl:flex-nowrap">
+    <div class="flex-auto mt-4 xl:mt-20 mx-10">
       <ExpandableMint
         :collectionAddress="collectionAddress"
         :collection="collection"
@@ -15,7 +15,7 @@
         :collection="collection"
       />
     </div>
-    <div class="hidden xl:grid xl:order-last mx-auto">
+    <div class="grid mx-auto">
       <Button
         content="back"
         arrow="left"
@@ -54,11 +54,8 @@ export default {
     CollectionBaner,
     Button,
     BlackExpandable,
-<<<<<<< HEAD
-=======
     ExpandableMint,
     ExpandableRewards,
->>>>>>> feat/launchpad
   },
   data() {
     return {
