@@ -21,16 +21,24 @@
       </div>
       <div class="w-full mb-2 grid mt-4">
         <div class="grid items-center">
-          <p class="font-josefin mr-2">Delegate tokens to launchpad:</p>
+          <p class="font-josefin mr-2 font-semibold">
+            Delegate tokens to launchpad:
+          </p>
+          <p class="font-josefin text-xs mr-2">
+            delegated: {{ allocatedTokenNumber }}, collection limit:
+            {{ (collection as CollectionEntitie)?.limit }}
+          </p>
         </div>
       </div>
       <div v-if="advanceMode" class="grid">
-        <Uploader
-          class="mt-2 h-44 mb-10"
-          heading="drop files below:"
-          :acceptedTypes="[...imgTypes, ...jsonTypes]"
-          @acceptFiles="(acceptFiles: any[]) => advanceDrop(acceptFiles)"
-        />
+        <div class="mt-8 h-44 mb-10">
+          <Uploader
+            class="mt-2 h-44 mb-10"
+            heading="drop files below:"
+            :acceptedTypes="[...imgTypes, ...jsonTypes]"
+            @acceptFiles="(acceptFiles: any[]) => advanceDrop(acceptFiles)"
+          />
+        </div>
         <div
           class="ml-2 max-h-24 overflow-auto"
           v-if="filesToUpload && Object.keys(filesToUpload).length > 0"
@@ -190,25 +198,28 @@
           </div>
           <div class="grid" v-if="generateMetadata">
             <div class="grid items-center">
-              <p class="font-josefin mr-2">NFT name:</p>
+              <p class="font-josefin mr-2 text-sm">
+                NFT name:
+                <span class="font-josefin mr-2 text-xs">(optional)</span>
+              </p>
               <code>
                 <input
-                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full"
+                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
                   v-model="nftName"
                 />
               </code>
             </div>
             <div class="grid items-center">
-              <p class="font-josefin mr-2">External link:</p>
+              <p class="font-josefin mr-2 text-sm">External link:</p>
               <code>
                 <input
-                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full"
+                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
                   v-model="externalLink"
                 />
               </code>
             </div>
             <div class="grid items-center">
-              <p class="font-josefin mr-2">NFT description:</p>
+              <p class="font-josefin mr-2 text-sm">NFT description:</p>
               <code>
                 <textarea
                   class="bg-zinc-900 px-4 py-2 rounded-2xl w-full h-40"
@@ -217,7 +228,7 @@
               </code>
             </div>
             <div class="grid items-center">
-              <p class="font-josefin mr-2">Attributes:</p>
+              <p class="font-josefin mr-2 text-sm">Attributes:</p>
             </div>
             <div
               class="items-center bg-zinc-900 px-4 py-2 rounded-2xl"
@@ -257,22 +268,86 @@
         </div>
       </div>
       <span class="text-xs font-josefin mt-2"
-        >delegate your tokens to the launchpad so that the smart contract will
-        draw random tokens on mint event.</span
+        >delegate your tokens to the launchpad.</span
       >
-      <div class="w-full mb-2 grid mt-8">
-        <div class="grid items-center">
-          <p class="font-josefin mr-2">Apply to launchpad</p>
-        </div>
-      </div>
-      <div class="mt-4">
+      <div>
         <Button
           class="float-right mt-8"
           :content="mintingnProgress ? 'delegating...' : 'delegate tokens'"
           :isDisabled="mintingnProgress"
           @click="allocateTokens"
-          :state="mintingnProgress ? 'progress' : 'allowed'"
         />
+      </div>
+      <div v-if="allocatedTokenNumber > 0">
+        <div class="w-full mb-6 grid mt-8">
+          <div class="grid items-center">
+            <p class="font-josefin mr-2 font-semibold">Apply to launchpad:</p>
+          </div>
+        </div>
+        <div class="grid items-center">
+          <div class="mt-4 flex">
+            <p class="font-josefin font-normal text-sm">Ordered minting:</p>
+            <div class="flex-1">
+              <label
+                class="relative float-right inline-flex items-center cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  class="sr-only peer"
+                  v-model="randomMinting"
+                />
+                <div
+                  class="w-11 h-6 bg-zinc-700 rounded-full peer peer-focus:ring-indigo-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-500"
+                ></div>
+              </label>
+            </div>
+          </div>
+          <span class="text-xs font-josefin mt-2 mb-6"
+            >Choose whether your collection should be minted randomly or
+            sequentially by delegation..</span
+          >
+          <p class="font-josefin mr-2 text-sm">
+            Website link:
+            <span class="font-josefin mr-2 text-xs">(optional)</span>
+          </p>
+          <code>
+            <input
+              class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
+              v-model="websiteUrl"
+            />
+          </code>
+        </div>
+        <div class="grid items-center">
+          <p class="font-josefin mr-2 text-sm">
+            Twitter profile:
+            <span class="font-josefin mr-2 text-xs">(optional)</span>
+          </p>
+          <code>
+            <input
+              class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
+              v-model="twitterUrl"
+            />
+          </code>
+        </div>
+        <div class="grid items-center">
+          <p class="font-josefin mr-2 text-sm">
+            Discord: <span class="font-josefin mr-2 text-xs">(optional)</span>
+          </p>
+          <code>
+            <input
+              class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
+              v-model="discordUrl"
+            />
+          </code>
+        </div>
+        <div class="mt-4">
+          <Button
+            class="float-right"
+            content="apply"
+            :isDisabled="mintingnProgress"
+            @click="apply"
+          />
+        </div>
       </div>
     </div>
   </BlackExpandable>
@@ -286,7 +361,11 @@ import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import Uploader from './Uploader.vue';
 import { errorMessage } from '../state/error';
 import { joinMetadataAndImages } from '../utils/metadata';
-import { allocateTokens, getLaunchpadEntrie } from '../utils/evolve';
+import {
+  allocateTokens,
+  applyForLanuchpad,
+  getAllocatedTokensNum,
+} from '../utils/evolve';
 
 export default {
   components: {
@@ -298,6 +377,10 @@ export default {
     const imgTypes = ['image/jpeg', 'image/png', 'image/gif'];
     const jsonTypes = ['application/json'];
     return {
+      randomMinting: false,
+      websiteUrl: undefined,
+      twitterUrl: undefined,
+      discordUrl: undefined,
       advanceMode: false,
       generatedMetadata: {} as any,
       attributes: [] as {
@@ -317,6 +400,7 @@ export default {
       imageBase64: undefined as undefined | string,
       parsedJSON: undefined as undefined | string,
       generateMetadata: false,
+      allocatedTokenNumber: 0,
     };
   },
   props: {
@@ -330,6 +414,15 @@ export default {
     },
   },
   methods: {
+    async apply() {
+      await applyForLanuchpad(
+        this.collectionAddress,
+        !this.randomMinting,
+        this.twitterUrl,
+        this.websiteUrl,
+        this.discordUrl,
+      );
+    },
     focusInput(event: any) {
       if (event.srcElement.id === 'attributeInputContainer') {
         document.getElementById('attributeInput')?.focus();
@@ -432,7 +525,7 @@ export default {
       this.mintingnProgress = true;
       const filesToUpload = {
         '1': { image: this.singleImage, metadata: this.singleMetadata },
-      }; 
+      };
       await allocateTokens(
         this.collectionAddress,
         filesToUpload,
@@ -448,13 +541,11 @@ export default {
       );
     },
   },
-  watch:{
-    async collectionAddress(a) {
-      await getLaunchpadEntrie(a)
-    }
+  async mounted() {
+    this.allocatedTokenNumber = await getAllocatedTokensNum(
+      this.collectionAddress,
+    );
+    console.log(this.allocatedTokenNumber);
   },
-  async mounted(){
-    await getLaunchpadEntrie(this.collectionAddress)
-  }
 };
 </script>

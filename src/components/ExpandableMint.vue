@@ -5,14 +5,8 @@
         Here you can pre-mint some tokens to your collection. They will
         immediately get transferred to your wallet. Preminted tokens count
         towards your collection's total supply and they will NOT be available
-        for use in launchpad. We support
+        for use in launchpad.
         <a
-          are
-          optional
-          data
-          describing
-          your
-          N
           href="https://docs.opensea.io/docs/metadata-standards"
           class="text-indigo-500 font-semibold"
           target="_blank"
@@ -34,12 +28,13 @@
         </label>
       </div>
       <div v-if="advanceMode" class="grid">
-        <Uploader
-          class="mt-8 h-44 mb-10"
-          heading="drop files below:"
-          :acceptedTypes="[...imgTypes, ...jsonTypes]"
-          @acceptFiles="(acceptFiles: any[]) => advanceDrop(acceptFiles)"
-        />
+        <div class="mt-8 h-44 mb-10">
+          <Uploader
+            heading="drop files below:"
+            :acceptedTypes="[...imgTypes, ...jsonTypes]"
+            @acceptFiles="(acceptFiles: any[]) => advanceDrop(acceptFiles)"
+          />
+        </div>
         <div
           class="ml-2 max-h-24 overflow-auto"
           v-if="filesToUpload && Object.keys(filesToUpload).length > 0"
@@ -199,25 +194,25 @@
           </div>
           <div class="grid" v-if="generateMetadata">
             <div class="grid items-center">
-              <p class="font-josefin mr-2">NFT name:</p>
+              <p class="font-josefin mr-2 text-sm">NFT name: <span class="font-josefin mr-2 text-xs">(optional)</span></p>
               <code>
                 <input
-                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full"
+                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
                   v-model="nftName"
                 />
               </code>
             </div>
             <div class="grid items-center">
-              <p class="font-josefin mr-2">External link:</p>
+              <p class="font-josefin mr-2 text-sm">External link:</p>
               <code>
                 <input
-                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full"
+                  class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
                   v-model="externalLink"
                 />
               </code>
             </div>
             <div class="grid items-center">
-              <p class="font-josefin mr-2">NFT description:</p>
+              <p class="font-josefin mr-2 text-sm">NFT description:</p>
               <code>
                 <textarea
                   class="bg-zinc-900 px-4 py-2 rounded-2xl w-full h-40"
@@ -226,7 +221,7 @@
               </code>
             </div>
             <div class="grid items-center">
-              <p class="font-josefin mr-2">Attributes:</p>
+              <p class="font-josefin mr-2 text-sm">Attributes:</p>
             </div>
             <div
               class="items-center bg-zinc-900 px-4 py-2 rounded-2xl"

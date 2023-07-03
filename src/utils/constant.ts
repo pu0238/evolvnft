@@ -30,8 +30,6 @@ export const CONSTANTINE_INFO = {
   features: ['cosmwasm', 'ibc-transfer', 'ibc-go'],
 };
 
-export const DEFAULT_GAS_PRICE = GasPrice.fromString('0.02uconst');
-
 export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 

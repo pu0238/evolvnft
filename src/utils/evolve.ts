@@ -210,11 +210,49 @@ export async function setRewardsFee(
   );
 }
 
+export async function applyForLanuchpad(
+  collectionAddress: string,
+  orderedMint: boolean,
+  twitterUrl?: string,
+  projectUrl?: string,
+  discordUrl?: string,
+): Promise<void> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const apply_for_launchpad = {
+    address: collectionAddress,
+    twitter_url: twitterUrl === '' ? undefined : twitterUrl,
+    project_url: projectUrl === '' ? undefined : projectUrl,
+    discord_url: discordUrl === '' ? undefined : discordUrl,
+    ordered_mint: orderedMint,
+  };
+
+  const collectionManagerContract = await getCollectionManager();
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    collectionManagerContract,
+    { apply_for_launchpad },
+    'auto',
+  );
+  console.log(
+    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+  );
+}
+
 /*
  *
  *  ==== LaunchpadManager ====
  *
  */
+export async function getAllocatedTokensNum(
+  collectionAddress: string,
+): Promise<number> {
+  const queryClient = await getQueryClient();
+  const launchpadManager = await getLaunchpadManager();
+  const num: number = await queryClient.queryContractSmart(launchpadManager, {
+    get_allocated_tokens_num: { address: collectionAddress },
+  });
+  return num;
+}
 
 export async function getLaunchpadManager(): Promise<string> {
   const launchpadManager = launchpadManagerContractAddress.get();

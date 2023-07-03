@@ -56,7 +56,7 @@
       </div>
       <div class="w-full mt-8 hidden">
         <div class="grid items-center">
-          <p class="font-josefin mr-2">Split rewards with token holders:</p>
+          <p class="font-josefin mr-2 font-semibold">Split rewards with token holders:</p>
           <div class="flex">
             <div class="mt-5 flex-1">
               <label
@@ -84,7 +84,7 @@
       </div>
       <div class="w-full grid mt-8">
         <div class="grid items-center">
-          <p class="font-josefin mr-2">Split rewards with token holders:</p>
+          <p class="font-josefin mr-2 font-semibold">Split rewards with token holders:</p>
           <div class="w-full">
             <Button
               content="withdraw rewards"
