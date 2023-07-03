@@ -1,9 +1,9 @@
 ---
-import Main from "../layouts/Main.astro";
-import Menu from "../components/Menu.vue";
-import Footer from "../components/Footer.vue";
-import MobileMenu from "../components/MobileMenu.vue";
-import ErrorContainer from "../components/ErrorContainer.vue";
+import Main from '../layouts/Main.astro';
+import Menu from '../components/Menu.vue';
+import Footer from '../components/Footer.vue';
+import MobileMenu from '../components/MobileMenu.vue';
+import ErrorContainer from '../components/ErrorContainer.vue';
 
 const leftNavItems = [
   { isComingSoon: true, content: "launchpad" }, //href: "/launchpad" 
@@ -16,7 +16,6 @@ const rightNavItems = [
   { isComingSoon: false, content: "create", href: "/create", isWalletStricted: true},
   { isComingSoon: false, content: "dashboard", href: "/dashboard", isWalletStricted: true},
 ];
-
 ---
 
 <Main
@@ -26,7 +25,12 @@ const rightNavItems = [
 >
   <div class="container mx-auto">
     <div class="px-8 mx-auto lg:mb-16">
-      <Menu class="my-8" client:visible leftNavItems={leftNavItems} rightNavItems={rightNavItems} />
+      <Menu
+        class="my-8"
+        client:visible
+        leftNavItems={leftNavItems}
+        rightNavItems={rightNavItems}
+      />
       <slot />
     </div>
     <MobileMenu client:visible navItems={[...leftNavItems, ...rightNavItems]} />

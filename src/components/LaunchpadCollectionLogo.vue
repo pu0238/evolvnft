@@ -1,7 +1,12 @@
 <template>
   <div class="bg-black border border-black float-left p-1 rounded-xl">
     <div class="text-center">
-      <img class="w-24 mx-auto" :src="collectionImg" alt="Collection image" draggable="false"/>
+      <img
+        class="w-24 mx-auto"
+        :src="collectionImg"
+        alt="Collection image"
+        draggable="false"
+      />
     </div>
   </div>
 </template>

@@ -118,7 +118,7 @@ import { applyDecimal } from '../utils/arch';
 
 export default {
   methods: {
-    applyDecimal
+    applyDecimal,
   },
   props: {
     rewardsPercentageFee: {

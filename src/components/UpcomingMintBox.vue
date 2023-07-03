@@ -8,7 +8,9 @@
           class="bg-white h-[64px] w-[64px] sm:h-[100px] sm:w-[100px] rounded-3xl"
         />
         <div class="grid">
-          <div class="text-white text-base sm:text-md lg:text-2xl font-cal pt-2 float-left pl-4">
+          <div
+            class="text-white text-base sm:text-md lg:text-2xl font-cal pt-2 float-left pl-4"
+          >
             evolving beasts
           </div>
           <p
@@ -43,7 +45,13 @@
       <div>
         <Button
           :isFilled="true"
-          :content="status === 'ongoing' ? 'open launchpad >' : status === 'upcoming' ? 'add to calendar' : 'open collection >' "
+          :content="
+            status === 'ongoing'
+              ? 'open launchpad >'
+              : status === 'upcoming'
+              ? 'add to calendar'
+              : 'open collection >'
+          "
           :is-coming-soon="status === 'upcoming'"
           :is-disabled="status === 'upcoming'"
           color="indigo"
@@ -95,8 +103,7 @@ export default {
       type: String as PropType<'ongoing' | 'upcoming' | 'finished'>,
       default: () => 'ongoing',
       required: false,
-      validator: (s: string) =>
-        ['ongoing', 'upcoming', 'finished'].includes(s),
+      validator: (s: string) => ['ongoing', 'upcoming', 'finished'].includes(s),
     },
   },
 };
