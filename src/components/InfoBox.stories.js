@@ -1,14 +1,14 @@
-import LaunchpadHeader from './LaunchpadHeader.vue';
+import InfoBox from './InfoBox.vue';
 
 export default {
-  component: LaunchpadHeader,
+  component: InfoBox,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'LaunchpadHeader',
+  title: 'InfoBox',
 };
 
 const Template = (args) => ({
-  components: { LaunchpadHeader },
-  template: '<LaunchpadHeader />',
+  components: { InfoBox },
+  template: '<InfoBox />',
 });
 export const Default = Template.bind({});

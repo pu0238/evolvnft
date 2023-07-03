@@ -54,8 +54,11 @@ export default {
     CollectionBaner,
     Button,
     BlackExpandable,
+<<<<<<< HEAD
+=======
     ExpandableMint,
     ExpandableRewards,
+>>>>>>> feat/launchpad
   },
   data() {
     return {

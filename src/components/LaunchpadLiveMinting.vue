@@ -1,18 +1,23 @@
 <template>
-  <div class="grid md:grid-cols-2 gap-4 relative pb-10">
+  <div>
+    <h1 class="text-black text-5xl xl:text-6xl 2xl:text-7xl font-cal py-10">
+      🟣live minting
+    </h1>
+  </div>
+  <div class="grid md:grid-cols-2 gap-4 relative">
     <div class="relative rounded-xl overflow-hidden -py-1 float-right">
       <div
         class="overflow-hidden flex rounded-xl bg-zinc-300 float-right p-3 m-6"
       >
         <span v-for="img in collectionImages">
-          <img :src="img" draggable="false" />
+          <img :src="img" />
         </span>
       </div>
-      <LaunchpadCollectionLogo class="absolute h-[80px] w-[80px] lg:h-[100px] lg:w-[100px]" />
+      <LaunchpadCollectionLogo class="absolute" />
     </div>
 
     <div>
-      <div class="mb-1 overflow-hidden lg:pt-10">
+      <div class="mb-1 overflow-hidden flex-none py-9">
         <h3 class="font-cal text-3xl">{{ collectionName }}</h3>
         <p class="font-josefin text-sm -mt-2 -ml-2 px-2 mb-3 font-normal">
           supply: {{ collectionSupply }}
@@ -37,9 +42,9 @@
 
         <Button
           :isFilled="true"
-          content="open collection >"
+          content="upcoming projects"
           color="indigo"
-          class="mr-2 mt-4 float-right"
+          class="mr-2 float-right"
         />
       </div>
     </div>
@@ -47,7 +52,6 @@
 </template>
 
 <script lang="ts">
-import { reactive } from 'vue';
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
 import LaunchpadLiveMintingParameter from './LaunchpadLiveMintingParameter.vue';
@@ -71,7 +75,7 @@ export default {
     },
     collectionName: {
       type: String,
-      default: () => 'evolving beast',
+      default: () => 'evolving beasts',
       required: true,
     },
     collectionSupply: {
@@ -99,10 +103,6 @@ export default {
       default: () => '',
       required: true,
     },
-  },
-  setup(props) {
-    props = reactive(props);
-    return {};
   },
 };
 </script>
