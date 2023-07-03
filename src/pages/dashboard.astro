@@ -1,0 +1,10 @@
+---
+import DashboardBody from '../components/DashboardBody.vue';
+import Container from '../layouts/Container.astro';
+---
+
+<Container>
+  <section class="w-full float-left justify-center mt-8 lg:mt-16 flex">
+    <DashboardBody client:only />
+  </section>
+</Container>

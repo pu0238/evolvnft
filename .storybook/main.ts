@@ -1,4 +1,3 @@
-import webpack from 'webpack';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { mergeConfig } from 'vite';
 

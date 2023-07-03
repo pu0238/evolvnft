@@ -1,74 +1,85 @@
-import { postEvolveMetadata, postEvolveMetadatav2 } from './evolve';
+import { postEvolveMetadatav2 } from './evolve';
 import type { CollectionEntitie } from './types/CollectionItem';
-import { sleep } from './schared';
 import { uploadBlob } from './bundlrUploader';
+import { errorMessage } from '../state/error';
 
-export function joinMetadataAndImages(
-  files: any[],
+export async function joinMetadataAndImages(
+  files: Blob[],
   imgTypes: string[],
   jsonTypes: string[],
-) {
-  const filesToUpload: { [key: string]: { image?: any; metadata?: any } } = {};
-  files.forEach((file: any) => {
+): Promise<{
+  [key: string]: { image?: Blob | undefined; metadata?: string | undefined };
+}> {
+  const filesToUpload: { [key: string]: { image?: Blob; metadata?: string } } =
+    {};
+  for (const file of files) {
     const fileName = file.name.split('.')[0];
     if (imgTypes.includes(file.type)) {
       if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
       filesToUpload[fileName]['image'] = file;
     } else if (jsonTypes.includes(file.type)) {
       if (!filesToUpload[fileName]) filesToUpload[fileName] = {};
-      filesToUpload[fileName]['metadata'] = file;
+      filesToUpload[fileName]['metadata'] = await file.text();
     }
-  });
+  }
   return filesToUpload;
 }
 
-export async function uploadTokenMetadata(filesToUpload: {
-  [key: string]: { image?: any; metadata?: any };
-}) {
-  const imageIds: Promise<string | void>[] = [];
+function filterUploadMetadata(filesToUpload: {
+  [key: string]: { image?: Blob; metadata?: string };
+}): {
+  [key: string]: { image: Blob; metadata: string };
+} {
+  const result: {
+    [key: string]: { image: Blob; metadata: string };
+  } = {};
   for (const fileName in filesToUpload) {
-    if (!filesToUpload[fileName].image || !filesToUpload[fileName].metadata) {
-      continue;
+    const image = filesToUpload[fileName].image;
+    const metadata = filesToUpload[fileName].metadata;
+    if (image && metadata) {
+      result[fileName] = { image, metadata };
     }
-    imageIds.push(
-      uploadBlob(
-        filesToUpload[fileName].image,
-        filesToUpload[fileName].image.type,
-      ),
-    );
+  }
+  return result;
+}
+
+export async function uploadTokenMetadata(filesToUpload: {
+  [key: string]: { image?: Blob; metadata?: string };
+}) {
+  const files = filterUploadMetadata(filesToUpload);
+  const imageIds: Promise<{
+    fileUrl: string;
+    type: string;
+  }>[] = [];
+  for (const fileName in files) {
+    const image = files[fileName].image;
+    imageIds.push(uploadBlob(image, image.type));
   }
 
   const resolvedImageIds = await Promise.all(imageIds);
-  for (const imageId of resolvedImageIds) {
-    if (!imageId) return console.error('Failed to upload images');
-  }
-
   let imageIndex = 0;
-  //let uploadedMetadataIds: (string | void)[] = [];
-  const promiseIds: Promise<string | void>[] = [];
-  for (const fileName in filesToUpload) {
-    if (!filesToUpload[fileName].image || !filesToUpload[fileName].metadata) {
-      continue;
-    }
-    const metadata = await filesToUpload[fileName].metadata.text();
-    const parsedMetadata = JSON.parse(metadata);
+  const promiseIds: Promise<string>[] = [];
+  for (const fileName in files) {
+    const metadata = files[fileName].metadata;
     const imageUploadId = resolvedImageIds[imageIndex];
+
     imageIndex++;
-    parsedMetadata.image = `https://arweave.net/${imageUploadId}`;
-    const encodedMetadata = new Blob([JSON.stringify(parsedMetadata)]);
-    promiseIds.push(uploadBlob(encodedMetadata, 'application/json'));
+    const enrichedMetadata = enrichMetadataWithImage(
+      metadata,
+      imageUploadId.fileUrl,
+      imageUploadId.type,
+    );
+    promiseIds.push(uploadStringMetadata(enrichedMetadata));
   }
-  const uploadedMetadataIds: (string | void)[] = await Promise.all(promiseIds);
-  for (const metadataId of uploadedMetadataIds) {
-    if (!metadataId) return console.error('Failed to upload metadata');
-  }
+  const uploadedMetadataIds: string[] = await Promise.all(promiseIds);
+  console.log({ uploadedMetadataIds });
   return uploadedMetadataIds;
 }
 
 export async function buildMintObject(
   accountAddress: string,
   filesToUpload: {
-    [key: string]: { image?: any; metadata?: any };
+    [key: string]: { image?: Blob; metadata?: string };
   },
   collection: CollectionEntitie,
 ) {
@@ -78,13 +89,13 @@ export async function buildMintObject(
   let mintObject: { a: string; b: number; c: number }[] = [];
   if (!collection.ic_collection_id) {
     mintObject = tokensMetadata.map((metadata) => ({
-      a: metadata as string,
+      a: `https://arweave.net/${metadata}`,
       b: 0,
       c: 0,
     }));
   } else {
     const metadataList: { arweave_hash: string }[] = tokensMetadata.map(
-      (metadata) => ({ arweave_hash: metadata as string }),
+      (metadata) => ({ arweave_hash: metadata }),
     );
     const collectionId = collection.ic_collection_id;
     const result = await postEvolveMetadatav2(
@@ -98,6 +109,70 @@ export async function buildMintObject(
       c: metadataId,
     }));
   }
-
   return mintObject;
+}
+
+export async function readFileAsDataURL(file: any): Promise<string> {
+  const base64data = await new Promise<string | undefined>((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const base64data = reader.result?.toString();
+      if (base64data) {
+        return resolve(base64data);
+      } else {
+        return undefined;
+      }
+    };
+  });
+  if (base64data) {
+    return base64data;
+  } else {
+    throw errorMessage.set('Failed to read image file');
+  }
+}
+
+export async function uploadImage(image: Blob): Promise<string> {
+  const imageUploadId = await uploadBlob(image, image.type);
+  return `https://arweave.net/${imageUploadId}`;
+}
+
+export async function uploadStringMetadata(metadata: string): Promise<string> {
+  const encodedMetadata = new Blob([metadata]);
+  return (await uploadBlob(encodedMetadata, 'application/json')).fileUrl;
+}
+
+export function enrichMetadataWithImage(
+  metadata: string,
+  imageId: string,
+  type: string,
+) {
+  const imageUrl = `https://arweave.net/${imageId}`;
+  const parsedMetadata = JSON.parse(metadata);
+  if (parsedMetadata?.properties?.files) {
+    parsedMetadata?.properties?.files.push({
+      uri: imageUrl,
+      type,
+    });
+  } else {
+    parsedMetadata.properties = {
+      files: [
+        {
+          uri: imageUrl,
+          type,
+        },
+      ],
+    };
+  }
+  parsedMetadata.image = imageUrl;
+  return JSON.stringify(parsedMetadata);
+}
+
+export async function uploadMetadataAndImage(
+  image: Blob,
+  metadata: string,
+): Promise<string> {
+  const url = await uploadImage(image);
+  const metadataToUpload = enrichMetadataWithImage(metadata, url, image.type);
+  return await uploadStringMetadata(metadataToUpload);
 }

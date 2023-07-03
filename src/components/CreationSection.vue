@@ -32,6 +32,7 @@ import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';
 // @ts-ignore
 import JSConfetti from 'js-confetti';
+import { errorMessage } from '../state/error';
 
 const confetti = new JSConfetti();
 
@@ -70,10 +71,10 @@ export default {
     },
     async uploadImage() {
       const firstFile = this.acceptFiles[0] as unknown as any;
-      if (!firstFile) return console.error('Failed to upload image');
+      if (!firstFile) throw errorMessage.set('Failed to upload image');
       const imageId = await uploadBlob(firstFile, firstFile.type);
-      if (!imageId) return console.error('Failed to upload image');
-      return `https://arweave.net/${imageId}`;
+      if (!imageId) throw errorMessage.set('Failed to upload image');
+      return `https://arweave.net/${imageId.fileUrl}`;
     },
 
     async createCollection() {

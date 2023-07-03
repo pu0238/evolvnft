@@ -5,7 +5,7 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [vue({ appEntrypoint: '/src/pages/_app' }), tailwind()],
+  integrations: [vue({ appEntrypoint: '/src/pages/_app.client' }), tailwind()],
   vite: {
     resolve: {
       alias: {

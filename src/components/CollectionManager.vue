@@ -36,18 +36,18 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@nanostores/vue";
-import type { CollectionEntitie } from "../utils/types/CollectionItem";
-import CollectionItem from "./CollectionItem.vue";
-import { isWalletConnected } from "../state/walletState";
-import { computed } from "vue";
-import { isWallet } from "../utils/wallet";
-import CollectionsList from "./CollectionsList.vue";
-import SingleCollection from "./SingleCollection.vue";
-import CollectionTokens from "./CollectionTokens.vue";
-import HeaderSubtitle from "./HeaderSubtitle.vue";
+import { useStore } from '@nanostores/vue';
+import type { CollectionEntitie } from '../utils/types/CollectionItem';
+import CollectionItem from './CollectionItem.vue';
+import { isWalletConnected } from '../state/walletState';
+import { computed } from 'vue';
+import { isWallet } from '../utils/wallet';
+import CollectionsList from './CollectionsList.vue';
+import SingleCollection from './SingleCollection.vue';
+import CollectionTokens from './CollectionTokens.vue';
+import HeaderSubtitle from './HeaderSubtitle.vue';
 import { getArchwaySigner } from '../utils/wallet';
-import { getCollectionManager } from "../utils/evolve";
+import { getCollectionManager } from '../utils/evolve';
 
 export default {
   data() {

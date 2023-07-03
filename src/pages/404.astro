@@ -1,5 +1,5 @@
 ---
-import Main from "../layouts/Main.astro";
+import Main from '../layouts/Main.astro';
 ---
 
 <Main
@@ -11,11 +11,20 @@ import Main from "../layouts/Main.astro";
   <div class="text-center">
     <div class="w-full flex-auto items-center mb-2">
       <a href="/">
-      <img class="mx-auto" src="/evolvnft-logo.svg" alt="EvolvNFT" draggable="false"/></a>
+        <img
+          class="mx-auto"
+          src="/evolvnft-logo.svg"
+          alt="EvolvNFT"
+          draggable="false"
+        /></a
+      >
     </div>
     <div class="w-full font-cal text-2xl">
       <span class="text-indigo-500">404:</span> Not found
     </div>
-    <div class="font-josefin text-lg">Path: <code class="text-white bg-black py-2 px-3 rounded-lg">{Astro.url.pathname}</code></div>
+    <div class="font-josefin text-lg">
+      Path: <code class="text-white bg-black py-2 px-3 rounded-lg"
+        >{Astro.url.pathname}</code>
+    </div>
   </div>
 </Main>

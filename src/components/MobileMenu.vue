@@ -1,6 +1,9 @@
 <template>
   <div class="fixed block w-full lg:hidden top-0 left-0">
-    <div v-if="isMenuOpenValue" class="fixed top-0 w-full h-full bg-white px-6 py-4">
+    <div
+      v-if="isMenuOpenValue"
+      class="fixed top-0 w-full h-full bg-white px-6 py-4"
+    >
       <div class="mx-10">
         <div class="mt-14 grid container text-center mx-auto cursor-pointer">
           <div class="p-4" @click="toogleMenu">
@@ -62,7 +65,7 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
-          targetBlank: boolean | undefined
+          targetBlank: boolean | undefined;
         }[]
       >,
       default: () => [

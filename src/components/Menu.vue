@@ -5,16 +5,24 @@
     >
       <Logo textColor="black" class="float-left" />
       <div class="hidden lg:inline justify-between">
-        <NavBar class="float-left my-2" :navItems="leftNavItems" textColor="black" />
+        <NavBar
+          class="float-left my-2"
+          :navItems="leftNavItems"
+          textColor="black"
+        />
         <Button
           :isDisabled="false"
           :isFilled="true"
-          :content="isWalletConnected ? 'disconnect' : 'connect'"
+          :content="isWalletConnected ? walletSignerAddress ? walletSignerAddress.slice(0, 10) + '...' + walletSignerAddress.slice(-2) :'disconnect' : 'connect'"
           :isComingSoon="false"
           class="float-right"
           @click="sharedConnect"
         />
-        <NavBar class="float-right my-2 mr-4" :navItems="rightNavItems" textColor="black" />
+        <NavBar
+          class="float-right my-2 mr-4"
+          :navItems="rightNavItems"
+          textColor="black"
+        />
       </div>
       <a
         class="float-right lg:hidden pt-3 select-none cursor-pointer"
@@ -47,7 +55,7 @@ import Button from './Button.vue';
 import { useStore } from '@nanostores/vue';
 import { isMenuOpen } from '../state/menuState';
 import { isWallet, sharedConnect } from '../utils/wallet';
-import { isWalletConnected } from '../state/walletState';
+import { isWalletConnected, walletSignerAddress } from '../state/walletState';
 
 export default {
   components: { NavBar, Logo, Button },
@@ -65,14 +73,14 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
-          targetBlank: boolean | undefined
+          targetBlank: boolean | undefined;
         }[]
       >,
       default: () => [
-        { isComingSoon: false, content: "solution" },
-        { isComingSoon: false, content: "use cases" },
-        { isComingSoon: true, content: "ecosystem" },
-        { isComingSoon: false, content: "community" },
+        { isComingSoon: false, content: 'solution' },
+        { isComingSoon: false, content: 'use cases' },
+        { isComingSoon: true, content: 'ecosystem' },
+        { isComingSoon: false, content: 'community' },
       ],
       required: true,
     },
@@ -83,7 +91,7 @@ export default {
           content: string;
           href: string | undefined;
           isWalletStricted: boolean;
-          targetBlank: boolean | undefined
+          targetBlank: boolean | undefined;
         }[]
       >,
       default: () => [
@@ -99,10 +107,13 @@ export default {
     isWallet();
     const $collectionDescription = useStore(isWalletConnected);
     const $isMenuOpen = useStore(isMenuOpen);
+    const $walletSignerAddress = useStore(walletSignerAddress)
+
     props = reactive(props);
     return {
       isMenuOpenValue: computed(() => $isMenuOpen.value),
       isWalletConnected: computed(() => $collectionDescription.value),
+      walletSignerAddress: computed(() => $walletSignerAddress.value),
     };
   },
 };

@@ -4,7 +4,7 @@
     @click="openIfWalletIsConnected()"
   >
     <button
-      class="px-4 sm:px-5 py-2 text-sm sm:text-base align-middle font-semibold flex items-center border-4 rounded-full font-josefin disabled:text-zinc-200 relative group"
+      class="px-4 sm:px-5 py-2 text-sm sm:text-base align-middle flex items-center border-4 rounded-full disabled:text-zinc-200 relative group"
       :class="{
         'bg-indigo-500 border-indigo-500 text-white disabled:bg-indigo-700 disabled:border-indigo-700 disabled:text-zinc-300 hover:border-indigo-700 hover:bg-indigo-700':
           isFilled && color === 'indigo',
@@ -43,7 +43,7 @@
         />
       </svg>
 
-      {{ content }}
+      <pre class="font-josefin font-semibold">{{ content }}</pre>
 
       <svg
         class="ml-3"
