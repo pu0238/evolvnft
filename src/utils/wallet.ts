@@ -50,9 +50,9 @@ export function isWalletPopup(): boolean {
   return true;
 }
 
-export function openIfConnected(url: string) {
+export function openIfConnected(url?: string) {
   if (isWallet()) {
-    return window.open(url, '_self');
+    if (url) return window.open(url, '_self');
   }
   errorMessage.set('wallet not connected');
 }

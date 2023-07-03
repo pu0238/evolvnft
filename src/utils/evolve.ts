@@ -1,10 +1,18 @@
-import { errorMessage } from '../state/error';
-import { collectionManagerContractAddress, launchpadManagerContractAddress } from '../state/stateCache';
 import {
-  CARNISTER_API_URL,
-  SYSTEM_CONTEXT_CONTRACT_ADDRESS,
-} from './constant';
-import { getQueryClient } from './wallet';
+  collectionManagerContractAddress,
+  launchpadManagerContractAddress,
+} from '../state/stateCache';
+import { CARNISTER_API_URL, SYSTEM_CONTEXT_CONTRACT_ADDRESS } from './constant';
+import { buildMintObject } from './metadata';
+import type { CollectionEntitie } from './types/CollectionItem';
+import { getArchwaySigner, getQueryClient } from './wallet';
+import _ from 'lodash';
+
+/*
+ *
+ *  ==== EvolveMetadata ====
+ *
+ */
 
 export async function createEvolveCollection(
   accountAddress: string,
@@ -83,15 +91,11 @@ export async function getNextMetadataId(
   return (await result.json()).nextMetadataId;
 }
 
-export async function getCollectionsStats() {
-  const queryClient = await getQueryClient();
-  const collectionManagerContract = await getCollectionManager();
-
-  return await queryClient.queryContractSmart(
-    collectionManagerContract,
-    { get_stats: {} },
-  );
-}
+/*
+ *
+ *  ==== CollectionManager ====
+ *
+ */
 
 export async function getCollectionManager(): Promise<string> {
   const collectionManager = collectionManagerContractAddress.get();
@@ -107,6 +111,111 @@ export async function getCollectionManager(): Promise<string> {
   return state.address;
 }
 
+export async function getCollectionsStats() {
+  const queryClient = await getQueryClient();
+  const collectionManagerContract = await getCollectionManager();
+
+  return await queryClient.queryContractSmart(collectionManagerContract, {
+    get_stats: {},
+  });
+}
+
+export async function getWalletCollections(): Promise<
+  void | CollectionEntitie[]
+> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const list_user_collections = {
+    address: signerAddress,
+  };
+
+  const collectionManagerContract = await getCollectionManager();
+  const data = await archwaySigner.queryContractSmart(
+    collectionManagerContract,
+    {
+      list_user_collections,
+    },
+  );
+  return data;
+}
+
+export async function getCollection(
+  address: string,
+): Promise<CollectionEntitie> {
+  const { archwaySigner } = await getArchwaySigner();
+  const get_collection = {
+    address,
+  };
+
+  const collectionManagerContract = await getCollectionManager();
+  const data = await archwaySigner.queryContractSmart(
+    collectionManagerContract,
+    {
+      get_collection,
+    },
+  );
+  return data;
+}
+
+export async function mintNFTs(
+  collectionAddress: string,
+  filesToUpload: {
+    [key: string]: {
+      image?: Blob | undefined;
+      metadata?: string | undefined;
+    };
+  },
+  collection: CollectionEntitie,
+) {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const tokens = await buildMintObject(
+    signerAddress,
+    filesToUpload,
+    collection as CollectionEntitie,
+  );
+  const mint_tokens = {
+    address: collectionAddress,
+    tokens,
+  };
+  const collectionManagerContract = await getCollectionManager();
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    collectionManagerContract,
+    { mint_tokens },
+    'auto',
+  );
+  console.log(
+    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+  );
+}
+
+export async function setRewardsFee(
+  collectionAddress: string,
+  fee: number,
+): Promise<void> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const set_rewards_fee = {
+    address: collectionAddress,
+    fee,
+  };
+
+  const collectionManagerContract = await getCollectionManager();
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    collectionManagerContract,
+    { set_rewards_fee },
+    'auto',
+  );
+  console.log(
+    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+  );
+}
+
+/*
+ *
+ *  ==== LaunchpadManager ====
+ *
+ */
+
 export async function getLaunchpadManager(): Promise<string> {
   const launchpadManager = launchpadManagerContractAddress.get();
   if (launchpadManager) {
@@ -119,4 +228,78 @@ export async function getLaunchpadManager(): Promise<string> {
   );
   launchpadManagerContractAddress.set(state.address);
   return state.address;
+}
+
+export async function getLaunchpadEntries(limit = 10, start_from?: string) {
+  const queryClient = await getQueryClient();
+  const launchpadManager = await getLaunchpadManager();
+  const res = await queryClient.queryContractSmart(launchpadManager, {
+    list_launchpad_entries: { limit, start_from },
+  });
+
+  return { ..._.groupBy(res.data, 'status'), next: res.nextPage };
+}
+
+export async function getLaunchpadEntrie(collectionAddress: string) {
+  const queryClient = await getQueryClient();
+  const launchpadManager = await getLaunchpadManager();
+  const res = await queryClient.queryContractSmart(launchpadManager, {
+    get_launchpad_entry: { address: collectionAddress },
+  });
+
+  return res;
+}
+
+export async function allocateTokens(
+  collectionAddress: string,
+  filesToUpload: {
+    [key: string]: {
+      image?: Blob | undefined;
+      metadata?: string | undefined;
+    };
+  },
+  collection: CollectionEntitie,
+) {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const tokens = await buildMintObject(
+    signerAddress,
+    filesToUpload,
+    collection as CollectionEntitie,
+  );
+  const allocate_tokens = {
+    address: collectionAddress,
+    tokens,
+  };
+  const launchpadManagerContract = await getLaunchpadManager();
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    launchpadManagerContract,
+    { allocate_tokens },
+    'auto',
+  );
+  console.log(
+    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+  );
+}
+
+/*
+ *
+ *  ==== Collection ====
+ *
+ */
+
+export async function withdrawalRewards(
+  collectionAddress: string,
+): Promise<void> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    collectionAddress,
+    { pay_out_rewards: {} },
+    'auto',
+  );
+  console.log(
+    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+  );
 }

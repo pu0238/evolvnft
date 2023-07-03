@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts">
-import { errorMessage } from '../state/error';
 import { openIfConnected } from '../utils/wallet';
 import { reactive } from 'vue';
 

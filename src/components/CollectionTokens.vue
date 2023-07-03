@@ -26,7 +26,6 @@
           :evolv="singleCollection?.ic_collection_id"
           :selectedMetadata="selectedMetadata"
         />
-        <!---->
       </div>
     </div>
     <div
