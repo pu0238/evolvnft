@@ -1,7 +1,5 @@
-import type {
-  Window as KeplrWindow,
-} from '@keplr-wallet/types';
-import { isWalletConnected } from '../state/walletState';
+import type { Window as KeplrWindow } from '@keplr-wallet/types';
+import { isWalletConnected, walletSignerAddress } from '../state/walletState';
 import { CONSTANTINE_INFO } from './constant';
 import { ArchwayClient, SigningArchwayClient } from '@archwayhq/arch3.js';
 import { errorMessage } from '../state/error';
@@ -19,19 +17,28 @@ export async function sharedConnect() {
   if (isWalletConnectedValue === 'true') {
     await keplr.disable(CONSTANTINE_INFO.chainId);
     localStorage.setItem('isWalletConnected', 'false');
+    localStorage.removeItem('signerAddress');
     isWalletConnected.set(false);
+    walletSignerAddress.set(undefined);
     return;
   }
   await keplr.experimentalSuggestChain(CONSTANTINE_INFO);
   await keplr.enable(CONSTANTINE_INFO.chainId);
+  const { signerAddress } = await getArchwaySigner();
   localStorage.setItem('isWalletConnected', 'true');
+  localStorage.setItem('signerAddress', signerAddress);
   isWalletConnected.set(true);
+  walletSignerAddress.set(signerAddress);
 }
 
 export function isWallet(): boolean {
   const localIsWalletConnected =
     localStorage.getItem('isWalletConnected') === 'true';
   isWalletConnected.set(localIsWalletConnected);
+  const cashedSignerAddress = localStorage.getItem('signerAddress');
+  if (localIsWalletConnected && cashedSignerAddress) {
+    walletSignerAddress.set(cashedSignerAddress);
+  }
   return localIsWalletConnected;
 }
 
@@ -47,7 +54,7 @@ export function openIfConnected(url: string) {
   if (isWallet()) {
     return window.open(url, '_self');
   }
-  errorMessage.set("wallet not connected")
+  errorMessage.set('wallet not connected');
 }
 
 export async function getArchwaySigner(): Promise<{

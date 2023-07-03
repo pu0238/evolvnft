@@ -9,7 +9,7 @@
         <Button
           :isDisabled="false"
           :isFilled="true"
-          :content="isWalletConnected ? 'disconnect' : 'connect'"
+          :content="isWalletConnected ? walletSignerAddress ? walletSignerAddress.slice(0, 10) + '...' + walletSignerAddress.slice(-2) :'disconnect' : 'connect'"
           :isComingSoon="false"
           class="float-right"
           @click="sharedConnect"
@@ -47,7 +47,7 @@ import Button from './Button.vue';
 import { useStore } from '@nanostores/vue';
 import { isMenuOpen } from '../state/menuState';
 import { isWallet, sharedConnect } from '../utils/wallet';
-import { isWalletConnected } from '../state/walletState';
+import { isWalletConnected, walletSignerAddress } from '../state/walletState';
 
 export default {
   components: { NavBar, Logo, Button },
@@ -99,10 +99,13 @@ export default {
     isWallet();
     const $collectionDescription = useStore(isWalletConnected);
     const $isMenuOpen = useStore(isMenuOpen);
+    const $walletSignerAddress = useStore(walletSignerAddress)
+
     props = reactive(props);
     return {
       isMenuOpenValue: computed(() => $isMenuOpen.value),
       isWalletConnected: computed(() => $collectionDescription.value),
+      walletSignerAddress: computed(() => $walletSignerAddress.value),
     };
   },
 };
