@@ -1,4 +1,5 @@
 import { createData, ArweaveSigner, getSignatureAndId } from 'arbundles';
+import { errorMessage } from '../state/error';
 
 export const jwk = {
   kty: 'RSA',
@@ -14,10 +15,13 @@ export const jwk = {
 
 const signer = new ArweaveSigner(jwk);
 
-export async function uploadBlob(bytes: Blob, type: string) {
+export async function uploadBlob(
+  bytes: Blob,
+  type: string,
+): Promise<{ fileUrl: string; type: string }> {
   const bodyData = new Uint8Array(await bytes.arrayBuffer());
   if (bodyData.length === 0) {
-    return console.error('Failed to upload image');
+    throw errorMessage.set('Failed to decode file');
   }
   const tags = [
     {
@@ -51,5 +55,5 @@ export async function uploadBlob(bytes: Blob, type: string) {
   });
   const bodyResult = await result.json();
 
-  return bodyResult.id as string;
+  return { fileUrl: bodyResult.id, type };
 }

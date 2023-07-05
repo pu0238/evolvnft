@@ -7,6 +7,7 @@
         class="w-32 lg:w-40 mx-auto"
         :src="collectionImg"
         alt="Collection image"
+        draggable="false"
       />
       <h3 class="font-cal text-xl lg:text-2xl mt-2 mb-1 text-white">
         {{ collectionTitle }}

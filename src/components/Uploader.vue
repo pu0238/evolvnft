@@ -1,15 +1,18 @@
 <template>
-  <div>
-    <span class="text-xl md:text-2xl font-cal mb-4 text-white">{{
+  <div class="w-full h-full">
+    <span class="text-xl md:text-xl font-cal mb-4 text-white w-full">{{
       heading
     }}</span>
     <div
       v-bind="getRootProps()"
-      class="font-josefin text-zinc-300 border-dashed border-2 border-indigo-500 h-32 text-center flex justify-center items-center"
+      class="font-josefin text-zinc-300 border-dashed border-2 w-full h-full border-indigo-500 text-center flex justify-center items-center"
+      :class="{
+        'h-48 w-48': isSquare
+      }"
     >
       <input v-bind="getInputProps()" />
       <p v-if="isDragActive">drop file here ...</p>
-      <p v-else>drag files here! (max 100kb per file)</p>
+      <p v-else>{{ dropboxText }} <br/> <span class="text-xs">{{dropboxText2 }}</span></p>
     </div>
   </div>
 </template>
@@ -38,6 +41,21 @@ export default {
       type: Number,
       required: false,
     },
+    dropboxText: {
+      type: String,
+      default: () => 'drag files here!',
+      required: false,
+    },
+    dropboxText2: {
+      type: String,
+      default: () => '(max 100kb per file)',
+      required: false,
+    },
+    isSquare: {
+      type: Boolean,
+      default: () => false,
+      required: false,
+    }
   },
   emits: ['acceptFiles'],
   setup(props, { emit }) {

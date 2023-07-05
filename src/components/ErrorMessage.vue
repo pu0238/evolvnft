@@ -23,13 +23,13 @@
 
 <style>
 .error {
-    animation: fadeInAndOut 4s linear forwards;
+  animation: fadeInAndOut 4s linear forwards;
 }
 @-moz-keyframes fadeInAndOut {
   0% {
     opacity: 0;
   }
-   6% {
+  6% {
     opacity: 1;
   }
   90% {
@@ -40,10 +40,10 @@
   }
 }
 @-webkit-keyframes fadeInAndOut {
-    0% {
+  0% {
     opacity: 0;
   }
-   6% {
+  6% {
     opacity: 1;
   }
   90% {
@@ -54,10 +54,10 @@
   }
 }
 @-o-keyframes fadeInAndOut {
-    0% {
+  0% {
     opacity: 0;
   }
-   6% {
+  6% {
     opacity: 1;
   }
   90% {
@@ -68,7 +68,7 @@
   }
 }
 @keyframes fadeInAndOut {
-    0% {
+  0% {
     opacity: 0;
   }
   6% {
@@ -96,5 +96,6 @@ export default {
       default: () => 'make sure your wallet is connected!',
       required: true,
     },
-  }}
+  },
+};
 </script>

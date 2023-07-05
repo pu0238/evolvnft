@@ -87,7 +87,7 @@
             'text-zinc-200': bgColor === 'black',
           }"
         >
-          {{ applyDecimal(reward) }} u{{ denom.slice(1) }}
+          {{ applyDecimal(reward) }} {{ denom.slice(1) }}
         </p>
       </div>
       <h4
@@ -118,7 +118,7 @@ import { applyDecimal } from '../utils/arch';
 
 export default {
   methods: {
-    applyDecimal
+    applyDecimal,
   },
   props: {
     rewardsPercentageFee: {
