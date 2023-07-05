@@ -65,8 +65,4 @@ export const CARNISTER_API_URL =
 
 export const NETWORK_INFO =
   networksData[import.meta.env.PUBLIC_NETWORK as 'TESTNET' | 'MAINNET'];
-export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = import.meta.env[
-  'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK
-];
-
-console.log(SYSTEM_CONTEXT_CONTRACT_ADDRESS)
+export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = "archway1ewk09pl9hvgegwydttnkeldhkudu7xxcqkx7xdfg8ht75n4kpldsju8wxc"
