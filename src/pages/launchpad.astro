@@ -1,12 +1,10 @@
 ---
-import LaunchpadContainer from '../components/LaunchpadContainer.vue';
-import LaunchpadHeader from '../components/LaunchpadHeader.vue';
+import LaunchpadBody from '../components/LaunchpadBody.vue';
 import Container from '../layouts/Container.astro';
 ---
 
 <Container>
-  <section class="w-full float-left mt-8 lg:mt-16 grid">
-    <LaunchpadHeader />
-    <LaunchpadContainer client:visible />
+  <section class="w-full float-left mt-8 lg:mt-16">
+    <LaunchpadBody client:visible />
   </section>
 </Container>

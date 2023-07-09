@@ -3,53 +3,66 @@
     <img
       draggable="false"
       class="-top-5 sm:top-[5rem] md:top-5 lg:top-5 xl:top-8 2xl:top-5 left-5 sm:left-6 md:left-7 lg:left-10 xl:left-12 2xl:left-[5rem] w-[5rem] sm:w-[8rem] md:w-[12rem] lg:w-[16rem] xl:w-[20rem] 2xl:w-[25rem] my-8 lg:my-12 mx-auto -rotate-[17deg] absolute -z-10 opacity-30 sm:opacity-100 md:opacity-100 lg:opacity-100 xl:opacity-100 2xl:opacity-100"
-      :src="firstThreeCollectionImages[0]"
+      :src="
+        launchpadData.preview[0].a.length === 42
+          ? `https://arweave.net/${launchpadData.preview[0].a}`
+          : `${carnister}/${launchpadData.preview[0].a}/${launchpadData.preview[0].b}/${launchpadData.preview[0].c}`
+      "
       alt="First Collection Image"
     />
     <img
       draggable="false"
       class="top-0 md:top-[1rem] lg:top-[4rem] xl:top-[2rem] 2xl:top-[5rem] right-5 md:right-[2rem] lg:right-[4rem] xl:right-[4rem] 2xl:right-[5rem] w-[7rem] md:w-[10rem] lg:w-[12rem] xl:w-[15rem] 2xl:w-[17rem] mt-[8rem] xl:mt-[12rem] rotate-[20deg] sm:rotate-[25deg] md:rotate-[35deg] lg:rotate-[25deg] xl:rotate-[30deg] 2xl:rotate-[30deg] absolute -z-10 opacity-40 sm:opacity-100 md:opacity-100 lg:opacity-100 xl:opacity-100 2xl:opacity-100"
-      :src="firstThreeCollectionImages[1]"
+      :src="
+        launchpadData.preview[1].a.length === 42
+          ? `https://arweave.net/${launchpadData.preview[1].a}`
+          : `${carnister}/${launchpadData.preview[1].a}/${launchpadData.preview[1].b}/${launchpadData.preview[1].c}`
+      "
       alt="Secound Collection Image"
     />
     <img
       draggable="false"
       class="top-3 sm:top-5 lg:top-7 xl:top-7 right-4 sm:right-2 md:right-3 lg:right-10 xl:right-15 2xl:right-[5rem] w-[5rem] md:w-[9rem] lg:w-[11rem] xl:w-[14rem] 2xl:w-[16rem] rotate-[9deg] sm:rotate-[7deg] md:rotate-[10deg] 2xl:rotate-[10deg] absolute -z-10 opacity-30 sm:opacity-100 md:opacity-100 lg:opacity-100 xl:opacity-100 2xl:opacity-100"
-      :src="firstThreeCollectionImages[2]"
+      :src="
+        launchpadData.preview[2].a.length === 42
+          ? `https://arweave.net/${launchpadData.preview[2].a}`
+          : `${carnister}/${launchpadData.preview[2].a}/${launchpadData.preview[2].b}/${launchpadData.preview[2].c}`
+      "
       alt="Thrid collection image"
     />
     <center>
       <h2
-        class="text-3xl md:text-2xl lg:text-3xl xl:text-4xl text-black font-cal text-center md:pl-10"
+        class="text-3xl md:text-2xl lg:text-3xl xl:text-4xl text-black font-cal text-center"
       >
-        evolving beasts
+        {{ launchpadData.name }}
       </h2>
       <div class="my-2">
         <p
-          class="text-sm font-semibold sm:font-normal md:text-md lg:text-lg xl:text-xl text-black font-josefin text-center w-[18rem] md:pl-10 sm:w-[25rem] md:w-[22rem] lg:w-[33rem] xl:w-[40rem] 2xl:w-[42rem] ]"
+          class="text-sm font-semibold sm:font-normal md:text-md lg:text-lg xl:text-xl text-black font-josefin text-center w-[18rem] sm:w-[25rem] md:w-[22rem] lg:w-[33rem] xl:w-[40rem] 2xl:w-[42rem] ]"
         >
-          evolvNFT provides the first fully decentralized metadata allowing you
-          to create amazing evolving collections. discover some of them here!
+          {{ launchpadData.description }}
         </p>
       </div>
 
-      <div class="my-[4rem] text-lg font-josefin w-[16rem]">
-        <div v-if="isUserWhitelisted && isWhitelistOpen">
+      <div class="my-[4rem] font-josefin w-[16rem] grid">
+        <div v-if="isUserWhitelisted && isWhitelistOpen" class="my-2 order-last">
           <Button
             :isFilled="true"
-            content="        mint        "
+            content="      mint      "
             color="indigo"
             class="mr-3"
           />
         </div>
-
-        <div class="border-b-zinc-300 border-b-[1px]" v-else>
+        <div class="border-b-zinc-300 border-b-[1px] text-base" v-else>
           whitelist minting starts at:
-          <p class="font-semibold">1992.23.23 13:34</p>
+          <p class="font-semibold text-lg">1992.23.23 13:34</p>
         </div>
-        <div>
-          open minting starts at:
-          <p class="font-semibold">1992.23.23 13:34</p>
+        <div class="text-base">
+          open mint starts at:
+          <p class="font-semibold text-lg">
+            {{ parseTime(launchpadData.startTime) }}
+            {{ parseDate(launchpadData.startTime) }}
+          </p>
         </div>
       </div>
     </center>
@@ -69,8 +82,14 @@
           <div
             class="overflow-hidden float-left flex 2xl:flex rounded-xl bg-zinc-300 p-2 m-6"
           >
-            <span v-for="img in collectionImages.slice(0, maxLatestDrops)">
-              <img :src="img" />
+            <span v-for="img in launchpadData.preview.slice(0, maxLatestDrops)">
+              <img
+                :src="
+                  img.length === 42
+                    ? `https://arweave.net/${img.a}`
+                    : `${carnister}/${img.a}/${img.b}/${img.c}`
+                "
+              />
             </span>
           </div>
         </div>
@@ -82,13 +101,29 @@
         >
           <div>
             total minted:
-            <p class="font-semibold float-right">100</p>
+            <p class="font-semibold float-right">
+              {{
+                Math.round(
+                  (launchpadData.soldTokens / launchpadData.totalTokens) * 100,
+                )
+              }}
+              %
+            </p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+              <div
+                class="bg-indigo-500 h-2.5 rounded-full"
+                :style="`width: ${Math.round(
+                  (launchpadData.soldTokens / launchpadData.totalTokens) * 100,
+                )}%`"
+              ></div>
+            </div>
           </div>
           <br />
+          <!--
           <div class="py-4">
             you have minted:
             <p class="font-semibold float-right">1/2</p>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -98,6 +133,10 @@
 <script lang="ts">
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
+import type { LaunchpadItem } from '../utils/types/LaunchpadItem';
+import type { PropType } from 'vue';
+import { CARNISTER_API_URL } from '../utils/constant';
+import { parseDate, parseTime } from '../utils/schared';
 
 export default {
   components: {
@@ -112,21 +151,17 @@ export default {
     };
   },
   props: {
-    collectionImages: {
-      type: Array<string>,
-      default: () => ['/alien.png', '/alien.png', '/alien.png'],
+    launchpadData: {
+      type: Object as PropType<LaunchpadItem>,
       required: true,
     },
-    collectionImg: {
-      type: String,
-      default: () => '/evolvnft-collection-logo.svg',
-      required: false,
-    },
-    firstThreeCollectionImages: {
-      type: Array<string>,
-      default: () => ['/alien.png', '/alien.png', '/alien.png'],
-      required: true,
-    },
+  },
+  computed: {
+    carnister: () => CARNISTER_API_URL,
+  },
+  methods: {
+    parseDate,
+    parseTime,
   },
 };
 </script>
