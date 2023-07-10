@@ -23,10 +23,10 @@
             }"
           >
             hey let's go through a few steps together to create your dream
-            token.
+            NFT.
             <br />
             <br />
-            do not hesitate, choose the type of token you are interested in and
+            do not hesitate, choose the type of NFT you are interested in and
             start your decentralized adventure!
           </p>
         </div>

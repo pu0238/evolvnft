@@ -2,8 +2,8 @@
   <BlackExpandable title="mint NFT">
     <div class="mx-4 my-6 grid">
       <p class="font-josefin font-normal text-sm">
-        Here you can pre-mint some tokens to your collection. They will
-        immediately get transferred to your wallet. Preminted tokens count
+        Here you can pre-mint some NFTs to your collection. They will
+        immediately get transferred to your wallet. Preminted NFTs count
         towards your collection's total supply and they will NOT be available
         for use in launchpad.
         <a

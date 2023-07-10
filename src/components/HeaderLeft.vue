@@ -15,7 +15,7 @@
       />
       <Button
         :isFilled="true"
-        content="create token"
+        content="create NFT"
         color="black"
         class="flex-0"
         href="/create"
