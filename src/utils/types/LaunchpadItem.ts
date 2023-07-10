@@ -12,4 +12,6 @@ export interface LaunchpadItem {
   totalTokens: number;
   preview: any[];
   soldTokens: number;
+  address: string
+  whitelistEnd: string | null
 }

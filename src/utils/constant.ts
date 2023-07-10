@@ -60,11 +60,15 @@ export const MAINNET = {
 };
 
 const networksData = { TESTNET, MAINNET };
+
 export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 
 export const NETWORK_INFO =
   networksData[import.meta.env.PUBLIC_NETWORK as 'TESTNET' | 'MAINNET'];
+
+export const BLOCKCHAIN_SCAN = import.meta.env.PUBLIC_NETWORK === 'TESTNET' ? 'https://testnet.mintscan.io/archway-testnet/txs/' : 'https://www.mintscan.io/archway/txs/'
+
 export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = import.meta.env[
   'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK
 ];

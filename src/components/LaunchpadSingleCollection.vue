@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-screen relative overflow-hidden">
+  <div class="w-full min-h-[50vh] relative overflow-hidden">
     <img
       draggable="false"
       class="-top-5 sm:top-[5rem] md:top-5 lg:top-5 xl:top-8 2xl:top-5 left-5 sm:left-6 md:left-7 lg:left-10 xl:left-12 2xl:left-[5rem] w-[5rem] sm:w-[8rem] md:w-[12rem] lg:w-[16rem] xl:w-[20rem] 2xl:w-[25rem] my-8 lg:my-12 mx-auto -rotate-[17deg] absolute -z-10 opacity-30 sm:opacity-100 md:opacity-100 lg:opacity-100 xl:opacity-100 2xl:opacity-100"
@@ -30,7 +30,7 @@
       "
       alt="Thrid collection image"
     />
-    <center>
+    <grid class="grid justify-items-center">
       <h2
         class="text-3xl md:text-2xl lg:text-3xl xl:text-4xl text-black font-cal text-center"
       >
@@ -44,20 +44,33 @@
         </p>
       </div>
 
-      <div class="my-[4rem] font-josefin w-[16rem] grid">
-        <div v-if="isUserWhitelisted && isWhitelistOpen" class="my-2 order-last">
+      <div class="my-[4rem] font-josefin w-[16rem] grid text-center">
+        <div v-if="userCanMint" class="my-2 order-last flex mx-auto">
           <Button
             :isFilled="true"
             content="      mint      "
             color="indigo"
-            class="mr-3"
+            class="flex"
+            @click="claimToken"
           />
         </div>
-        <div class="border-b-zinc-300 border-b-[1px] text-base" v-else>
-          whitelist minting starts at:
-          <p class="font-semibold text-lg">1992.23.23 13:34</p>
-        </div>
-        <div class="text-base">
+        <template v-if="launchpadData.whitelistEnd">
+          <div class="border-b-zinc-300 border-b-[1px] text-base">
+            whitelist minting starts at:
+            <p class="font-semibold text-lg">
+              {{ parseTime(launchpadData.startTime) }}
+              {{ parseDate(launchpadData.startTime) }}
+            </p>
+          </div>
+          <div class="text-base">
+            open mint starts at:
+            <p class="font-semibold text-lg">
+              {{ parseTime(launchpadData.whitelistEnd) }}
+              {{ parseDate(launchpadData.whitelistEnd) }}
+            </p>
+          </div>
+        </template>
+        <div class="text-base" v-else>
           open mint starts at:
           <p class="font-semibold text-lg">
             {{ parseTime(launchpadData.startTime) }}
@@ -65,7 +78,7 @@
           </p>
         </div>
       </div>
-    </center>
+    </grid>
 
     <div
       class="sm:w-[36rem] md:w-[45rem] lg:w-[60rem] xl:w-[75rem] 2xl:w-[85rem] lg:pt-[5rem] xl:pt-[11rem] 2xl:pt-[20rem]"
@@ -138,6 +151,8 @@ import type { PropType } from 'vue';
 import { CARNISTER_API_URL } from '../utils/constant';
 import { parseDate, parseTime } from '../utils/schared';
 
+import { claimLaunchpadToken } from '../utils/evolve';
+
 export default {
   components: {
     Button,
@@ -145,9 +160,8 @@ export default {
   },
   data() {
     return {
-      isUserWhitelisted: true,
-      isWhitelistOpen: true,
-      maxLatestDrops: 2,
+      userCanMint: false,
+      maxLatestDrops: 3,
     };
   },
   props: {
@@ -162,6 +176,34 @@ export default {
   methods: {
     parseDate,
     parseTime,
+    async claimToken() {
+      await claimLaunchpadToken(
+        this.launchpadData.address,
+        this.launchpadData.tokenCost,
+        this.launchpadData.costDenom,
+      );
+    },
+    checkDidUserCanMint() {
+      const startTime = Number(this.launchpadData.startTime) * 1000;
+      const endTime = Number(this.launchpadData.endTime) * 1000;
+      const currentTime = new Date().getTime();
+
+      if (this.launchpadData.whitelistEnd) {
+        const whitelistEnd = Number(this.launchpadData.whitelistEnd) * 1000;
+        // TODO: is user whitelisted?
+        if (currentTime > whitelistEnd && currentTime < endTime) {
+          this.userCanMint = true;
+        }
+      } else {
+        // TODO: is user whitelisted?
+        if (currentTime > startTime && currentTime < endTime) {
+          this.userCanMint = true;
+        }
+      }
+    },
+  },
+  mounted() {
+    this.checkDidUserCanMint();
   },
 };
 </script>
