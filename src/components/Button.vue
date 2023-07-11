@@ -17,6 +17,7 @@
         'ease-out duration-300': !isDisabled,
         'bg-transparent border-white text-white disabled:border-zinc-300 disabled:text-zinc-300 hover:text-indigo-500 hover:border-indigo-500':
           !isFilled && color === 'white',
+
         'cursor-progress': state === 'progress',
         'cursor-not-allowed': state === 'notAllowed',
         'cursor-pointer': state === 'allowed',
