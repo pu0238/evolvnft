@@ -98,7 +98,6 @@
 <script lang="ts">
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
-
 export default {
   components: {
     Button,

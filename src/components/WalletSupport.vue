@@ -3,7 +3,7 @@
     <div class="pl-5">
       <h1 class="text-xl font-cal">Choose a wallet to connect</h1>
 
-      <p1 class="text-md text-zinc-500 font-josefin">
+      <p1 class="text-sm text-zinc-500 font-josefin">
         Select from the supported wallets to get started.</p1
       >
     </div>
