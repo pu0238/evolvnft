@@ -2,7 +2,7 @@ import {
   collectionManagerContractAddress,
   launchpadManagerContractAddress,
 } from '../state/stateCache';
-import { CARNISTER_API_URL, SYSTEM_CONTEXT_CONTRACT_ADDRESS } from './constant';
+import { BLOCKCHAIN_SCAN, CARNISTER_API_URL, SYSTEM_CONTEXT_CONTRACT_ADDRESS } from './constant';
 import { buildMintObject } from './metadata';
 import type { CollectionEntitie } from './types/CollectionItem';
 import { getArchwaySigner, getQueryClient } from './wallet';
@@ -193,7 +193,7 @@ export async function mintNFTs(
     'auto',
   );
   console.log(
-    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+    `${BLOCKCHAIN_SCAN}${transactionHash}`,
   );
 }
 
@@ -215,7 +215,7 @@ export async function setRewardsFee(
     'auto',
   );
   console.log(
-    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+    `${BLOCKCHAIN_SCAN}${transactionHash}`,
   );
 }
 
@@ -243,7 +243,7 @@ export async function applyForLanuchpad(
     'auto',
   );
   console.log(
-    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+    `${BLOCKCHAIN_SCAN}${transactionHash}`,
   );
 }
 
@@ -343,7 +343,31 @@ export async function allocateTokens(
     'auto',
   );
   console.log(
-    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+    `${BLOCKCHAIN_SCAN}${transactionHash}`,
+  );
+}
+
+export async function claimLaunchpadToken(
+  collectionAddress: string,
+  tokenAmount: string,
+  denom: string
+) {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const claim_token = {
+    address: collectionAddress,
+  };
+  console.log(claim_token)
+  const launchpadManagerContract = await getLaunchpadManager();
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    launchpadManagerContract,
+    { claim_token },
+    'auto',
+    undefined,
+    [{ denom, amount: tokenAmount }]
+  );
+  console.log(
+    `${BLOCKCHAIN_SCAN}${transactionHash}`,
   );
 }
 
@@ -365,7 +389,7 @@ export async function withdrawalRewards(
     'auto',
   );
   console.log(
-    `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+    `${BLOCKCHAIN_SCAN}${transactionHash}`,
   );
 }
 

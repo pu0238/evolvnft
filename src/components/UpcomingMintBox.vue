@@ -6,17 +6,18 @@
       <div class="px-6 pb-7 grid-cols-2">
         <LaunchpadCollectionLogo
           class="bg-white h-[64px] w-[64px] sm:h-[100px] sm:w-[100px] rounded-3xl"
+          :collectionImg="thumbnail ? thumbnail : undefined"
         />
         <div class="grid">
           <div
             class="text-white text-base sm:text-md lg:text-2xl font-cal pt-2 float-left pl-4"
           >
-            evolving beasts
+            {{ name }}
           </div>
           <p
             class="font-josefin text-white text-sm pl-4 font-normal float-left"
           >
-            supply: {{ collectionSupply }}
+            supply: {{ supply }}
           </p>
         </div>
       </div>
@@ -24,22 +25,39 @@
         <UpcomingMintBoxParameter
           subtitleColor="white"
           parameterTitle="mint price"
-          :parameterSubtitle="collectionMintPrice"
+          :parameterSubtitle="`${tokenCost} ${denom}`"
         />
         <UpcomingMintBoxParameter
+          v-if="status === 'upcoming'"
+          subtitleColor="white"
+          parameterTitle="start date"
+          :parameterSubtitle="parseDate(startTime)"
+        />
+        <UpcomingMintBoxParameter
+          v-if="status === 'upcoming'"
+          subtitleColor="white"
+          parameterTitle="start time"
+          :parameterSubtitle="parseTime(startTime)"
+        />
+        <UpcomingMintBoxParameter
+          v-if="status === 'ongoing'"
           subtitleColor="white"
           parameterTitle="end date"
-          :parameterSubtitle="collectionEndData"
+          :parameterSubtitle="parseDate(endTime)"
         />
         <UpcomingMintBoxParameter
+          v-if="status === 'ongoing'"
           subtitleColor="white"
           parameterTitle="end time"
-          :parameterSubtitle="collectionEndTime"
+          :parameterSubtitle="parseTime(endTime)"
         />
         <UpcomingMintBoxParameter
           subtitleColor="white"
           parameterTitle="project links"
-          :parameterSubtitle="collectionProjectLinks"
+          :parameterSubtitle="discordUrl"
+          :discordUrl="discordUrl"
+          :twitterUrl="twitterUrl"
+          :projectUrl="projectUrl"
         />
       </div>
       <div>
@@ -66,6 +84,7 @@ import type { PropType } from 'vue';
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
 import UpcomingMintBoxParameter from './UpcomingMintBoxParameter.vue';
+import { parseDate, parseTime } from '../utils/schared';
 
 export default {
   components: {
@@ -74,29 +93,54 @@ export default {
     UpcomingMintBoxParameter,
   },
   props: {
-    collectionSupply: {
+    supply: {
       type: Number,
       default: () => 0,
       required: true,
     },
-    collectionMintPrice: {
+    tokenCost: {
       type: String,
       default: () => '1000',
       required: true,
     },
-    collectionEndData: {
+    endTime: {
       type: String,
       default: () => '26.06.2012',
       required: true,
     },
-    collectionEndTime: {
+    startTime: {
       type: String,
       default: () => '24h',
       required: true,
     },
-    collectionProjectLinks: {
+    discordUrl: {
       type: String,
-      default: () => 'twitch.tv/BiedaczeG',
+      default: () => 'twitch.tv/pu0238',
+      required: true,
+    },
+    projectUrl: {
+      type: String,
+      default: () => 'twitch.tv/pu0238',
+      required: true,
+    },
+    twitterUrl: {
+      type: String,
+      default: () => 'twitch.tv/pu0238',
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+      default: () => '/evolvnft-collection-logo.svg',
+      required: false,
+    },
+    name: {
+      type: String,
+      default: () => 'evolv hackermans',
+      required: true,
+    },
+    denom: {
+      type: String,
+      default: () => 'arch',
       required: true,
     },
     status: {
@@ -105,6 +149,10 @@ export default {
       required: false,
       validator: (s: string) => ['ongoing', 'upcoming', 'finished'].includes(s),
     },
+  },
+  methods: {
+    parseDate,
+    parseTime,
   },
 };
 </script>

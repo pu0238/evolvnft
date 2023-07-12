@@ -111,6 +111,7 @@ import { buildMintObject, joinMetadataAndImages } from '../utils/metadata';
 import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { getArchwaySigner } from '../utils/wallet';
 import { getCollectionManager } from '../utils/evolve';
+import { BLOCKCHAIN_SCAN } from '../utils/constant';
 
 export default {
   emit: ['close', 'afterMint'],
@@ -167,7 +168,7 @@ export default {
         'auto',
       );
       console.log(
-        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+        `${BLOCKCHAIN_SCAN}/${transactionHash}`,
       );
       this.$emit('afterMint');
       this.filesToUpload = {};
