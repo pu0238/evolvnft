@@ -52,7 +52,7 @@
           </div>
           <span class="text-xs font-josefin mt-2"
             >set the percentage of the rewards distribution of the collection
-            with the token holders.</span
+            with the NFT holders.</span
           >
         </div>
       </div>
@@ -82,7 +82,7 @@
             </div>
           </div>
           <span class="text-xs font-josefin mt-2"
-            >Decide if you want to share rewards with token holders.</span
+            >Decide if you want to share rewards with NFT holders.</span
           >
         </div>
       </div>

@@ -27,7 +27,7 @@
       <p
         class="w-full float-left :text-xl xl:text-2xl font-josefin text-zinc-300 mt-8"
       >
-        For mint tokens, drop the token metadata along with the token image. In
+        For mint NFTs, drop the NFT metadata along with the NFT image. In
         order for images to be linked to metadata correctly, name the metadata
         the same as the image (for example: 1.json, 1.png).
       </p>

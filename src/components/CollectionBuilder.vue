@@ -59,10 +59,10 @@
             </span>
             <span v-if="step === 6">
               At this stage, you will specify whether the collection you create
-              should be limited to a certain number of tokens
+              should be limited to a certain number of NFTs
             </span>
             <span v-if="step === 7">
-              To create tokens or create a candie machine go to collection
+              To create NFTs or create a candie machine go to collection
               management
             </span>
           </p>
