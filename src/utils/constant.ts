@@ -11,6 +11,7 @@ export const TESTNET = {
   chainId: 'constantine-3',
   chainName: 'Constantine',
   rpc: 'https://rpc.constantine.archway.tech',
+  wss: 'wss://rpc.constantine.archway.tech',
   rest: 'https://api.constantine.archway.tech',
   stakeCurrency: CONSTANTINE_CURRENCY,
   bip44: {
@@ -40,6 +41,7 @@ export const MAINNET = {
   chainId: 'archway-1',
   chainName: 'archway',
   rpc: 'https://rpc.mainnet.archway.io',
+  wss: 'wss://rpc.mainnet.archway.io',
   rest: 'https://api.mainnet.archway.io',
   stakeCurrency: ARCH_CURRENCY,
   bip44: {
@@ -67,7 +69,9 @@ export const CARNISTER_API_URL =
 export const NETWORK_INFO =
   networksData[import.meta.env.PUBLIC_NETWORK as 'TESTNET' | 'MAINNET'];
 
-export const BLOCKCHAIN_SCAN = import.meta.env.PUBLIC_NETWORK === 'TESTNET' ? 'https://testnet.mintscan.io/archway-testnet/txs/' : 'https://www.mintscan.io/archway/txs/'
+export const BLOCKCHAIN_SCAN = import.meta.env.PUBLIC_NETWORK === 'TESTNET' ? 'https://testnet.mintscan.io/archway-testnet/' : 'https://www.mintscan.io/archway/'
+export const BLOCKCHAIN_SCAN_TXS = `${BLOCKCHAIN_SCAN}txs/`
+export const BLOCKCHAIN_SCAN_ACCOUNT = `${BLOCKCHAIN_SCAN}account/`
 
 export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = import.meta.env[
   'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK

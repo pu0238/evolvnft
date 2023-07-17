@@ -13,7 +13,7 @@
       <p class="text-md md:text-lg lg:text-xl font-josefin text-zinc-700">
         In this tab you can preview and manage your NFT collections.
       </p>
-      <MyCollections />
+      <MyNFTs />
     </div>
     <div v-if="location.hash === '#my%20collections'">
       <h1 class="text-5xl xl:text-6xl font-cal text-black">my collections</h1>
@@ -33,11 +33,12 @@ import DashboardContainer from '../components/DashboardContainer.vue';
 import DashboardMenu from '../components/DashboardMenu.vue';
 import MyCollections from '../components/MyCollections.vue';
 import UserStats from '../components/UserStats.vue';
+import MyNFTs from '../components/MyNFTs.vue'
 
 // @ts-ignore
 import { useBrowserLocation } from '@vueuse/core';
 export default {
-  components: { DashboardContainer, DashboardMenu, MyCollections, UserStats },
+  components: { DashboardContainer, DashboardMenu, MyCollections, UserStats, MyNFTs },
   setup() {
     const location = useBrowserLocation();
     return { location };

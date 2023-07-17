@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-10 right-10 grid justify-items-end">
+  <div class="fixed z-50 bottom-10 right-10 grid justify-items-end">
     <ErrorMessage v-for="error in errors" :content="error" />
   </div>
 </template>

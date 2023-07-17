@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="w-full float-left lg:drop-shadow-md bg-white px-6 py-4 rounded-full mt-6"
+      class="w-full float-left lg:drop-shadow-md bg-white lg:px-6 py-4 rounded-full mt-6"
     >
       <Logo textColor="black" class="float-left" />
       <div class="hidden lg:inline justify-between">
@@ -13,9 +13,15 @@
         <Button
           :isDisabled="false"
           :isFilled="true"
-          :content="isWalletConnected ? walletSignerAddress ? walletSignerAddress.slice(0, 10) + '...' + walletSignerAddress.slice(-2) :'disconnect' : 'connect'"
+          :content="
+            isWalletConnected
+              ? walletSignerAddress
+                ? shortenArchAddress(walletSignerAddress)
+                : 'disconnect'
+              : 'connect'
+          "
           :isComingSoon="false"
-          class="float-right"
+          class="float-right lg:text-sm"
           @click="sharedConnect"
         />
         <NavBar
@@ -56,11 +62,13 @@ import { useStore } from '@nanostores/vue';
 import { isMenuOpen } from '../state/menuState';
 import { isWallet, sharedConnect } from '../utils/wallet';
 import { isWalletConnected, walletSignerAddress } from '../state/walletState';
+import { shortenArchAddress } from '../utils/arch';
 
 export default {
   components: { NavBar, Logo, Button },
   methods: {
     sharedConnect,
+    shortenArchAddress,
     toogleMenu() {
       isMenuOpen.set(!this.isMenuOpenValue);
     },
@@ -107,7 +115,7 @@ export default {
     isWallet();
     const $collectionDescription = useStore(isWalletConnected);
     const $isMenuOpen = useStore(isMenuOpen);
-    const $walletSignerAddress = useStore(walletSignerAddress)
+    const $walletSignerAddress = useStore(walletSignerAddress);
 
     props = reactive(props);
     return {

@@ -32,9 +32,6 @@ export default {
     };
   },
   methods: {
-    a(b: any) {
-      console.log(b);
-    },
     setLaunchpadEntries(launchpadEntries: {
       finished?: any[] | undefined;
       ongoing?: any[] | undefined;

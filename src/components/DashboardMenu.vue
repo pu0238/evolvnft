@@ -77,7 +77,7 @@ export default {
           name: 'my NFTs',
           img: '/icons/dashboard/nfts.svg',
           walletStricted: true,
-          disabled: true,
+          disabled: false,
         },
         {
           name: 'launchpad',

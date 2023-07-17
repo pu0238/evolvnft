@@ -87,7 +87,7 @@
             'text-zinc-200': bgColor === 'black',
           }"
         >
-          {{ applyDecimal(reward) }} {{ denom.slice(1) }}
+          {{ aarchToArch(reward) }} {{ denom.slice(1) }}
         </p>
       </div>
       <h4
@@ -114,11 +114,11 @@
 
 <script lang="ts">
 import { reactive } from 'vue';
-import { applyDecimal } from '../utils/arch';
+import { aarchToArch } from '../utils/arch';
 
 export default {
   methods: {
-    applyDecimal,
+    aarchToArch,
   },
   props: {
     rewardsPercentageFee: {

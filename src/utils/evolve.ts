@@ -1,10 +1,17 @@
 import {
   collectionManagerContractAddress,
   launchpadManagerContractAddress,
+  marketplaceManagerContractAddress,
 } from '../state/stateCache';
-import { BLOCKCHAIN_SCAN, CARNISTER_API_URL, SYSTEM_CONTEXT_CONTRACT_ADDRESS } from './constant';
+import {
+  BLOCKCHAIN_SCAN_TXS,
+  CARNISTER_API_URL,
+  SYSTEM_CONTEXT_CONTRACT_ADDRESS,
+} from './constant';
 import { buildMintObject } from './metadata';
 import type { CollectionEntitie } from './types/CollectionItem';
+import type { RecentListings } from './types/RecentListings';
+import type { UserCollections } from './types/UserCollections';
 import { getArchwaySigner, getQueryClient } from './wallet';
 import _ from 'lodash';
 
@@ -150,18 +157,15 @@ export async function getWalletCollections(): Promise<
 export async function getCollection(
   address: string,
 ): Promise<CollectionEntitie> {
-  const { archwaySigner } = await getArchwaySigner();
+  const queryClient = await getQueryClient();
   const get_collection = {
     address,
   };
 
   const collectionManagerContract = await getCollectionManager();
-  const data = await archwaySigner.queryContractSmart(
-    collectionManagerContract,
-    {
-      get_collection,
-    },
-  );
+  const data = await queryClient.queryContractSmart(collectionManagerContract, {
+    get_collection,
+  });
   return data;
 }
 
@@ -192,9 +196,7 @@ export async function mintNFTs(
     { mint_tokens },
     'auto',
   );
-  console.log(
-    `${BLOCKCHAIN_SCAN}${transactionHash}`,
-  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function setRewardsFee(
@@ -214,9 +216,7 @@ export async function setRewardsFee(
     { set_rewards_fee },
     'auto',
   );
-  console.log(
-    `${BLOCKCHAIN_SCAN}${transactionHash}`,
-  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function applyForLanuchpad(
@@ -242,9 +242,7 @@ export async function applyForLanuchpad(
     { apply_for_launchpad },
     'auto',
   );
-  console.log(
-    `${BLOCKCHAIN_SCAN}${transactionHash}`,
-  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 /*
@@ -342,21 +340,19 @@ export async function allocateTokens(
     { allocate_tokens },
     'auto',
   );
-  console.log(
-    `${BLOCKCHAIN_SCAN}${transactionHash}`,
-  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function claimLaunchpadToken(
   collectionAddress: string,
   tokenAmount: string,
-  denom: string
+  denom: string,
 ) {
   const { signerAddress, archwaySigner } = await getArchwaySigner();
   const claim_token = {
     address: collectionAddress,
   };
-  console.log(claim_token)
+  console.log(claim_token);
   const launchpadManagerContract = await getLaunchpadManager();
   const { transactionHash } = await archwaySigner.execute(
     signerAddress,
@@ -364,11 +360,9 @@ export async function claimLaunchpadToken(
     { claim_token },
     'auto',
     undefined,
-    [{ denom, amount: tokenAmount }]
+    [{ denom, amount: tokenAmount }],
   );
-  console.log(
-    `${BLOCKCHAIN_SCAN}${transactionHash}`,
-  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 /*
@@ -388,9 +382,7 @@ export async function withdrawalRewards(
     { pay_out_rewards: {} },
     'auto',
   );
-  console.log(
-    `${BLOCKCHAIN_SCAN}${transactionHash}`,
-  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function getOwnedTokensIds(
@@ -407,12 +399,140 @@ export async function getOwnedTokensIds(
 
 export async function getOwnedTokens(
   ownerAddress: string,
-): Promise<string[]> {
+  page?: number
+): Promise<UserCollections> {
   const queryClient = await getQueryClient();
 
   const collectionManagerContract = await getCollectionManager();
-  const { tokens } = await queryClient.queryContractSmart(collectionManagerContract, {
-    list_owned_tokens: { address: ownerAddress },
+  const result = await queryClient.queryContractSmart(
+    collectionManagerContract,
+    {
+      list_owned_tokens: { address: ownerAddress, page },
+    },
+  );
+  return result;
+}
+
+export async function getNftInfo(
+  collectionAddress: string,
+  tokenId: string,
+): Promise<string> {
+  const queryClient = await getQueryClient();
+
+  const { token_uri } = await queryClient.queryContractSmart(
+    collectionAddress,
+    {
+      nft_info: {
+        token_id: tokenId,
+      },
+    },
+  );
+  return token_uri;
+}
+
+/*
+ *
+ *  ==== MarketplaceManager ====
+ *
+ */
+
+export async function getMarketplaceManager(): Promise<string> {
+  const marketplaceManager = marketplaceManagerContractAddress.get();
+  if (marketplaceManager) {
+    return marketplaceManager;
+  }
+  const queryClient = await getQueryClient();
+  const state: { address: string } = await queryClient.queryContractSmart(
+    SYSTEM_CONTEXT_CONTRACT_ADDRESS,
+    { get_marketplace_manager: {} },
+  );
+  marketplaceManagerContractAddress.set(state.address);
+  return state.address;
+}
+
+export async function getRecentListings(): Promise<RecentListings[]> {
+  const marketplaceManager = await getMarketplaceManager();
+  const queryClient = await getQueryClient();
+  const state = await queryClient.queryContractSmart(marketplaceManager, {
+    get_recent_listings: {},
   });
-  return tokens;
+  return state.reverse();
+}
+
+export async function getCollectionListings(
+  collectionAddr: string,
+): Promise<RecentListings[]> {
+  const marketplaceManager = await getMarketplaceManager();
+  const queryClient = await getQueryClient();
+  const state = await queryClient.queryContractSmart(marketplaceManager, {
+    get_collection_listings: {
+      collection: collectionAddr,
+    },
+  });
+  return state.reverse();
+}
+
+export async function purchaseToken(
+  collectionAddr: string,
+  tokenId: string,
+  tokenAmount: string,
+  denom: string,
+) {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const marketplaceManager = await getMarketplaceManager();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    marketplaceManager,
+    {
+      purchase: {
+        collection: collectionAddr,
+        token_id: tokenId,
+      },
+    },
+    'auto',
+    undefined,
+    [{ denom, amount: tokenAmount }],
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+}
+
+export async function placeOffer(
+  collectionAddr: string,
+  tokenId: string,
+  tokenAmount: string,
+  denom: string,
+) {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const marketplaceManager = await getMarketplaceManager();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    marketplaceManager,
+    {
+      place_offer: {
+        collection: collectionAddr,
+        token_id: tokenId,
+      },
+    },
+    'auto',
+    undefined,
+    [{ denom, amount: tokenAmount }],
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+}
+
+export async function getTokenOffers(
+  collectionAddr: string,
+  tokenId: string,
+): Promise<any> {
+  const marketplaceManager = await getMarketplaceManager();
+  const queryClient = await getQueryClient();
+  const state = await queryClient.queryContractSmart(marketplaceManager, {
+    get_offers: {
+      collection: collectionAddr,
+      token_id: tokenId,
+    },
+  });
+  return state;
 }

@@ -1,25 +1,17 @@
-export function applyDecimal(number: BigInt, decimals = 18) {
-  let stringNumber = number.toString();
-  const numLen = stringNumber.length;
+import BigNumber from 'bignumber.js';
 
-  if (numLen <= decimals) {
-    let zero = '0';
-    for (let i = 0; i < decimals - numLen; i++) {
-      zero += '0';
-    }
-    stringNumber = zero + stringNumber;
-    const decimalPoint = stringNumber.length - decimals;
-    return (
-      stringNumber.slice(0, decimalPoint) +
-      '.' +
-      stringNumber.slice(decimalPoint)
-    );
-  } else {
-    const decimalPoint = stringNumber.length - decimals;
-    return (
-      stringNumber.slice(0, decimalPoint) +
-      '.' +
-      stringNumber.slice(decimalPoint)
-    );
-  }
+export function aarchToArch(number: number) {
+  return new BigNumber(number).div(10e17).toFixed();
+}
+
+export function archToAarch(number: number) {
+  return new BigNumber(number).mul(10e17).toString();
+}
+
+export function toFixed(number: number) {
+  return new BigNumber(number).toFixed();
+}
+
+export function shortenArchAddress(address: string): string {
+  return address.slice(0, 11) + '...' + address.slice(-4) 
 }

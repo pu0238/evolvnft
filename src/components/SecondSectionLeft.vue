@@ -7,12 +7,14 @@
         content="thanks to integration with several blockchains, we are able to provide tools for creating fully decentralized evolving NFTs that, change over time or be leveled!"
       />
     </div>
-    <Button
-      :isFilled="true"
-      content="create NFT"
-      href="/create"
-      :isWalletStricted="true"
-    />
+    <div class="w-fit">
+      <Button
+        :isFilled="true"
+        content="create NFT"
+        href="/create"
+        :isWalletStricted="true"
+      />
+    </div>
   </div>
 </template>
 

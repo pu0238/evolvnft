@@ -33,7 +33,7 @@ import { getArchwaySigner } from '../utils/wallet';
 // @ts-ignore
 import JSConfetti from 'js-confetti';
 import { errorMessage } from '../state/error';
-import { BLOCKCHAIN_SCAN } from '../utils/constant';
+import { BLOCKCHAIN_SCAN_TXS } from '../utils/constant';
 
 const confetti = new JSConfetti();
 
@@ -109,7 +109,7 @@ export default {
         'auto',
       );
       console.log(
-        `${BLOCKCHAIN_SCAN}${transactionHash}`,
+        `${BLOCKCHAIN_SCAN_TXS}${transactionHash}`,
       );
       this.showConfetti();
     },
