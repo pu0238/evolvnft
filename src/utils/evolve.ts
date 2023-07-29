@@ -82,7 +82,8 @@ export async function editEvolveMetadata(
       body: raw,
     },
   );
-  return (await result.json()).metadataId;
+  const res = await result.json();
+  return res.metadataId;
 }
 
 export async function getNextMetadataId(
@@ -399,7 +400,7 @@ export async function getOwnedTokensIds(
 
 export async function getOwnedTokens(
   ownerAddress: string,
-  page?: number
+  page?: number,
 ): Promise<UserCollections> {
   const queryClient = await getQueryClient();
 
@@ -430,6 +431,71 @@ export async function getNftInfo(
   return token_uri;
 }
 
+export async function getSpecificTokens(
+  collectionAddress: string,
+  tokenIds: string[],
+): Promise<{ extension: any; token_uri: string }[]> {
+  const queryClient = await getQueryClient();
+
+  const res = await queryClient.queryContractSmart(collectionAddress, {
+    specific_tokens: {
+      ids: tokenIds,
+    },
+  });
+
+  return res;
+}
+
+export async function listToken(
+  collectionAddress: string,
+  tokenId: string,
+  tokenAmount: string,
+  denom: string,
+  openToOffers: boolean,
+): Promise<void> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+  const marketplaceManager = await getMarketplaceManager();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    collectionAddress,
+    {
+      send_nft: {
+        contract: marketplaceManager,
+        token_id: tokenId,
+        msg: Buffer.from(
+          JSON.stringify({
+            price: { denom, amount: tokenAmount },
+            open_to_offers: openToOffers,
+          }),
+        ).toString('base64'),
+      },
+    },
+    'auto',
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+}
+
+export async function sendToken(
+  collectionAddress: string,
+  tokenId: string,
+  receiverAddress: string,
+): Promise<void> {
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    collectionAddress,
+    {
+      transfer_nft: {
+        recipient: receiverAddress,
+        token_id: tokenId,
+      },
+    },
+    'auto',
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+}
 /*
  *
  *  ==== MarketplaceManager ====
@@ -535,4 +601,69 @@ export async function getTokenOffers(
     },
   });
   return state;
+}
+
+export async function cancelOffer(
+  collectionAddr: string,
+  tokenId: string,
+): Promise<any> {
+  const marketplaceManager = await getMarketplaceManager();
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    marketplaceManager,
+    {
+      cancel_offer: {
+        collection: collectionAddr,
+        token_id: tokenId,
+      },
+    },
+    'auto',
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+}
+
+export async function acceptOffer(
+  collectionAddr: string,
+  tokenId: string,
+  fromAddress: string
+): Promise<any> {
+  const marketplaceManager = await getMarketplaceManager();
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    marketplaceManager,
+    {
+      accept_offer: {
+        collection: collectionAddr,
+        token_id: tokenId,
+        from: fromAddress
+      },
+    },
+    'auto',
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+}
+
+export async function closeTokenListing(
+  collectionAddr: string,
+  tokenId: string,
+): Promise<any> {
+  const marketplaceManager = await getMarketplaceManager();
+  const { signerAddress, archwaySigner } = await getArchwaySigner();
+
+  const { transactionHash } = await archwaySigner.execute(
+    signerAddress,
+    marketplaceManager,
+    {
+      close_listing: {
+        collection: collectionAddr,
+        token_id: tokenId,
+      },
+    },
+    'auto',
+  );
+  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }

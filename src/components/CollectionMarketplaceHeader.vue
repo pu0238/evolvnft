@@ -5,17 +5,15 @@
     <div
       class="flex-1 grid sm:flex flex-nowrap lg:min-w-[31rem] xl:min-w-[50%] xl:max-w-[50%]"
     >
-      <div>
-        <img
-          draggable="false"
-          class="w-36 m-auto"
-          :src="
-            collectionData.thumbnail
-              ? collectionData.thumbnail
-              : 'evolvnft-collection-logo.svg'
-          "
-        />
-      </div>
+      <img
+        draggable="false"
+        class="w-36 m-auto"
+        :src="
+          collectionData.thumbnail
+            ? collectionData.thumbnail
+            : 'evolvnft-collection-logo.svg'
+        "
+      />
       <div class="sm:ml-8 sm:min-w-[20rem] flex-1">
         <h2 class="font-cal text-2xl mt-4 sm:mt-1 mb-3">
           {{ collectionData.name }}
@@ -52,7 +50,7 @@
             <span>{{ ownersCount }}</span>
           </div>
           <div
-            v-if="listed"
+            v-if="listed !== undefined"
             class="bg-zinc-900 px-4 py-2 rounded-full flex items-center"
           >
             <span class="flex-1">listed</span>

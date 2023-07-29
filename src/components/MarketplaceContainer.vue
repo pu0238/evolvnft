@@ -1,19 +1,19 @@
 <template>
   <div class="grid relative">
-    <h1 class="text-black text-5xl xl:text-6xl 2xl:text-7xl font-cal py-10">
+    <h1 class="text-black text-5xl xl:text-6xl 2xl:text-7xl font-cal pb-2">
       recent listings
     </h1>
-
     <div
       class="flex relative overflow-hidden pt-5 pb-10 pl-1"
       id="recentListingsBox"
     >
       <div class="flex" id="recentListingsContainer">
         <OfferBox
-          v-for="offer in recentListings"
-          :tokenId="offer.tokenId"
-          :price="aarchToArch(Number(offer.price))"
-          :collection="offer.collection"
+          v-for="offer in listingsMetadata"
+          :tokenId="offer.listing.tokenId"
+          :price="aarchToArch(Number(offer.listing.price))"
+          :collection="offer.listing.collection"
+          :metadata="offer.metadata"
           class="absolute w-full top-1/2"
           :style="`transform: translateY(-50%) ${`translateX(-${
             page * pageSize
@@ -21,7 +21,10 @@
         />
       </div>
     </div>
-    <div class="relative" v-if="recentListings && recentListings?.length > 0">
+    <div
+      class="relative"
+      v-if="listingsMetadata && listingsMetadata?.length > 0"
+    >
       <div
         class="bg-black w-12 h-12 flex rounded-full absolute bottom-36 z-20 group border-white hover:border-indigo-500 border-4 ease-out duration-300"
         @click="page--"
@@ -66,7 +69,7 @@
 
 <script lang="ts">
 import { aarchToArch } from '../utils/arch';
-import { getRecentListings } from '../utils/evolve';
+import { getNftInfo, getRecentListings } from '../utils/evolve';
 import type { RecentListings } from '../utils/types/RecentListings';
 import OfferBox from './OfferBox.vue';
 
@@ -74,10 +77,11 @@ export default {
   components: { OfferBox },
   data() {
     return {
-      recentListings: undefined as undefined | RecentListings[],
+      listingsMetadata: [] as { listing: RecentListings; metadata: any }[],
       page: 0,
       pageSize: 0,
       pages: 0,
+      paginator: 5,
     };
   },
   methods: {
@@ -86,10 +90,14 @@ export default {
         'recentListingsContainer',
       );
       const recentListingsBox = document.getElementById('recentListingsBox');
-      if (recentListingsBox && recentListingsContainer && this.recentListings) {
+      if (
+        recentListingsBox &&
+        recentListingsContainer &&
+        this.listingsMetadata
+      ) {
         if (recentListingsContainer?.offsetWidth === 0) return 0;
         const offerSize: number =
-          recentListingsContainer?.offsetWidth / this.recentListings?.length;
+          recentListingsContainer?.offsetWidth / this.listingsMetadata?.length;
         return (
           offerSize * Math.floor(recentListingsBox?.offsetWidth / offerSize)
         );
@@ -106,9 +114,42 @@ export default {
       return 0;
     },
     aarchToArch,
+    async getTokenMetadata(collection: string, tokenId: string) {
+      const metadataUrl = await getNftInfo(collection, tokenId);
+      return await this.getMetadata(metadataUrl);
+    },
+    async getMetadata(url: string) {
+      const response = await fetch(url);
+      if (response && response?.ok) return await response.json();
+    },
+    async dynamicLoadOffers() {
+      const recentListings = await getRecentListings();
+      for (
+        let index = this.paginator;
+        index <= recentListings.length;
+        index += this.paginator
+      ) {
+        const paginRecentListings = recentListings.slice(
+          index - this.paginator,
+          index,
+        );
+
+        const fiveListingsMetadata = await Promise.all(
+          paginRecentListings.map((listing) =>
+            this.getTokenMetadata(listing.collection, listing.tokenId),
+          ),
+        );
+        this.listingsMetadata.push(
+          ...paginRecentListings.map((listing, index) => ({
+            listing,
+            metadata: fiveListingsMetadata[index],
+          })),
+        );
+      }
+    },
   },
   async mounted() {
-    this.recentListings = await getRecentListings();
+    await this.dynamicLoadOffers();
     await this.$nextTick();
     this.pageSize = this.recentListingsWidth();
     this.pages = this.pagesLen();

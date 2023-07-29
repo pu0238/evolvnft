@@ -1,7 +1,7 @@
 <template>
   <a
     class="mx-1 relative ease-out duration-300 hover:z-10"
-    :href="`/marketplace#${collection}`"
+    :href="marketplace ? `/marketplace#${collection}` : undefined"
     @click="$emit('openMetadata', metadata)"
   >
     <div
@@ -22,7 +22,7 @@
       </div>
       <div class="text-white grid mx-3 pt-1 pb-2 items-center">
         <span class="font-cal"># {{ tokenId }}</span>
-        <span class="font-josefin flex">
+        <span class="font-josefin flex" v-if="price">
           <img :src="denomLogo" class="w-4" />
           <span class="ml-1">{{ price }}</span>
         </span>
@@ -32,15 +32,10 @@
 </template>
 
 <script lang="ts">
-import { getNftInfo } from '../utils/evolve';
+import type { PropType } from 'vue';
+import { bo } from '../../dist/_astro/runtime-core.esm-bundler.fc235a89';
 
 export default {
-  data() {
-    return {
-      metadataUrl: undefined as undefined | string,
-      metadata: undefined as undefined | any,
-    };
-  },
   props: {
     denomLogo: {
       type: String,
@@ -48,7 +43,7 @@ export default {
     },
     price: {
       type: String,
-      required: true,
+      required: false,
     },
     tokenId: {
       type: String,
@@ -61,22 +56,14 @@ export default {
     openMetadata: {
       type: Function,
     },
+    metadata:{
+      type: Array as PropType<any>
+    },
+    marketplace: {
+      type: Boolean,
+      default: () => true,
+    }
   },
   emits: ['openMetadata'],
-  methods: {
-    async getMetadata(url: string) {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data;
-    },
-  },
-  async mounted() {
-    this.metadataUrl = await getNftInfo(this.collection, this.tokenId);
-    this.metadataUrl =
-      'https://ipfs.io/ipfs/QmasVYPJuqq38uuckrxsXPWvdcb27MLej8LUgVnZUPDGWp/8888.json';
-    this.getMetadata(this.metadataUrl).then((res) => (this.metadata = res));
-    //this.metadata = await this.getMetadata(this.metadataUrl);
-    //console.log(this.metadata);
-  },
 };
 </script>

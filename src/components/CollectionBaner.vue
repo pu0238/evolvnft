@@ -87,7 +87,10 @@
             'text-zinc-200': bgColor === 'black',
           }"
         >
-          {{ aarchToArch(reward) }} {{ denom.slice(1) }}
+        <div class="flex items-center">
+          <img draggable="false" :src="denomLogo" class="w-4 mx-1 my-2" v-if="denom === 'aconst' || denom === 'aarch'"/>
+          <p>{{ aarchToArch(reward) }}</p>
+        </div>
         </p>
       </div>
       <h4
@@ -155,6 +158,10 @@ export default {
       default: () => 'white',
       required: false,
       validator: (color: string) => ['white', 'black'].includes(color),
+    },
+    denomLogo: {
+      type: String,
+      default: () => 'arch-logo.svg',
     },
   },
   setup(props) {

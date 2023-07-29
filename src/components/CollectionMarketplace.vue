@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden">
+  <div>
     <div
       v-if="openToken"
       class="bg-black/30 text-white w-full h-full fixed top-0 left-0 z-20 backdrop-blur-sm cursor-pointer"
@@ -15,9 +15,16 @@
       <div class="flex flex-1 flex-col justify-between">
         <div>
           <img
+            v-if="openTokenMetadata && openTokenMetadata.image"
             draggable="false"
             class="w-44 mx-auto sm:w-72 md:w-96 rounded-2xl"
             :src="openTokenMetadata && openTokenMetadata.image"
+          />
+          <img
+            v-else
+            draggable="false"
+            class="w-44 mx-auto sm:w-72 md:w-96 rounded-2xl p-8"
+            src="evolvnft-collection-logo.svg"
           />
           <div class="text-white flex font-josefin mt-4">
             <div class="grid w-full">
@@ -62,9 +69,12 @@
                 </span>
               </div>
               <div v-if="openTokenSubPage === 'offers'">
-                <span v-if="openTokenOffers?.length === 0" class="mx-auto mt-2">
+                <div
+                  v-if="openTokenOffers?.length === 0"
+                  class="mt-4 text-center"
+                >
                   offers not found
-                </span>
+                </div>
                 <div
                   v-else
                   v-for="offer in openTokenOffers"
@@ -78,12 +88,45 @@
                     {{ shortenArchAddress(offer.from) }}
                   </a>
                   <div class="flex items-center">
-                    <img
-                      draggable="false"
-                      :src="denomLogo"
-                      class="w-4 mx-1 my-2"
-                    />
-                    <p>{{ aarchToArch(Number(offer.offer.amount)) }}</p>
+                    <div class="flex items-center">
+                      <img
+                        draggable="false"
+                        :src="denomLogo"
+                        class="w-4 mx-1 my-2"
+                      />
+                      <p>{{ aarchToArch(Number(offer.offer.amount)) }}</p>
+                    </div>
+                    <div class="border-l-2 pl-2 border-black ml-2 h-full">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="flex fill-white hover:fill-indigo-500 ease-out duration-200"
+                        v-if="offer.from && offer.from === walletSignerAddress"
+                        @click="cancelOfferForToken(offer.from)"
+                      >
+                        <path
+                          d="M19.557 0.458161C19.4167 0.317531 19.25 0.20596 19.0665 0.129836C18.8829 0.0537112 18.6862 0.0145271 18.4875 0.0145271C18.2889 0.0145271 18.0921 0.0537112 17.9086 0.129836C17.7251 0.20596 17.5584 0.317531 17.4181 0.458161L10 7.86105L2.58194 0.442991C2.4415 0.302545 2.27476 0.191138 2.09126 0.115129C1.90776 0.0391207 1.71109 1.47983e-09 1.51247 0C1.31385 -1.47983e-09 1.11717 0.0391207 0.93367 0.115129C0.750169 0.191138 0.583436 0.302545 0.442991 0.442991C0.302545 0.583436 0.191138 0.750169 0.115129 0.93367C0.0391207 1.11717 -1.47983e-09 1.31385 0 1.51247C1.47983e-09 1.71109 0.0391207 1.90776 0.115129 2.09126C0.191138 2.27476 0.302545 2.4415 0.442991 2.58194L7.86105 10L0.442991 17.4181C0.302545 17.5585 0.191138 17.7252 0.115129 17.9087C0.0391207 18.0922 0 18.2889 0 18.4875C0 18.6862 0.0391207 18.8828 0.115129 19.0663C0.191138 19.2498 0.302545 19.4166 0.442991 19.557C0.583436 19.6975 0.750169 19.8089 0.93367 19.8849C1.11717 19.9609 1.31385 20 1.51247 20C1.71109 20 1.90776 19.9609 2.09126 19.8849C2.27476 19.8089 2.4415 19.6975 2.58194 19.557L10 12.1389L17.4181 19.557C17.5585 19.6975 17.7252 19.8089 17.9087 19.8849C18.0922 19.9609 18.2889 20 18.4875 20C18.6862 20 18.8828 19.9609 19.0663 19.8849C19.2498 19.8089 19.4166 19.6975 19.557 19.557C19.6975 19.4166 19.8089 19.2498 19.8849 19.0663C19.9609 18.8828 20 18.6862 20 18.4875C20 18.2889 19.9609 18.0922 19.8849 17.9087C19.8089 17.7252 19.6975 17.5585 19.557 17.4181L12.1389 10L19.557 2.58194C20.1335 2.00549 20.1335 1.03462 19.557 0.458161Z"
+                        ></path>
+                      </svg>
+                      <svg
+                        width="17"
+                        height="13"
+                        viewBox="0 0 17 13"
+                        class="flex stroke-white hover:stroke-indigo-500 ease-out duration-200"
+                        v-if="offer.from && offer.from !== openTokenData?.owner"
+                        @click="acceptOfferForToken(offer.from)"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1 7.11116L6.76921 12L16 1"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -116,18 +159,33 @@
                         attribute.value
                       }}</span>
                     </span>
+                    <!--
                     <span
                       class="text-xs bg-indigo-200 text-indigo-500 w-fit font-extrabold py-1 px-2 rounded-2xl mt-1"
                     >
                       12%
                     </span>
-                  </div>
+                  --></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="text-white font-josefin text-lg">
+        <div
+          v-if="
+            openTokenData?.owner && openTokenData.owner === walletSignerAddress
+          "
+          class="text-white"
+        >
+          <button
+            class="w-full bg-indigo-500 p-2 rounded-full my-1 hover:bg-indigo-700 ease-out duration-300 disabled:bg-indigo-700 font-josefin text-lg"
+            :disabled="buyInProgress"
+            @click="closeNFTListing"
+          >
+            {{ closingInProgress ? 'closing in progress...' : 'close listing' }}
+          </button>
+        </div>
+        <div class="text-white font-josefin text-lg" v-else>
           <span class="font-cal flex justify-between mb-2">
             <span class="text-xl">price:</span>
             <span class="flex items-center text-2xl">
@@ -137,12 +195,21 @@
               </p>
             </span>
           </span>
-          <span v-if="openTokenOffers && (openTokenOffers?.length > 0)" class="font-josefin flex justify-between mb-2">
+          <span
+            v-if="openTokenOffers && openTokenOffers?.length > 0"
+            class="font-josefin flex justify-between mb-2"
+          >
             <span class="text-sm">highest offer:</span>
             <span class="flex items-center text-base">
               <img draggable="false" :src="denomLogo" class="w-4 mx-1" />
               <p>
-                {{ aarchToArch(Math.max(openTokenOffers.map(o => Number(o.offer.amount)) as any)) }}
+                {{
+                  aarchToArch(
+                    Math.max(
+                      openTokenOffers.map((o) => Number(o.offer.amount)) as any,
+                    ),
+                  )
+                }}
               </p>
             </span>
           </span>
@@ -196,7 +263,7 @@
       :floor="floor"
       :listed="collectionListings?.length"
     />
-    <div>
+    <div v-if="listingsMetadata.length > 0">
       <div class="flex font-josefin font-semibold mt-16 text-lg">
         <button
           class="px-4 py-2 ease-out duration-300 hover:text-indigo-500 border-b-4 hover:border-indigo-500"
@@ -218,7 +285,7 @@
           activity
         </button>-->
       </div>
-      <div class="grid border-t-2 border-black pt-4" v-if="collectionListings">
+      <div class="grid border-t-2 border-black pt-4">
         <div class="grid sm:flex mb-6 gap-2 items-center">
           <div class="flex-1 flex mx-auto">
             <button class="bg-black px-[10px] rounded-full mr-2 group">
@@ -305,22 +372,30 @@
         <div class="flex flex-wrap justify-center gap-y-2">
           <OfferBox
             v-for="offer in filteredListings"
-            :tokenId="offer.tokenId"
-            :price="offer.normalizedPrice || offer.price"
-            :collection="offer.collection"
+            :tokenId="offer.listing.tokenId"
+            :price="offer.listing.normalizedPrice || offer.listing.price"
+            :collection="offer.listing.collection"
+            :metadata="offer.metadata"
             class="drop-shadow-2xl"
-            @openMetadata="(metadata) => toogleOpen(metadata, offer)"
+            @click="toogleOpen(offer.metadata, offer.listing)"
           />
         </div>
       </div>
+    </div>
+    <div v-else class="mt-6 text-center" v-if="collectionData">
+      <p class="text-2xl font-cal">no tokens for sale</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {
+  acceptOffer,
+  cancelOffer,
+  closeTokenListing,
   getCollection,
   getCollectionListings,
+  getNftInfo,
   getTokenOffers,
   placeOffer,
   purchaseToken,
@@ -338,13 +413,16 @@ import {
 import { swapElements } from '../utils/schared';
 import ProductsCart from './ProductsCart.vue';
 import { BLOCKCHAIN_SCAN_ACCOUNT } from '../utils/constant';
+import { useStore } from '@nanostores/vue';
+import { walletSignerAddress } from '../state/walletState';
+import { computed } from 'vue';
 
 export default {
   components: { CollectionMarketplaceHeader, OfferBox, ProductsCart },
   data() {
     return {
       collectionData: undefined as undefined | CollectionEntitie,
-      collectionListings: undefined as undefined | RecentListings[],
+      collectionListings: [] as RecentListings[],
       active: 'listings',
       search: '',
       floor: undefined as undefined | number,
@@ -363,6 +441,9 @@ export default {
       openOfferInput: false,
       openTokenOffers: undefined as undefined | any[],
       openTokenSubPage: 'details',
+      paginator: 10,
+      listingsMetadata: [] as { listing: RecentListings; metadata: any }[],
+      closingInProgress: false,
     };
   },
   props: {
@@ -377,17 +458,19 @@ export default {
   },
   computed: {
     filteredListings() {
-      if (this.collectionListings) {
-        const searchResult = this.collectionListings.filter((listing) =>
-          listing.tokenId.toLowerCase().includes(this.search.toLowerCase()),
+      if (this.listingsMetadata.length > 0) {
+        const searchResult = this.listingsMetadata.filter((listing) =>
+          listing.listing.tokenId
+            .toLowerCase()
+            .includes(this.search.toLowerCase()),
         );
         if (this.sort === 'desc')
           return searchResult.sort(
-            (l1, l2) => Number(l1.price) - Number(l2.price),
+            (l1, l2) => Number(l1.listing.price) - Number(l2.listing.price),
           );
         else if (this.sort === 'asc')
           return searchResult.sort(
-            (l1, l2) => Number(l2.price) - Number(l1.price),
+            (l1, l2) => Number(l2.listing.price) - Number(l1.listing.price),
           );
         return searchResult;
       }
@@ -400,6 +483,16 @@ export default {
     toFixed,
     shortenArchAddress,
     aarchToArch,
+    async closeNFTListing() {
+      if (this.openTokenData && this.openTokenData?.tokenId) {
+        this.closingInProgress = true;
+        await closeTokenListing(
+          this.collectionAddress,
+          this.openTokenData?.tokenId,
+        );
+        this.closingInProgress = false;
+      }
+    },
     async makeOffer() {
       if (this.openOfferInput) {
         await this.makeAnOffer();
@@ -428,7 +521,7 @@ export default {
         const body = document.querySelector('body');
         body && (body.style.overflow = 'auto');
       } else {
-        if (metadata && offer) {
+        if (offer) {
           this.openTokenData = offer;
           this.openTokenMetadata = metadata;
           const body = document.querySelector('body');
@@ -453,12 +546,19 @@ export default {
     },
     async makeAnOffer() {
       if (this.openTokenData && this.openTokenData?.tokenId) {
+        const price = archToAarch(this.offerPrice);
         await placeOffer(
           this.collectionAddress,
           this.openTokenData?.tokenId,
-          archToAarch(this.offerPrice),
+          price,
           this.openTokenData?.denom,
         );
+        const newOffer = {
+          from: this.walletSignerAddress,
+          offer: { denom: this.openTokenData?.denom, amount: price },
+        };
+        if (this.openTokenOffers) this.openTokenOffers.push(newOffer);
+        else this.openTokenOffers = [newOffer];
       }
     },
     async listOffers() {
@@ -492,13 +592,87 @@ export default {
       const tokensMetadata = await Promise.all(a);
       console.log(a)
 */
+      if (Object.keys(this.collectionListings).length === 0) return;
       this.floor = Math.min(
         ...this.collectionListings.map((item) => Number(item.price)),
       );
     },
+    async cancelOfferForToken(offerOwner: string) {
+      if (
+        this.openTokenData?.collection &&
+        this.openTokenData?.tokenId &&
+        this.openTokenOffers
+      ) {
+        await cancelOffer(
+          this.openTokenData?.collection,
+          this.openTokenData?.tokenId,
+        );
+        this.openTokenOffers = this.openTokenOffers.filter(function (obj) {
+          return obj.from !== offerOwner;
+        });
+      }
+    },
+    async acceptOfferForToken(offerOwner: string) {
+      if (
+        this.openTokenData?.collection &&
+        this.openTokenData?.tokenId &&
+        this.openTokenOffers
+      ) {
+        await acceptOffer(
+          this.openTokenData?.collection,
+          this.openTokenData?.tokenId,
+          offerOwner,
+        );
+        this.openTokenOffers = this.openTokenOffers.filter(function (obj) {
+          return obj.from !== offerOwner;
+        });
+      }
+    },
+    async getTokenMetadata(collection: string, tokenId: string) {
+      const metadataUrl = await getNftInfo(collection, tokenId);
+      return await this.getMetadata(metadataUrl);
+    },
+    async getMetadata(url: string) {
+      const response = await fetch(url);
+      if (response && response?.ok) return await response.json();
+    },
+    async dynamicLoadOffers() {
+      for (
+        let index = this.paginator;
+        index <= this.collectionListings.length ||
+        (this.collectionListings.length <= this.paginator &&
+          this.paginator === index);
+        index += this.paginator
+      ) {
+        const paginRecentListings = this.collectionListings.slice(
+          index - this.paginator,
+          index,
+        );
+
+        const fiveListingsMetadata = await Promise.all(
+          paginRecentListings.map((listing) =>
+            this.getTokenMetadata(listing.collection, listing.tokenId),
+          ),
+        );
+        this.listingsMetadata.push(
+          ...paginRecentListings.map((listing, index) => ({
+            listing,
+            metadata: fiveListingsMetadata[index],
+          })),
+        );
+      }
+    },
   },
   async mounted() {
     await this.loadMarketData();
+    await this.dynamicLoadOffers();
+  },
+  setup() {
+    const $walletSignerAddress = useStore(walletSignerAddress);
+
+    return {
+      walletSignerAddress: computed(() => $walletSignerAddress.value),
+    };
   },
 };
 </script>

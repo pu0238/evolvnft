@@ -7,7 +7,7 @@ import ErrorContainer from '../components/ErrorContainer.vue';
 
 const leftNavItems = [
   { isComingSoon: false, content: "launchpad", href: "/launchpad"  },
-  { isComingSoon: true, content: "market" },
+  { isComingSoon: false, content: "market", href: "/marketplace" },
   { isComingSoon: true, content: "collections" },
   { isComingSoon: true, content: "activity" },
   { isComingSoon: false, content: "community", href:"https://discord.gg/mugHDDzv", targetBlank: true},
@@ -23,7 +23,7 @@ const rightNavItems = [
   lang="pl"
   description="Evolvnft is a decentralized token ranch and a place to create editable, levelable and evolving metadata for your decentralized assets!"
 >
-  <div class="container mx-auto">
+  <div class="container mx-auto min-h-screen">
     <div class="px-8 mx-auto lg:mb-16">
       <Menu
         class="my-8"

@@ -1,7 +1,7 @@
 const NETWORK = import.meta.env.PUBLIC_NETWORK;
 
 const CONSTANTINE_CURRENCY = {
-  coinDenom: 'CONST',
+  coinDenom: 'const',
   coinMinimalDenom: 'aconst',
   coinDecimals: 18,
   coinGeckoId: 'constantine-network',
@@ -76,3 +76,5 @@ export const BLOCKCHAIN_SCAN_ACCOUNT = `${BLOCKCHAIN_SCAN}account/`
 export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = import.meta.env[
   'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK
 ];
+
+export const MINIMUM_LISTING_PRICE = 0.001

@@ -21,13 +21,11 @@
         class="mr-2"
       />
       <Button
-        :isDisabled="true"
         :isFilled="true"
         content="marketplace"
-        :isComingSoon="true"
         color="black"
         class="flex-0"
-        href="/create"
+        href="/marketplace"
         :isWalletStricted="true"
         client:only
       />
