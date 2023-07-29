@@ -153,6 +153,7 @@ import { parseDate, parseTime } from '../utils/schared';
 
 import { claimLaunchpadToken } from '../utils/evolve';
 
+
 export default {
   components: {
     Button,
