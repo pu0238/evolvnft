@@ -6,9 +6,9 @@ import MobileMenu from '../components/MobileMenu.vue';
 import ErrorContainer from '../components/ErrorContainer.vue';
 
 const leftNavItems = [
-  { isComingSoon: true, content: "launchpad" }, //href: "/launchpad" 
-  { isComingSoon: true, content: "market" },
-  { isComingSoon: true, content: "all collections" },
+  { isComingSoon: false, content: "launchpad", href: "/launchpad"  },
+  { isComingSoon: false, content: "market", href: "/marketplace" },
+  { isComingSoon: true, content: "collections" },
   { isComingSoon: true, content: "activity" },
   { isComingSoon: false, content: "community", href:"https://discord.gg/mugHDDzv", targetBlank: true},
 ];
@@ -21,9 +21,9 @@ const rightNavItems = [
 <Main
   title="EvolvNFT - evolving launchpad"
   lang="pl"
-  description="Evolvnft is a decentralized token ranch and a place to create editable, levelable and evolving metadata for your decentralized assets!"
+  description="EvolvNFT is a decentralized NFT ranch and a place to create editable, levelable and evolving metadata for your decentralized assets!"
 >
-  <div class="container mx-auto">
+  <div class="container mx-auto min-h-screen">
     <div class="px-8 mx-auto lg:mb-16">
       <Menu
         class="my-8"

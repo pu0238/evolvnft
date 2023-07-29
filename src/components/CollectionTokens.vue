@@ -11,7 +11,7 @@
     </div>
     <div class="flex-auto ml-8 pb-4">
       <h1 class="text-5xl xl:text-6xl 2xl:text-7xl font-cal text-black">
-        collection tokens
+        collection NFTs
       </h1>
       <p class="text-lg md:text-xl 2xl:text-2xl font-josefin text-zinc-700">
         Below are displayed all tokens belonging to your collection.

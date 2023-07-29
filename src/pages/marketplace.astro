@@ -1,10 +1,10 @@
 ---
-import LaunchpadBody from '../components/LaunchpadBody.vue';
+import MarketplaceBody from '../components/MarketplaceBody.vue';
 import Container from '../layouts/Container.astro';
 ---
 
 <Container>
   <section class="w-full float-left mt-8 lg:mt-16">
-    <LaunchpadBody client:visible />
+    <MarketplaceBody client:only />
   </section>
 </Container>

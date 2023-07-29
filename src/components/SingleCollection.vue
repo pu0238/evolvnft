@@ -122,7 +122,7 @@ export default {
           img: '/candie-machine-black.svg',
           title: 'candie machine',
           description:
-            'Add a certain number of your tokens to the candie machine',
+            'Add a certain number of your NFTs to the candie machine',
           active: false,
           tag: 'candiemachine',
         },

@@ -1,7 +1,7 @@
 <template>
   <li class="float-none my-1 lg:my-0 lg:float-left">
     <a
-      class="relative bottom-0 block md:inline py-2 mx-2 font-semibold font-josefin text-lg lg:text-base"
+      class="relative bottom-0 block md:inline py-2 mx-2 font-semibold font-josefin text-lg lg:text-sm xl:text-base"
       :class="{
         'text-white': textColor === 'white',
         'text-black': textColor === 'black',
