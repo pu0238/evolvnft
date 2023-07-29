@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import { bo } from '../../dist/_astro/runtime-core.esm-bundler.fc235a89';
 
 export default {
   props: {
