@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed block w-full lg:hidden top-0 left-0">
+  <div class="fixed z-50  block w-full lg:hidden top-0 left-0">
     <div
       v-if="isMenuOpenValue"
       class="fixed top-0 w-full h-full bg-white px-6 py-4"
@@ -23,7 +23,7 @@
           <Button
             :isDisabled="false"
             :isFilled="true"
-            :content="isWalletConnected ? 'disconnect' : 'connect'"
+            :content="isWalletConnected ? walletSignerAddress ? shortenArchAddress(walletSignerAddress) :'disconnect' : 'connect'"
             :isComingSoon="false"
             class="float-right mx-auto"
             @click="sharedConnect"
@@ -43,7 +43,8 @@ import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import { useStore } from '@nanostores/vue';
 import { isMenuOpen } from '../state/menuState';
 import { isWallet, sharedConnect } from '../utils/wallet';
-import { isWalletConnected } from '../state/walletState';
+import { isWalletConnected, walletSignerAddress } from '../state/walletState';
+import { shortenArchAddress } from '../utils/arch';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -53,6 +54,7 @@ export default {
   components: { NavBar, Logo, Button },
   methods: {
     sharedConnect,
+    shortenArchAddress,
     toogleMenu() {
       isMenuOpen.set(!this.isMenuOpenValue);
     },
@@ -81,10 +83,13 @@ export default {
     isWallet();
     const $isMenuOpen = useStore(isMenuOpen);
     const $collectionDescription = useStore(isWalletConnected);
+    const $walletSignerAddress = useStore(walletSignerAddress)
+
     props = reactive(props);
     return {
       isMenuOpenValue: computed(() => $isMenuOpen.value),
       isWalletConnected: computed(() => $collectionDescription.value),
+      walletSignerAddress: computed(() => $walletSignerAddress.value),
     };
   },
 };

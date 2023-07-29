@@ -5,3 +5,6 @@ export const collectionManagerContractAddress: WritableAtom<
 > = atom(undefined);
 export const launchpadManagerContractAddress: WritableAtom<undefined | string> =
   atom(undefined);
+export const marketplaceManagerContractAddress: WritableAtom<
+  undefined | string
+> = atom(undefined);

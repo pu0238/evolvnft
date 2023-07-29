@@ -70,7 +70,7 @@ export async function getArchwaySigner(): Promise<{
   const accounts = await offlineSigner.getAccounts();
   const signerAddress = accounts[0].address;
   const archwaySigner = await SigningArchwayClient.connectWithSigner(
-    NETWORK_INFO.rpc,
+    NETWORK_INFO.wss,
     offlineSigner,
   );
 
@@ -78,5 +78,5 @@ export async function getArchwaySigner(): Promise<{
 }
 
 export async function getQueryClient(): Promise<ArchwayClient> {
-  return await ArchwayClient.connect(NETWORK_INFO.rpc);
+  return await ArchwayClient.connect(NETWORK_INFO.wss);
 }
