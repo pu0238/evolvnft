@@ -255,6 +255,7 @@
 
 <script lang="ts">
 import {
+getAddressTokenOffers,
   getCollection,
   getOwnedTokens,
   listToken,
@@ -279,6 +280,7 @@ import {
   NETWORK_INFO,
 } from '../utils/constant';
 import { errorMessage } from '../state/error';
+import { getAddressNFTs } from '../utils/indexer';
 
 export default {
   components: {
@@ -478,6 +480,7 @@ export default {
     minimumListingPrice: () => MINIMUM_LISTING_PRICE,
   },
   async mounted() {
+    this.walletSignerAddress && console.log(await getAddressNFTs(this.walletSignerAddress))
     await this.loadOwnedTokens();
   },
   setup() {

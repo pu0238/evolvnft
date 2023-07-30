@@ -603,6 +603,17 @@ export async function getTokenOffers(
   return state;
 }
 
+export async function getAddressTokenOffers(address: string): Promise<any> {
+  const marketplaceManager = await getMarketplaceManager();
+  const queryClient = await getQueryClient();
+  const state = await queryClient.queryContractSmart(marketplaceManager, {
+    get_user_offers: {
+      owner: address,
+    },
+  });
+  return state;
+}
+
 export async function cancelOffer(
   collectionAddr: string,
   tokenId: string,
@@ -627,7 +638,7 @@ export async function cancelOffer(
 export async function acceptOffer(
   collectionAddr: string,
   tokenId: string,
-  fromAddress: string
+  fromAddress: string,
 ): Promise<any> {
   const marketplaceManager = await getMarketplaceManager();
   const { signerAddress, archwaySigner } = await getArchwaySigner();
@@ -639,7 +650,7 @@ export async function acceptOffer(
       accept_offer: {
         collection: collectionAddr,
         token_id: tokenId,
-        from: fromAddress
+        from: fromAddress,
       },
     },
     'auto',

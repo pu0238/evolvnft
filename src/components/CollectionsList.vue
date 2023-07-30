@@ -10,6 +10,7 @@
           :collectionTitle="col.name"
           :collectionSymbol="col.symbol"
           :collectionImg="col.thumbnail || undefined"
+          :tokensCount="col.tokens ? Object.keys(col.tokens).length : undefined"
           class="float-left"
         />
       </li>
