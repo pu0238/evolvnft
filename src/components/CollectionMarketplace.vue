@@ -115,7 +115,7 @@
                         height="13"
                         viewBox="0 0 17 13"
                         class="flex stroke-white hover:stroke-indigo-500 ease-out duration-200"
-                        v-if="offer.from && offer.from !== openTokenData?.owner"
+                        v-if="walletSignerAddress === openTokenData?.owner"
                         @click="acceptOfferForToken(offer.from)"
                         xmlns="http://www.w3.org/2000/svg"
                       >
@@ -378,6 +378,7 @@
             :metadata="offer.metadata"
             class="drop-shadow-2xl"
             @click="toogleOpen(offer.metadata, offer.listing)"
+            :marketplace="false"
           />
         </div>
       </div>

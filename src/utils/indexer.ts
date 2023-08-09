@@ -89,7 +89,7 @@ const bumpTokenAtCollection = (
   ) {
     receivedTokens.collections[collectionAddress][tokenId]++;
   } else {
-    receivedTokens.collections[collectionAddress] = { [tokenId]: 1 };
+    receivedTokens.collections[collectionAddress] = { ...receivedTokens.collections[collectionAddress], [tokenId]: 1 };
   }
 };
 
@@ -187,5 +187,5 @@ export const getAddressNFTs = async (address: string) => {
     processTx(spendBurn, receivedTokens, 'decrease'),
   ]);
 
-  console.log({ receivedTokens });
+  return receivedTokens
 };

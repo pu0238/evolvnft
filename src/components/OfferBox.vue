@@ -1,7 +1,7 @@
 <template>
   <a
     class="mx-1 relative ease-out duration-300 hover:z-10"
-    :href="marketplace ? `/marketplace#${collection}` : undefined"
+    :href="marketplace ? `?tokenId=${tokenId}#${collection}` : undefined"
     @click="$emit('openMetadata', metadata)"
   >
     <div
