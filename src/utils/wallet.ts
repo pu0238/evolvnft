@@ -61,9 +61,7 @@ export async function getArchwaySigner(): Promise<{
   signerAddress: string;
   archwaySigner: SigningArchwayClient;
 }> {
-  const offlineSigner = window.keplr?.getOfflineSigner(
-    NETWORK_INFO.chainId,
-  );
+  const offlineSigner = window.keplr?.getOfflineSigner(NETWORK_INFO.chainId);
   if (!offlineSigner) {
     throw errorMessage.set('Failed to create offline signer');
   }

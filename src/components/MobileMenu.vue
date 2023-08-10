@@ -23,7 +23,7 @@
           <Button
             :isDisabled="false"
             :isFilled="true"
-            :content="isWalletConnected ? walletSignerAddress ? shortenArchAddress(walletSignerAddress) :'disconnect' : 'connect'"
+            :content="isWalletConnected ? walletSignerAddress ? walletSignerAddress.slice(0, 10) + '...' + walletSignerAddress.slice(-2) :'disconnect' : 'connect'"
             :isComingSoon="false"
             class="float-right mx-auto"
             @click="sharedConnect"
