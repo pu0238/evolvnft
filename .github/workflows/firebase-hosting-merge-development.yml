@@ -7,7 +7,7 @@ name: Deploy to Firebase Hosting on merge
     branches:
       - development
 env:
-  PUBLIC_NETWORK: TESTNET
+  PUBLIC_NETWORK: MAINNET
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
