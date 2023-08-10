@@ -1,4 +1,6 @@
-const NETWORK = import.meta.env.PUBLIC_NETWORK;
+const NETWORK = (import.meta.env.PUBLIC_NETWORK || 'TESTNET') as
+  | 'TESTNET'
+  | 'MAINNET';
 
 const CONSTANTINE_CURRENCY = {
   coinDenom: 'CONST',
@@ -63,6 +65,6 @@ const networksData = { TESTNET, MAINNET };
 export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 
-export const NETWORK_INFO =
-  networksData[import.meta.env.PUBLIC_NETWORK as 'TESTNET' | 'MAINNET'];
-export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = "archway1ewk09pl9hvgegwydttnkeldhkudu7xxcqkx7xdfg8ht75n4kpldsju8wxc"
+export const NETWORK_INFO = networksData[NETWORK];
+export const SYSTEM_CONTEXT_CONTRACT_ADDRESS =
+  'archway1tpynf83l3asf09yhtknrpmrshqmha35cm5xm2z8r96lysgypsp5s0jzdvp';
