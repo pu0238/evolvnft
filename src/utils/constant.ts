@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const NETWORK = (import.meta.env.PUBLIC_NETWORK || 'TESTNET') as
   | 'TESTNET'
   | 'MAINNET';
@@ -7,6 +8,13 @@ const gasPriceStep = {
   average: 15e11,
   high: 2e12,
 };
+||||||| constructed merge base
+const NETWORK = import.meta.env.PUBLIC_NETWORK || 'TESTNET';
+=======
+const NETWORK = (import.meta.env.PUBLIC_NETWORK || 'TESTNET') as
+  | 'TESTNET'
+  | 'MAINNET';
+>>>>>>> fixed network const
 
 const CONSTANTINE_CURRENCY = {
   coinDenom: 'const',
@@ -109,3 +117,4 @@ console.log(
   NETWORK,
   SYSTEM_CONTEXT_CONTRACT_ADDRESS,
 );
+export const MINIMUM_LISTING_PRICE = 0.001;
