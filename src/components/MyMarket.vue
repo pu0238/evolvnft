@@ -87,6 +87,7 @@ import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { aarchToArch, shortenArchAddress } from '../utils/arch';
 import Button from '../components/Button.vue';
 import { isWallet } from '../utils/wallet';
+import { getMetadata } from '../utils/utils';
 
 export default {
   components: { Button },
@@ -114,12 +115,7 @@ export default {
         });
       }
     },
-    async getMetadata(url: string) {
-      const response = await fetch(url);
-      if (response && response?.ok) return await response.json();
-    },
     async joinTokensAndCollections() {
-      console.log(this.userOffers);
       if (this.userOffers) {
         const collectionTokens: {
           [key: string]: {
@@ -164,7 +160,7 @@ export default {
 
                     collectionTokens[collectionAddress].tokens[
                       tokenId
-                    ].metadata = await this.getMetadata(tokenMetadataUri);
+                    ].metadata = await getMetadata(tokenMetadataUri);
                   },
                 ),
               );
@@ -176,7 +172,6 @@ export default {
       }
     },
     async loadTokenData() {
-      console.log('walletSignerAddress', this.walletSignerAddress);
       if (this.walletSignerAddress) {
         this.userOffers = await getAddressTokenOffers(this.walletSignerAddress);
         await this.joinTokensAndCollections();

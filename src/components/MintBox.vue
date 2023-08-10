@@ -167,7 +167,7 @@ export default {
         { mint_tokens },
         'auto',
       );
-      console.log(
+      console.info(
         `${BLOCKCHAIN_SCAN_TXS}/${transactionHash}`,
       );
       this.$emit('afterMint');

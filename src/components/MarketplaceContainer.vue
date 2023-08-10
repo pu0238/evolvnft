@@ -71,6 +71,7 @@
 import { aarchToArch } from '../utils/arch';
 import { getNftInfo, getRecentListings } from '../utils/evolve';
 import type { RecentListings } from '../utils/types/RecentListings';
+import { getMetadata } from '../utils/utils';
 import OfferBox from './OfferBox.vue';
 
 export default {
@@ -116,11 +117,7 @@ export default {
     aarchToArch,
     async getTokenMetadata(collection: string, tokenId: string) {
       const metadataUrl = await getNftInfo(collection, tokenId);
-      return await this.getMetadata(metadataUrl);
-    },
-    async getMetadata(url: string) {
-      const response = await fetch(url);
-      if (response && response?.ok) return await response.json();
+      return await getMetadata(metadataUrl);
     },
     async dynamicLoadOffers() {
       const recentListings = await getRecentListings();

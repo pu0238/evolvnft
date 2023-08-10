@@ -198,7 +198,7 @@ export async function mintNFTs(
     { mint_tokens },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function setRewardsFee(
@@ -218,7 +218,7 @@ export async function setRewardsFee(
     { set_rewards_fee },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function applyForLanuchpad(
@@ -244,7 +244,7 @@ export async function applyForLanuchpad(
     { apply_for_launchpad },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 /*
@@ -342,7 +342,7 @@ export async function allocateTokens(
     { allocate_tokens },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function claimLaunchpadToken(
@@ -354,7 +354,7 @@ export async function claimLaunchpadToken(
   const claim_token = {
     address: collectionAddress,
   };
-  console.log(claim_token);
+  console.info(claim_token);
   const launchpadManagerContract = await getLaunchpadManager();
   const { transactionHash } = await archwaySigner.execute(
     signerAddress,
@@ -364,7 +364,7 @@ export async function claimLaunchpadToken(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 /*
@@ -384,7 +384,7 @@ export async function withdrawalRewards(
     { pay_out_rewards: {} },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function getOwnedTokensIds(
@@ -474,7 +474,7 @@ export async function listToken(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function sendToken(
@@ -495,7 +495,7 @@ export async function sendToken(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 /*
  *
@@ -561,7 +561,7 @@ export async function purchaseToken(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function placeOffer(
@@ -586,7 +586,7 @@ export async function placeOffer(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function getTokenOffers(
@@ -633,7 +633,7 @@ export async function cancelOffer(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function acceptOffer(
@@ -656,7 +656,7 @@ export async function acceptOffer(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function closeTokenListing(
@@ -677,5 +677,5 @@ export async function closeTokenListing(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }

@@ -72,7 +72,6 @@ export async function uploadTokenMetadata(filesToUpload: {
     promiseIds.push(uploadStringMetadata(enrichedMetadata));
   }
   const uploadedMetadataIds: string[] = await Promise.all(promiseIds);
-  console.log({uploadedMetadataIds})
   return uploadedMetadataIds;
 }
 

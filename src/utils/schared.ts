@@ -22,7 +22,6 @@ export function parseTime(date: string) {
 }
 
 export function swapElements(array: any[], index1: number, index2: number) {
-  console.log({array, index1, index2 })
   let temp = array[index1];
   array[index1] = array[index2];
   array[index2] = temp;

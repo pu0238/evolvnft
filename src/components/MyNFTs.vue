@@ -280,6 +280,7 @@ import {
   NETWORK_INFO,
 } from '../utils/constant';
 import { errorMessage } from '../state/error';
+import { getMetadata } from '../utils/utils';
 
 export default {
   components: {
@@ -437,7 +438,7 @@ export default {
       if (this.collectionAddress) {
         const metadataArray = await Promise.all(
           Object.values(colectionTokens).map((item) =>
-            this.getMetadata(item.token_uri),
+            getMetadata(item.token_uri),
           ),
         );
         this.currentCollectionTokens = Object.keys(colectionTokens).map(
@@ -465,10 +466,6 @@ export default {
           (res) => (this.currentCollectionData = res),
         ),
       ]);
-    },
-    async getMetadata(url: string) {
-      const response = await fetch(url);
-      if (response && response?.ok) return await response.json();
     },
     blockchainScan() {
       return BLOCKCHAIN_SCAN_ACCOUNT;
