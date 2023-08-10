@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const NETWORK = (import.meta.env.PUBLIC_NETWORK || 'TESTNET') as
   | 'TESTNET'
   | 'MAINNET';
@@ -8,13 +7,6 @@ const gasPriceStep = {
   average: 15e11,
   high: 2e12,
 };
-||||||| constructed merge base
-const NETWORK = import.meta.env.PUBLIC_NETWORK || 'TESTNET';
-=======
-const NETWORK = (import.meta.env.PUBLIC_NETWORK || 'TESTNET') as
-  | 'TESTNET'
-  | 'MAINNET';
->>>>>>> fixed network const
 
 const CONSTANTINE_CURRENCY = {
   coinDenom: 'const',
@@ -99,7 +91,8 @@ const networksData = { TESTNET, MAINNET };
 export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 
-export const NETWORK_INFO = networksData[NETWORK];
+export const NETWORK_INFO =
+  networksData[NETWORK];
 
 export const BLOCKCHAIN_SCAN =
   NETWORK === 'TESTNET'
