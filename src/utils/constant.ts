@@ -91,8 +91,7 @@ const networksData = { TESTNET, MAINNET };
 export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 
-export const NETWORK_INFO =
-  networksData[NETWORK];
+export const NETWORK_INFO = networksData[NETWORK];
 
 export const BLOCKCHAIN_SCAN =
   NETWORK === 'TESTNET'
@@ -101,9 +100,19 @@ export const BLOCKCHAIN_SCAN =
 export const BLOCKCHAIN_SCAN_TXS = `${BLOCKCHAIN_SCAN}txs/`;
 export const BLOCKCHAIN_SCAN_ACCOUNT = `${BLOCKCHAIN_SCAN}account/`;
 
-export const SYSTEM_CONTEXT_CONTRACT_ADDRESS = import.meta.env[
-  'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK
-];
+const SYSTEM_CONTEXT_CONTRACT_ADDRESSES = {
+  PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_TESTNET:
+    'archway1tpynf83l3asf09yhtknrpmrshqmha35cm5xm2z8r96lysgypsp5s0jzdvp',
+  PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_MAINNET:
+    'archway1ewk09pl9hvgegwydttnkeldhkudu7xxcqkx7xdfg8ht75n4kpldsju8wxc',
+};
+
+export const SYSTEM_CONTEXT_CONTRACT_ADDRESS =
+  SYSTEM_CONTEXT_CONTRACT_ADDRESSES[
+    ('PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK) as
+      | 'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_TESTNET'
+      | 'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_MAINNET'
+  ];
 
 console.log(
   import.meta.env.PUBLIC_NETWORK,
@@ -112,4 +121,4 @@ console.log(
 );
 export const MINIMUM_LISTING_PRICE = 0.001;
 
-console.log({SYSTEM_CONTEXT_CONTRACT_ADDRESS, NETWORK})
+console.log({ SYSTEM_CONTEXT_CONTRACT_ADDRESS, NETWORK });
