@@ -1,10 +1,15 @@
-const NETWORK = import.meta.env.PUBLIC_NETWORK as 'TESTNET' | 'MAINNET';
+const NETWORK = (import.meta.env.PUBLIC_NETWORK || 'TESTNET') as
+  | 'TESTNET'
+  | 'MAINNET';
 
-const gasPriceStep = {
-  low: 1e12,
-  average: 15e11,
-  high: 2e12,
+const SYSTEM_CONTEXT_CONTRACT_ADDRESSES = {
+  PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_TESTNET:
+    'archway1tpynf83l3asf09yhtknrpmrshqmha35cm5xm2z8r96lysgypsp5s0jzdvp',
+  PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_MAINNET:
+    'archway1ewk09pl9hvgegwydttnkeldhkudu7xxcqkx7xdfg8ht75n4kpldsju8wxc',
 };
+
+const gasPriceStep = { low: 0, average: 0.1, high: 0.2 };
 
 const CONSTANTINE_CURRENCY = {
   coinDenom: 'const',
@@ -91,10 +96,18 @@ export const CARNISTER_API_URL =
 
 export const NETWORK_INFO = networksData[NETWORK];
 
-export const SYSTEM_CONTEXT_CONTRACT_ADDRESSES = {
-  TESTNET: 'archway1tpynf83l3asf09yhtknrpmrshqmha35cm5xm2z8r96lysgypsp5s0jzdvp',
-  MAINNET: 'archway1ewk09pl9hvgegwydttnkeldhkudu7xxcqkx7xdfg8ht75n4kpldsju8wxc',
-};
+export const BLOCKCHAIN_SCAN =
+  NETWORK === 'TESTNET'
+    ? 'https://testnet.mintscan.io/archway-testnet/'
+    : 'https://www.mintscan.io/archway/';
+export const BLOCKCHAIN_SCAN_TXS = `${BLOCKCHAIN_SCAN}txs/`;
+export const BLOCKCHAIN_SCAN_ACCOUNT = `${BLOCKCHAIN_SCAN}account/`;
 
 export const SYSTEM_CONTEXT_CONTRACT_ADDRESS =
-  SYSTEM_CONTEXT_CONTRACT_ADDRESSES[NETWORK];
+  SYSTEM_CONTEXT_CONTRACT_ADDRESSES[
+    ('PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_' + NETWORK) as
+      | 'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_TESTNET'
+      | 'PUBLIC_SYSTEM_CONTEXT_CONTRACT_ADDRESS_MAINNET'
+  ];
+
+export const MINIMUM_LISTING_PRICE = 0.001;

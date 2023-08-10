@@ -138,7 +138,7 @@ export default {
     async setCollectionRewards() {
       const rewardFee = Number(this.sliderValue) * 100;
       if (this.rewardPercentage === rewardFee)
-        return console.log('Reward is equal to the selected value');
+        return console.info('Reward is equal to the selected value');
       await setRewardsFee(
         this.collectionAddress,
         Number(this.sliderValue) * 100,

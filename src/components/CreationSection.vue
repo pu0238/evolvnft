@@ -108,7 +108,7 @@ export default {
         { register_collection },
         'auto',
       );
-      console.log(
+      console.info(
         `${BLOCKCHAIN_SCAN_TXS}${transactionHash}`,
       );
       this.showConfetti();

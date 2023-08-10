@@ -12,6 +12,7 @@ import { buildMintObject } from './metadata';
 import type { CollectionEntitie } from './types/CollectionItem';
 import type { RecentListings } from './types/RecentListings';
 import type { UserCollections } from './types/UserCollections';
+import type { UserOffers } from './types/UserOffers';
 import { getArchwaySigner, getQueryClient } from './wallet';
 import _ from 'lodash';
 
@@ -197,7 +198,7 @@ export async function mintNFTs(
     { mint_tokens },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function setRewardsFee(
@@ -217,7 +218,7 @@ export async function setRewardsFee(
     { set_rewards_fee },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function applyForLanuchpad(
@@ -243,7 +244,7 @@ export async function applyForLanuchpad(
     { apply_for_launchpad },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 /*
@@ -341,7 +342,7 @@ export async function allocateTokens(
     { allocate_tokens },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function claimLaunchpadToken(
@@ -353,7 +354,7 @@ export async function claimLaunchpadToken(
   const claim_token = {
     address: collectionAddress,
   };
-  console.log(claim_token);
+  console.info(claim_token);
   const launchpadManagerContract = await getLaunchpadManager();
   const { transactionHash } = await archwaySigner.execute(
     signerAddress,
@@ -363,7 +364,7 @@ export async function claimLaunchpadToken(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 /*
@@ -383,7 +384,7 @@ export async function withdrawalRewards(
     { pay_out_rewards: {} },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function getOwnedTokensIds(
@@ -473,7 +474,7 @@ export async function listToken(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function sendToken(
@@ -494,7 +495,7 @@ export async function sendToken(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 /*
  *
@@ -560,7 +561,7 @@ export async function purchaseToken(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function placeOffer(
@@ -585,7 +586,7 @@ export async function placeOffer(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function getTokenOffers(
@@ -598,6 +599,17 @@ export async function getTokenOffers(
     get_offers: {
       collection: collectionAddr,
       token_id: tokenId,
+    },
+  });
+  return state;
+}
+
+export async function getAddressTokenOffers(address: string): Promise<UserOffers[]> {
+  const marketplaceManager = await getMarketplaceManager();
+  const queryClient = await getQueryClient();
+  const state = await queryClient.queryContractSmart(marketplaceManager, {
+    get_user_offers: {
+      owner: address,
     },
   });
   return state;
@@ -621,13 +633,13 @@ export async function cancelOffer(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function acceptOffer(
   collectionAddr: string,
   tokenId: string,
-  fromAddress: string
+  fromAddress: string,
 ): Promise<any> {
   const marketplaceManager = await getMarketplaceManager();
   const { signerAddress, archwaySigner } = await getArchwaySigner();
@@ -639,12 +651,12 @@ export async function acceptOffer(
       accept_offer: {
         collection: collectionAddr,
         token_id: tokenId,
-        from: fromAddress
+        from: fromAddress,
       },
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }
 
 export async function closeTokenListing(
@@ -665,5 +677,5 @@ export async function closeTokenListing(
     },
     'auto',
   );
-  console.log(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
 }

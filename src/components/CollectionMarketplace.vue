@@ -115,7 +115,7 @@
                         height="13"
                         viewBox="0 0 17 13"
                         class="flex stroke-white hover:stroke-indigo-500 ease-out duration-200"
-                        v-if="offer.from && offer.from !== openTokenData?.owner"
+                        v-if="walletSignerAddress === openTokenData?.owner"
                         @click="acceptOfferForToken(offer.from)"
                         xmlns="http://www.w3.org/2000/svg"
                       >
@@ -378,6 +378,7 @@
             :metadata="offer.metadata"
             class="drop-shadow-2xl"
             @click="toogleOpen(offer.metadata, offer.listing)"
+            :marketplace="false"
           />
         </div>
       </div>
@@ -416,6 +417,7 @@ import { BLOCKCHAIN_SCAN_ACCOUNT } from '../utils/constant';
 import { useStore } from '@nanostores/vue';
 import { walletSignerAddress } from '../state/walletState';
 import { computed } from 'vue';
+import { getMetadata } from '../utils/utils';
 
 export default {
   components: { CollectionMarketplaceHeader, OfferBox, ProductsCart },
@@ -630,11 +632,7 @@ export default {
     },
     async getTokenMetadata(collection: string, tokenId: string) {
       const metadataUrl = await getNftInfo(collection, tokenId);
-      return await this.getMetadata(metadataUrl);
-    },
-    async getMetadata(url: string) {
-      const response = await fetch(url);
-      if (response && response?.ok) return await response.json();
+      return await getMetadata(metadataUrl);
     },
     async dynamicLoadOffers() {
       for (

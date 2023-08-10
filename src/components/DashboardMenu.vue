@@ -82,7 +82,7 @@ export default {
         {
           name: 'market',
           img: '/icons/dashboard/marketplace.svg',
-          disabled: true,
+          disabled: false,
           walletStricted: true,
         },
         {
