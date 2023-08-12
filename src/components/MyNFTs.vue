@@ -255,7 +255,6 @@
 
 <script lang="ts">
 import {
-getAddressTokenOffers,
   getCollection,
   getOwnedTokens,
   listToken,
