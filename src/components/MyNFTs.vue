@@ -255,7 +255,6 @@
 
 <script lang="ts">
 import {
-getAddressTokenOffers,
   getCollection,
   getOwnedTokens,
   listToken,
@@ -425,6 +424,12 @@ export default {
         );
         if (collectionsAddresses.collectionsScanned < 10) break;
       }
+      this.userCollectionsAndTokens.forEach(col => {
+        const collection = this.userCollections.find(tokens => tokens.address === col.address)
+        if (collection) {
+          collection.tokens = col.tokens
+        }
+      })
     },
     async loadCollectionTokens(colectionTokens?: {
       [key: string]: {
@@ -448,6 +453,7 @@ export default {
             tokenId: id,
           }),
         );
+        console.log({currentCollectionTokens: this.currentCollectionTokens})
       }
     },
     back() {
