@@ -24,7 +24,7 @@
             v-else
             draggable="false"
             class="w-44 mx-auto sm:w-72 md:w-96 rounded-2xl p-8"
-            src="evolvnft-collection-logo.svg"
+            src="/evolvnft-collection-logo.svg"
           />
           <div class="text-white flex font-josefin mt-4">
             <div class="grid w-full">
