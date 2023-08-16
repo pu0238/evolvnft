@@ -52,7 +52,7 @@ export const TESTNET = {
 
 const ARCH_CURRENCY = {
   coinDecimals: 18,
-  coinDenom: 'ARCH',
+  coinDenom: 'arch',
   coinGeckoId: 'archway',
   coinMinimalDenom: 'aarch',
 };
