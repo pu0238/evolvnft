@@ -161,7 +161,7 @@ export default {
     },
     denomLogo: {
       type: String,
-      default: () => 'arch-logo.svg',
+      default: () => '/arch-logo.svg',
     },
   },
   setup(props) {

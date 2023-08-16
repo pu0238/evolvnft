@@ -38,7 +38,7 @@ export default {
   props: {
     denomLogo: {
       type: String,
-      default: () => 'arch-logo.svg',
+      default: () => '/arch-logo.svg',
     },
     price: {
       type: String,
