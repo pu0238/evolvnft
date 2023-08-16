@@ -19,57 +19,28 @@
       </p>
     </div>
     <div v-if="'offers' === openTab">
-      <div
-        v-if="tokensMetadata"
+      <MyOfferBox
+        v-if="tokenOffersMetadata"
         v-for="offer in userOffers"
-        class="border-b-2 border-zink-300 flex font-josefin px-2 justify-self-stretch py-1"
-      >
-        <img
-          class="w-20 h-20 bg-black rounded-lg"
-          :class="{
-            'p-2':
-              !tokensMetadata[offer.collection].tokens[offer.tokenId].metadata
-                ?.image,
-          }"
-          :src="
-            tokensMetadata[offer.collection].tokens[offer.tokenId].metadata
-              ?.image || 'evolvnft-collection-logo.svg'
-          "
-        />
-        <div class="w-full px-2">
-          <div class="flex justify-between items-center">
-            <a
-              class="flex items-center font-cal text-indigo-500 font-semibold ease-out duration-300 hover:text-indigo-600"
-              :href="`/marketplace?tokenId=${offer.tokenId}#${offer.collection}`"
-              target="_blank"
-            >
-              #{{ offer.tokenId }}
-            </a>
-            <div class="flex items-center font-cal">
-              <img draggable="false" :src="denomLogo" class="w-4 mx-1 my-2" />
-              <span>{{ aarchToArch(Number(offer.offer.amount)) }}</span>
-            </div>
-          </div>
-          <div class="flex justify-between">
-            <div class="text-bottom mt-auto">
-              collection
-              <a
-                class="text-indigo-500 font-semibold ease-out duration-300 hover:text-indigo-600"
-                :href="`/marketplace#${offer.collection}`"
-                target="_blank"
-              >
-                {{ shortenArchAddress(offer.collection) }}
-              </a>
-            </div>
-            <div class="flex">
-              <Button
-                content="cancel"
-                @click="cancelOfferForToken(offer.collection, offer.tokenId)"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+        :offer="offer"
+        :tokenImage="
+          tokenOffersMetadata[offer.collection].tokens[offer.tokenId].metadata
+            ?.image || 'evolvnft-collection-logo.svg'
+        "
+        @cancelOffer="cancelOfferForToken"
+      />
+    </div>
+    <div v-if="'on sale' === openTab">
+      <MyListingBox
+        v-if="tokenListingsMetadata"
+        v-for="listing in userListings"
+        :listing="listing"
+        :tokenImage="
+          tokenListingsMetadata[listing.collection].tokens[listing.tokenId]
+            .metadata?.image || 'evolvnft-collection-logo.svg'
+        "
+        @cancelOffer="closeNFTListing"
+      />
     </div>
   </div>
 </template>
@@ -79,23 +50,30 @@ import { computed } from 'vue';
 import { walletSignerAddress } from '../state/walletState';
 import {
   cancelOffer,
+  closeTokenListing,
+  getAddressTokenListings,
   getAddressTokenOffers,
   getCollection,
 } from '../utils/evolve';
 import type { UserOffers } from '../utils/types/UserOffers';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { aarchToArch, shortenArchAddress } from '../utils/arch';
 import Button from '../components/Button.vue';
+import MyListingBox from '../components/MyListingBox.vue';
 import { isWallet } from '../utils/wallet';
 import { getMetadata } from '../utils/utils';
+import MyOfferBox from '../components/MyOfferBox.vue';
+import type { UserListings } from '../utils/types/UserListings';
+import type { CollectionTokensMetadata } from '../utils/types/CollectionTokensMetadata';
 
 export default {
-  components: { Button },
+  components: { Button, MyOfferBox, MyListingBox },
   data() {
     return {
       openTab: 'offers' as 'offers' | 'on sale',
       userOffers: undefined as undefined | UserOffers[],
-      tokensMetadata: undefined as undefined | { [key: string]: any },
+      userListings: undefined as undefined | UserListings[],
+      tokenOffersMetadata: undefined as undefined | CollectionTokensMetadata,
+      tokenListingsMetadata: undefined as undefined | CollectionTokensMetadata,
     };
   },
   props: {
@@ -108,22 +86,17 @@ export default {
     shortenArchAddress,
     aarchToArch,
     async cancelOfferForToken(collection: string, tokenId: string) {
-      if (this.tokensMetadata && this.userOffers) {
+      if (this.tokenOffersMetadata && this.userOffers) {
         await cancelOffer(collection, tokenId);
         this.userOffers = this.userOffers.filter(function (obj) {
           return obj.collection !== collection && obj.tokenId !== tokenId;
         });
       }
     },
-    async joinTokensAndCollections() {
-      if (this.userOffers) {
-        const collectionTokens: {
-          [key: string]: {
-            tokens: { [key: string]: { metadataUrl?: string; metadata?: any } };
-            collectionData: CollectionEntitie;
-          };
-        } = {};
-        this.userOffers.forEach((offer) => {
+    async joinTokensAndCollections(userOffers: UserOffers[] | UserListings[]) {
+      if (userOffers) {
+        const collectionTokens: CollectionTokensMetadata = {};
+        userOffers.forEach((offer) => {
           if (collectionTokens[offer.collection]) {
             collectionTokens[offer.collection]['tokens'][offer.tokenId] = {};
           } else {
@@ -168,13 +141,27 @@ export default {
           }),
         );
 
-        this.tokensMetadata = collectionTokens;
+        return collectionTokens;
       }
     },
     async loadTokenData() {
       if (this.walletSignerAddress) {
         this.userOffers = await getAddressTokenOffers(this.walletSignerAddress);
-        await this.joinTokensAndCollections();
+        this.tokenOffersMetadata = await this.joinTokensAndCollections(
+          this.userOffers,
+        );
+
+        this.userListings = await getAddressTokenListings(
+          this.walletSignerAddress,
+        );
+        this.tokenListingsMetadata = await this.joinTokensAndCollections(
+          this.userListings,
+        );
+      }
+    },
+    async closeNFTListing(collection: string, tokenId: string) {
+      if (collection && tokenId) {
+        await closeTokenListing(collection, tokenId);
       }
     },
   },

@@ -12,6 +12,7 @@ import { buildMintObject } from './metadata';
 import type { CollectionEntitie } from './types/CollectionItem';
 import type { RecentListings } from './types/RecentListings';
 import type { UserCollections } from './types/UserCollections';
+import type { UserListings } from './types/UserListings';
 import type { UserOffers } from './types/UserOffers';
 import { getArchwaySigner, getQueryClient } from './wallet';
 import _ from 'lodash';
@@ -609,6 +610,17 @@ export async function getAddressTokenOffers(address: string): Promise<UserOffers
   const queryClient = await getQueryClient();
   const state = await queryClient.queryContractSmart(marketplaceManager, {
     get_user_offers: {
+      owner: address,
+    },
+  });
+  return state;
+}
+
+export async function getAddressTokenListings(address: string): Promise<UserListings[]> {
+  const marketplaceManager = await getMarketplaceManager();
+  const queryClient = await getQueryClient();
+  const state = await queryClient.queryContractSmart(marketplaceManager, {
+    get_user_listings: {
       owner: address,
     },
   });
