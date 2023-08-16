@@ -66,5 +66,4 @@ export const CARNISTER_API_URL =
   'https://w4j6g-nyaaa-aaaao-aixyq-cai.raw.icp0.io/v1';
 
 export const NETWORK_INFO = networksData[NETWORK];
-export const SYSTEM_CONTEXT_CONTRACT_ADDRESS =
-  'archway1ewk09pl9hvgegwydttnkeldhkudu7xxcqkx7xdfg8ht75n4kpldsju8wxc';
+
