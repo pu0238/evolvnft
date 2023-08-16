@@ -11,7 +11,7 @@
         <FooterButton
           content="discord"
           :isDisabled="false"
-          href="https://discord.gg/jMHWk6dT"
+          href="https://discord.gg/bTCgezUE7B"
         />
         <FooterButton content="telegram" :isDisabled="true" />
       </div>
