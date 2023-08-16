@@ -125,10 +125,10 @@
 import Uploader from './Uploader.vue';
 import Button from './Button.vue';
 import { editEvolveMetadata } from '../utils/evolve';
-import { NETWORK_INFO } from '../utils/constant';
 import { joinMetadataAndImages, uploadStringMetadata } from '../utils/metadata';
 import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';
+import { getMetadata } from '../utils/utils';
 
 export default {
   data() {
@@ -181,11 +181,6 @@ export default {
         this.jsonTypes,
       );
     },
-    async getMetadata(url: string) {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data;
-    },
     async editMetadata() {
       this.evolvInProgress = true;
       for (const fileName in this.filesToUpload) {
@@ -221,8 +216,8 @@ export default {
             metadataId,
             metadataUploadId,
           );
-          this.metadata = await this.getMetadata(this.tokenUri);
-          console.log('Metadata updated');
+          this.metadata = await getMetadata(this.tokenUri);
+          console.info('Metadata updated');
           this.evolvInProgress = false;
           this.filesToUpload = {};
         }
@@ -230,12 +225,12 @@ export default {
     },
   },
   async mounted() {
-    this.metadata = await this.getMetadata(this.tokenUri);
+    this.metadata = await getMetadata(this.tokenUri);
   },
   watch: {
     tokenUri: async function (newVal) {
       if (Object.keys(this.selectedMetadata).length === 0) {
-        this.metadata = await this.getMetadata(newVal);
+        this.metadata = await getMetadata(newVal);
       }
     },
     selectedMetadata: function (newVal) {

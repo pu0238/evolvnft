@@ -2,8 +2,8 @@
   <BlackExpandable title="mint NFT">
     <div class="mx-4 my-6 grid">
       <p class="font-josefin font-normal text-sm">
-        Here you can pre-mint some tokens to your collection. They will
-        immediately get transferred to your wallet. Preminted tokens count
+        Here you can pre-mint some NFTs to your collection. They will
+        immediately get transferred to your wallet. Preminted NFTs count
         towards your collection's total supply and they will NOT be available
         for use in launchpad.
         <a
@@ -194,7 +194,10 @@
           </div>
           <div class="grid" v-if="generateMetadata">
             <div class="grid items-center">
-              <p class="font-josefin mr-2 text-sm">NFT name: <span class="font-josefin mr-2 text-xs">(optional)</span></p>
+              <p class="font-josefin mr-2 text-sm">
+                NFT name:
+                <span class="font-josefin mr-2 text-xs">(optional)</span>
+              </p>
               <code>
                 <input
                   class="bg-zinc-900 px-4 py-2 rounded-2xl w-full text-sm"
@@ -259,7 +262,8 @@
             </div>
             <span class="text-xs font-josefin mt-2"
               >attributes are optional data describing your NFT. Example "Eyes:
-              blue" or "King".</span
+              blue" or "King". Attributes can be many validate added attributes
+              with enter key.</span
             >
           </div>
         </div>

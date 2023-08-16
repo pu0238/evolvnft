@@ -14,6 +14,7 @@
     <CollectionsList
       v-else-if="collections.length > 0"
       :collections="collections"
+      :tokensCount="collections.length"
       @collectionDetails="(address: string) => openCollection(address)"
     />
     <div v-else>

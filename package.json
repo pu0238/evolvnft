@@ -13,7 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@archwayhq/arch3.js": "^0.3.1",
+    "@archwayhq/arch3.js": "^0.4.0",
     "@astrojs/tailwind": "^3.1.1",
     "@astrojs/vue": "^2.1.0",
     "@nanostores/vue": "^0.7.0",
@@ -21,6 +21,7 @@
     "@vueuse/core": "^10.2.1",
     "arbundles": "^0.9.5",
     "astro": "^2.1.4",
+    "bignumber.js": "^4.0.4",
     "chart.js": "^4.3.0",
     "js-confetti": "^0.11.0",
     "lodash": "^4.17.21",

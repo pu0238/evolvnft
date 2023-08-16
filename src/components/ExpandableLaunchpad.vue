@@ -2,7 +2,7 @@
   <BlackExpandable title="launchpad application">
     <div class="mx-4 my-6 grid">
       <p class="font-josefin font-normal text-sm">
-        Manage your launchpad application, and allocate tokens to be minted
+        Manage your launchpad application, and allocate NFTs to be minted
         (claimed) by the users during the minting event
       </p>
       <div class="mt-4 flex justify-end">
@@ -22,7 +22,7 @@
       <div class="w-full mb-2 grid mt-4">
         <div class="grid items-center">
           <p class="font-josefin mr-2 font-semibold">
-            Delegate tokens to launchpad:
+            Delegate NFTs to launchpad:
           </p>
           <p class="font-josefin text-xs mr-2">
             delegated: {{ allocatedTokenNumber }}, collection limit:
@@ -268,12 +268,12 @@
         </div>
       </div>
       <span class="text-xs font-josefin mt-2"
-        >delegate your tokens to the launchpad.</span
+        >delegate your NFTs to the launchpad.</span
       >
       <div>
         <Button
           class="float-right mt-8"
-          :content="mintingnProgress ? 'delegating...' : 'delegate tokens'"
+          :content="mintingnProgress ? 'delegating...' : 'delegate NFTs'"
           :isDisabled="mintingnProgress"
           @click="allocateTokens"
         />
@@ -365,11 +365,7 @@ import {
   allocateTokens,
   applyForLanuchpad,
   getAllocatedTokensNum,
-  getOwnedTokens,
 } from '../utils/evolve';
-import { getArchwaySigner } from '../utils/wallet';
-import CollectionsListStories from './CollectionsList.stories';
-import { SYSTEM_CONTEXT_CONTRACT_ADDRESS } from '../utils/constant';
 
 export default {
   components: {

@@ -15,7 +15,7 @@
         :collection="collection"
       />
     </div>
-    <div class="grid mx-auto">
+    <div class="grid w-full">
       <Button
         content="back"
         arrow="left"
@@ -24,7 +24,7 @@
         @click="$emit('back')"
       />
       <CollectionBaner
-        class="xl:h-[40rem]"
+        class="xl:h-[40rem] mx-auto"
         bgColor="black"
         :collectionImg="collection?.thumbnail || undefined"
         :collectionTitle="collection?.name"

@@ -13,7 +13,9 @@
       </p>
       <div class="w-full mb-2 grid mt-8">
         <div class="grid items-center">
-          <p class="font-josefin mr-2 font-semibold">Percentage of rewards distribution:</p>
+          <p class="font-josefin mr-2 font-semibold">
+            Percentage of rewards distribution:
+          </p>
           <div class="flex mb-2">
             <div class="flex-1 mr-4 mt-1">
               <input
@@ -50,13 +52,15 @@
           </div>
           <span class="text-xs font-josefin mt-2"
             >set the percentage of the rewards distribution of the collection
-            with the token holders.</span
+            with the NFT holders.</span
           >
         </div>
       </div>
       <div class="w-full mt-8 hidden">
         <div class="grid items-center">
-          <p class="font-josefin mr-2 font-semibold">Split rewards with token holders:</p>
+          <p class="font-josefin mr-2 font-semibold">
+            Split rewards with token holders:
+          </p>
           <div class="flex">
             <div class="mt-5 flex-1">
               <label
@@ -78,13 +82,15 @@
             </div>
           </div>
           <span class="text-xs font-josefin mt-2"
-            >Decide if you want to share rewards with token holders.</span
+            >Decide if you want to share rewards with NFT holders.</span
           >
         </div>
       </div>
       <div class="w-full grid mt-8">
         <div class="grid items-center">
-          <p class="font-josefin mr-2 font-semibold">Split rewards with token holders:</p>
+          <p class="font-josefin mr-2 font-semibold">
+            Split rewards with token holders:
+          </p>
           <div class="w-full">
             <Button
               content="withdraw rewards"
@@ -132,7 +138,7 @@ export default {
     async setCollectionRewards() {
       const rewardFee = Number(this.sliderValue) * 100;
       if (this.rewardPercentage === rewardFee)
-        return console.log('Reward is equal to the selected value');
+        return console.info('Reward is equal to the selected value');
       await setRewardsFee(
         this.collectionAddress,
         Number(this.sliderValue) * 100,
@@ -196,33 +202,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type='number'] {
-  -moz-appearance: textfield;
-}
-
-input[type='range'] {
-  -webkit-appearance: none;
-  margin-right: 15px;
-  border-radius: 5px;
-  background-image: linear-gradient(#6366f1, #6366f1);
-  background-size: 70% 100%;
-  background-repeat: no-repeat;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 100%;
-  background: #6366f1;
-}
-</style>

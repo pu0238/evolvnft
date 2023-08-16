@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex">
-    <ul class="mt-10 mx-auto grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
+    <ul class="mt-10 mx-auto flex flex-wrap justify-center gap-2">
       <li
         v-for="col in (collections as CollectionEntitie[])"
         @click="$emit('collectionDetails', col.address)"
@@ -10,6 +10,7 @@
           :collectionTitle="col.name"
           :collectionSymbol="col.symbol"
           :collectionImg="col.thumbnail || undefined"
+          :tokensCount="col.tokens ? Object.keys(col.tokens).length : undefined"
           class="float-left"
         />
       </li>

@@ -33,6 +33,7 @@ import { getArchwaySigner } from '../utils/wallet';
 // @ts-ignore
 import JSConfetti from 'js-confetti';
 import { errorMessage } from '../state/error';
+import { BLOCKCHAIN_SCAN_TXS } from '../utils/constant';
 
 const confetti = new JSConfetti();
 
@@ -107,8 +108,8 @@ export default {
         { register_collection },
         'auto',
       );
-      console.log(
-        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+      console.info(
+        `${BLOCKCHAIN_SCAN_TXS}${transactionHash}`,
       );
       this.showConfetti();
     },

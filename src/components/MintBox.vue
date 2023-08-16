@@ -27,7 +27,7 @@
       <p
         class="w-full float-left :text-xl xl:text-2xl font-josefin text-zinc-300 mt-8"
       >
-        For mint tokens, drop the token metadata along with the token image. In
+        For mint NFTs, drop the NFT metadata along with the NFT image. In
         order for images to be linked to metadata correctly, name the metadata
         the same as the image (for example: 1.json, 1.png).
       </p>
@@ -111,6 +111,7 @@ import { buildMintObject, joinMetadataAndImages } from '../utils/metadata';
 import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { getArchwaySigner } from '../utils/wallet';
 import { getCollectionManager } from '../utils/evolve';
+import { BLOCKCHAIN_SCAN_TXS } from '../utils/constant';
 
 export default {
   emit: ['close', 'afterMint'],
@@ -166,8 +167,8 @@ export default {
         { mint_tokens },
         'auto',
       );
-      console.log(
-        `https://testnet.mintscan.io/archway-testnet/txs/${transactionHash}`,
+      console.info(
+        `${BLOCKCHAIN_SCAN_TXS}/${transactionHash}`,
       );
       this.$emit('afterMint');
       this.filesToUpload = {};

@@ -31,6 +31,8 @@
 </template>
 
 <script lang="ts">
+import { getMetadata } from '../utils/utils';
+
 export default {
   data() {
     return {
@@ -62,15 +64,8 @@ export default {
       required: true,
     },
   },
-  methods: {
-    async getMetadata() {
-      const response = await fetch(this.tokenUri);
-      const data = await response.json();
-      return data;
-    },
-  },
   mounted() {
-    this.getMetadata().then((data) => {
+    getMetadata(this.tokenUri).then((data) => {
       this.metadata = data;
     });
   },

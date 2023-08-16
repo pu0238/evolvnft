@@ -54,10 +54,11 @@ const { title, description } = Astro.props;
     const analytics = getAnalytics(app);
   </script>
   <script>
-    window.keplr.defaultOptions = {
-      sign: {
-        preferNoSetFee: true,
-      },
-    };
+    if (window?.keplr)
+      window.keplr.defaultOptions = {
+        sign: {
+          preferNoSetFee: true,
+        },
+      };
   </script>
 </head>
