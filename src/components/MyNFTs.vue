@@ -26,7 +26,7 @@
             v-else
             draggable="false"
             class="w-44 mx-auto sm:w-72 md:w-96 rounded-2xl p-8"
-            src="evolvnft-collection-logo.svg"
+            src="/evolvnft-collection-logo.svg"
           />
           <div class="text-white flex font-josefin mt-4">
             <div class="grid w-full">
@@ -341,7 +341,7 @@ export default {
           if (this.listingPrice < MINIMUM_LISTING_PRICE) {
             throw errorMessage.set(
               `Minimul listing price is: ${toFixed(MINIMUM_LISTING_PRICE)}${
-                NETWORK_INFO.stakeCurrency.coinDenom
+                NETWORK_INFO.stakeCurrency.coinMinimalDenom
               }`,
             );
           }
@@ -453,7 +453,6 @@ export default {
             tokenId: id,
           }),
         );
-        console.log({currentCollectionTokens: this.currentCollectionTokens})
       }
     },
     back() {
