@@ -121,16 +121,16 @@ export default {
     },
     async dynamicLoadOffers() {
       const recentListings = await getRecentListings();
-      console.log('recentListings.', this.paginator <= recentListings.length);
 
       for (
-        let index = this.paginator;
-        index <= recentListings.length;
+        let index = 0;
+        index < recentListings.length;
         index += this.paginator
       ) {
+        console.log(123);
         const paginRecentListings = recentListings.slice(
-          index - this.paginator,
           index,
+          index * this.paginator || this.paginator,
         );
 
         const fiveListingsMetadata = await Promise.all(
@@ -140,20 +140,6 @@ export default {
         );
         this.listingsMetadata.push(
           ...paginRecentListings.map((listing, index) => ({
-            listing,
-            metadata: fiveListingsMetadata[index],
-          })),
-        );
-      }
-
-      if (recentListings.length <= this.paginator) {
-        const fiveListingsMetadata = await Promise.all(
-          recentListings.map((listing) =>
-            this.getTokenMetadata(listing.collection, listing.tokenId),
-          ),
-        );
-        this.listingsMetadata.push(
-          ...recentListings.map((listing, index) => ({
             listing,
             metadata: fiveListingsMetadata[index],
           })),
