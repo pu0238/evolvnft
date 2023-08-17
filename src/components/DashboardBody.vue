@@ -45,9 +45,11 @@ import MyMarket from '../components/MyMarket.vue'
 
 // @ts-ignore
 import { useBrowserLocation } from '@vueuse/core';
+import { isWallet } from '../utils/wallet';
 export default {
   components: { DashboardContainer, DashboardMenu, MyCollections, UserStats, MyNFTs, MyMarket },
   setup() {
+    isWallet();
     const location = useBrowserLocation();
     return { location };
   },
