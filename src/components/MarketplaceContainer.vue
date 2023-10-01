@@ -6,24 +6,29 @@
     <div
       class="flex relative overflow-hidden pt-5 pb-10 pl-1"
       id="recentListingsBox"
+      ref="recentListingsBox"
     >
-      <div class="flex" id="recentListingsContainer">
+      <div
+        class="flex"
+        id="recentListingsContainer"
+        ref="recentListingsContainer"
+      >
         <OfferBox
-          v-for="offer in listingsMetadata"
-          :tokenId="offer.listing.tokenId"
-          :price="aarchToArch(Number(offer.listing.price))"
-          :collection="offer.listing.collection"
+          v-for="offer in recentListings"
+          :tokenId="Number(offer.token_id)"
+          :price="aarchToArch(Number(offer.price))"
+          :collectionAddress="offer.collection"
           :metadata="offer.metadata"
           class="absolute w-full top-1/2"
           :style="`transform: translateY(-50%) ${`translateX(-${
-            page * pageSize
+            page * (pageSize ?? 0)
           }px)`};`"
         />
       </div>
     </div>
     <div
       class="relative"
-      v-if="listingsMetadata && listingsMetadata?.length > 0"
+      v-if="recentListings && recentListings?.length > 0"
     >
       <div
         class="bg-black w-12 h-12 flex rounded-full absolute bottom-36 z-20 group border-white hover:border-indigo-500 border-4 ease-out duration-300"
@@ -68,90 +73,90 @@
 </template>
 
 <script lang="ts">
+import { ref, watch, type Ref } from 'vue';
 import { aarchToArch } from '../utils/arch';
 import { getNftInfo, getRecentListings } from '../utils/evolve';
-import type { RecentListings } from '../utils/types/RecentListings';
+import type { Listing } from '../utils/types/Listing';
 import { getMetadata } from '../utils/utils';
 import OfferBox from './OfferBox.vue';
+
+interface MarketplaceListing extends Listing {
+  metadata?: any;
+}
 
 export default {
   components: { OfferBox },
   data() {
     return {
-      listingsMetadata: [] as { listing: RecentListings; metadata: any }[],
       page: 0,
-      pageSize: 0,
-      pages: 0,
-      paginator: 5,
     };
   },
   methods: {
-    recentListingsWidth() {
-      const recentListingsContainer = document.getElementById(
-        'recentListingsContainer',
-      );
-      const recentListingsBox = document.getElementById('recentListingsBox');
-      if (
-        recentListingsBox &&
-        recentListingsContainer &&
-        this.listingsMetadata
-      ) {
-        if (recentListingsContainer?.offsetWidth === 0) return 0;
-        const offerSize: number =
-          recentListingsContainer?.offsetWidth / this.listingsMetadata?.length;
-        return (
-          offerSize * Math.floor(recentListingsBox?.offsetWidth / offerSize)
-        );
-      }
-      return 0;
-    },
-    pagesLen() {
-      const recentListingsContainer = document.getElementById(
-        'recentListingsContainer',
-      );
-      if (recentListingsContainer && this.pageSize) {
-        return Math.ceil(recentListingsContainer?.offsetWidth / this.pageSize);
-      }
-      return 0;
-    },
     aarchToArch,
-    async getTokenMetadata(collection: string, tokenId: string) {
+  },
+  async setup() {
+    const getTokenMetadata = async (collection: string, tokenId: string) => {
       const metadataUrl = await getNftInfo(collection, tokenId);
       return await getMetadata(metadataUrl);
-    },
-    async dynamicLoadOffers() {
-      const recentListings = await getRecentListings();
-
-      for (
-        let index = 0;
-        index < recentListings.length;
-        index += this.paginator
+    };
+    const recentListingsWidth = () => {
+      if (
+        recentListingsBox.value &&
+        recentListingsContainer.value &&
+        recentListings.value
       ) {
-        console.log(123);
-        const paginRecentListings = recentListings.slice(
-          index,
-          index * this.paginator || this.paginator,
-        );
-
-        const fiveListingsMetadata = await Promise.all(
-          paginRecentListings.map((listing) =>
-            this.getTokenMetadata(listing.collection, listing.tokenId),
-          ),
-        );
-        this.listingsMetadata.push(
-          ...paginRecentListings.map((listing, index) => ({
-            listing,
-            metadata: fiveListingsMetadata[index],
-          })),
+        if (recentListingsContainer.value?.offsetWidth === 0) return 0;
+        const offerSize: number =
+          recentListingsContainer.value?.offsetWidth /
+          recentListings.value?.length;
+        return (
+          offerSize *
+          Math.floor(recentListingsBox.value?.offsetWidth / offerSize)
         );
       }
-    },
-  },
-  async mounted() {
-    await this.dynamicLoadOffers();
-    await this.$nextTick();
-    this.pageSize = this.recentListingsWidth();
-    this.pages = this.pagesLen();
+      return 0;
+    };
+    const pagesLen = () => {
+      if (recentListingsContainer.value && pageSize.value) {
+        return Math.ceil(
+          recentListingsContainer.value?.offsetWidth / pageSize.value,
+        );
+      }
+      return 0;
+    };
+
+    const recentListingsBox: Ref<null | HTMLDivElement> = ref(null);
+    const recentListingsContainer: Ref<null | HTMLDivElement> = ref(null);
+    const recentListings: Ref<MarketplaceListing[]> = ref([]);
+
+    const resolvedRecentListings = await getRecentListings();
+    if (!resolvedRecentListings) return {};
+
+    recentListings.value = resolvedRecentListings.map((listing, index) => {
+      getTokenMetadata(listing.collection, listing.token_id).then((data) => {
+        if (!recentListings.value || !recentListings.value[index]) return;
+        recentListings.value[index].metadata = data;
+      })
+      return {
+        ...listing
+      }
+    })
+
+    const pageSize = ref(recentListingsWidth());
+    const pages = ref(pagesLen());
+
+    watch(recentListings.value, () => {
+      pageSize.value = recentListingsWidth();
+      pages.value = pagesLen();
+    });
+
+    return {
+      recentListings,
+      recentListingsBox,
+      recentListingsContainer,
+      pageSize,
+      pages,
+    };
   },
 };
 </script>

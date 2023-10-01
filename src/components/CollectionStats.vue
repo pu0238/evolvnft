@@ -21,13 +21,13 @@
     <div
       class="my-auto sm:ml-8 text-center sm:flex-0 sm:justify-items-start sm:items-center sm:text-left"
     >
-      <span v-if="collectionCount > 0">
+      <span>
         <div class="text-4xl md:text-5xl 2xl:text-6xl font-cal text-indigo-500">
-          {{ collectionCount }}
+          {{ collectionsCount }}
         </div>
         <HeaderSubtitle textColor="white" content="Collections" />
       </span>
-      <span v-if="tokensCount > 0">
+      <span>
         <div class="text-4xl md:text-5xl 2xl:text-6xl font-cal text-indigo-500">
           {{ tokensCount }}
         </div>
@@ -42,21 +42,21 @@ import SecondSectionLeft from './SecondSectionLeft.vue';
 import HeaderSubtitle from './HeaderSubtitle.vue';
 import Button from './Button.vue';
 
+import { computed } from 'vue';
 import { getCollectionsStats } from '../utils/evolve';
 
 export default {
-  data() {
+  components: { SecondSectionLeft, HeaderSubtitle, Button },
+  async setup() {
+    const collectionManagerStats = await getCollectionsStats();
+    if (!collectionManagerStats) return {};
+
     return {
-      collectionCount: 0,
-      tokensCount: 0,
+      tokensCount: computed(() => collectionManagerStats.tokens_count),
+      collectionsCount: computed(
+        () => collectionManagerStats.collections_count,
+      ),
     };
   },
-  created() {
-    getCollectionsStats().then((stats) => {
-      this.collectionCount = stats.collectionsCount;
-      this.tokensCount = stats.tokensCount;
-    });
-  },
-  components: { SecondSectionLeft, HeaderSubtitle, Button },
 };
 </script>

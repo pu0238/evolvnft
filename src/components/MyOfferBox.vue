@@ -13,14 +13,14 @@
       <div class="flex justify-between items-center">
         <a
           class="flex items-center font-cal text-indigo-500 font-semibold ease-out duration-300 hover:text-indigo-600"
-          :href="`/marketplace?tokenId=${offer.tokenId}#${offer.collection}`"
+          :href="`/marketplace?tokenId=${offer.token_id}#${offer.collection}`"
           target="_blank"
         >
-          #{{ offer.tokenId }}
+          #{{ offer.token_id }}
         </a>
         <div class="flex items-center font-cal">
           <img draggable="false" :src="denomLogo" class="w-4 mx-1 my-2" />
-          <span>{{ aarchToArch(Number(offer.offer.amount)) }}</span>
+          <span v-if="offer?.offer?.amount">{{ aarchToArch(Number(offer?.offer?.amount)) }}</span>
         </div>
       </div>
       <div class="flex justify-between">
@@ -37,7 +37,7 @@
         <div class="flex">
           <Button
             content="cancel"
-            @click="$emit('cancelOffer', offer.collection, offer.tokenId)"
+            @click="$emit('cancelOffer', offer.collection, offer.token_id)"
           />
         </div>
       </div>

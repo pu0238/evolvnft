@@ -1,7 +1,7 @@
 import type { CollectionToken } from './CollectionToken';
 
 export interface CollectionEntitie {
-  address: string;
+  address?: string;
   description: string;
   name: string;
   symbol: string;
@@ -13,4 +13,5 @@ export interface CollectionEntitie {
   tokens: null | { [key: string]: CollectionToken };
   accumulated_rewards?: { [key: string]: string };
   rewards_percentage_fee?: number; //2500 = 25%
+  launchpad_application?: any
 }

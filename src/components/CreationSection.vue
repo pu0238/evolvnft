@@ -34,6 +34,7 @@ import { getArchwaySigner } from '../utils/wallet';
 import JSConfetti from 'js-confetti';
 import { errorMessage } from '../state/error';
 import { BLOCKCHAIN_SCAN_TXS } from '../utils/constant';
+import { chainScanInfoMessage } from '../utils/schared';
 
 const confetti = new JSConfetti();
 
@@ -108,9 +109,7 @@ export default {
         { register_collection },
         'auto',
       );
-      console.info(
-        `${BLOCKCHAIN_SCAN_TXS}${transactionHash}`,
-      );
+      chainScanInfoMessage(transactionHash)
       this.showConfetti();
     },
 

@@ -1,7 +1,8 @@
 import { postEvolveMetadatav2 } from './evolve';
-import type { CollectionEntitie } from './types/CollectionItem';
+import type { CollectionEntitie } from './types/CollectionEntitie';
 import { uploadBlob } from './bundlrUploader';
 import { errorMessage } from '../state/error';
+import type { CollectionData } from './types/CollectionData';
 
 export async function joinMetadataAndImages(
   files: Blob[],
@@ -80,7 +81,7 @@ export async function buildMintObject(
   filesToUpload: {
     [key: string]: { image?: Blob; metadata?: string };
   },
-  collection: CollectionEntitie,
+  collection: CollectionData,
 ) {
   const tokensMetadata = await uploadTokenMetadata(filesToUpload);
   if (!tokensMetadata) return console.error('Failed to upload images');

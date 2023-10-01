@@ -24,7 +24,7 @@
         v-for="offer in userOffers"
         :offer="offer"
         :tokenImage="
-          tokenOffersMetadata[offer.collection].tokens[offer.tokenId].metadata
+          tokenOffersMetadata[offer.collection].tokens[offer.token_id].metadata
             ?.image || 'evolvnft-collection-logo.svg'
         "
         @cancelOffer="cancelOfferForToken"
@@ -36,7 +36,7 @@
         v-for="listing in userListings"
         :listing="listing"
         :tokenImage="
-          tokenListingsMetadata[listing.collection].tokens[listing.tokenId]
+          tokenListingsMetadata[listing.collection].tokens[listing.token_id]
             .metadata?.image || 'evolvnft-collection-logo.svg'
         "
         @cancelOffer="closeNFTListing"
@@ -53,7 +53,7 @@ import {
   closeTokenListing,
   getAddressTokenListings,
   getAddressTokenOffers,
-  getCollection,
+  getCollectionData,
 } from '../utils/evolve';
 import type { UserOffers } from '../utils/types/UserOffers';
 import { aarchToArch, shortenArchAddress } from '../utils/arch';
@@ -64,6 +64,7 @@ import { getMetadata } from '../utils/utils';
 import MyOfferBox from '../components/MyOfferBox.vue';
 import type { UserListings } from '../utils/types/UserListings';
 import type { CollectionTokensMetadata } from '../utils/types/CollectionTokensMetadata';
+import { infoMessage } from '../state/error';
 
 export default {
   components: { Button, MyOfferBox, MyListingBox },
@@ -89,29 +90,37 @@ export default {
       if (this.tokenOffersMetadata && this.userOffers) {
         await cancelOffer(collection, tokenId);
         this.userOffers = this.userOffers.filter(function (obj) {
-          return obj.collection !== collection && obj.tokenId !== tokenId;
+          return obj.collection !== collection && obj.token_id !== tokenId;
         });
       }
     },
-    async joinTokensAndCollections(userOffers: UserOffers[] | UserListings[]) {
+    async closeNFTListing(collection: string, tokenId: string) {
+      if (collection && tokenId) {
+        await closeTokenListing(collection, tokenId);
+      }
+    },
+  },
+  async setup() {
+    const joinTokensAndCollections = async (
+      userOffers: UserOffers[] | UserListings[],
+    ) => {
       if (userOffers) {
         const collectionTokens: CollectionTokensMetadata = {};
         userOffers.forEach((offer) => {
           if (collectionTokens[offer.collection]) {
-            collectionTokens[offer.collection]['tokens'][offer.tokenId] = {};
+            collectionTokens[offer.collection]['tokens'][offer?.token_id] = {};
           } else {
             collectionTokens[offer.collection] = {
               ...collectionTokens[offer.collection],
-              tokens: { [offer.tokenId]: {} },
+              tokens: { [offer?.token_id]: {} },
             };
           }
         });
 
         const collectionAddresses = Object.keys(collectionTokens);
         const collectionPromise = collectionAddresses.map((collectionAddress) =>
-          getCollection(collectionAddress),
+          getCollectionData(collectionAddress),
         );
-
         const collectionsData = await Promise.all(collectionPromise);
 
         await Promise.all(
@@ -120,12 +129,14 @@ export default {
               collectionsData[colIndex];
 
             const tokens =
-              collectionTokens[collectionAddress].collectionData.tokens;
+              collectionTokens[collectionAddress].collectionData?.tokens;
+
             if (tokens) {
               await Promise.all(
                 Object.keys(collectionTokens[collectionAddress].tokens).map(
                   async (tokenId) => {
-                    const tokenMetadataUri = tokens[tokenId].token_uri;
+                    const tokenMetadataUri =
+                      tokens[Number(tokenId) - 1]?.token_uri;
 
                     collectionTokens[collectionAddress].tokens[
                       tokenId
@@ -143,37 +154,31 @@ export default {
 
         return collectionTokens;
       }
-    },
-    async loadTokenData() {
-      if (this.walletSignerAddress) {
-        this.userOffers = await getAddressTokenOffers(this.walletSignerAddress);
-        this.tokenOffersMetadata = await this.joinTokensAndCollections(
-          this.userOffers,
-        );
+    };
 
-        this.userListings = await getAddressTokenListings(
-          this.walletSignerAddress,
-        );
-        this.tokenListingsMetadata = await this.joinTokensAndCollections(
-          this.userListings,
-        );
-      }
-    },
-    async closeNFTListing(collection: string, tokenId: string) {
-      if (collection && tokenId) {
-        await closeTokenListing(collection, tokenId);
-      }
-    },
-  },
-  async mounted() {
-    await this.loadTokenData();
-  },
-  setup() {
     isWallet();
     const $walletSignerAddress = useStore(walletSignerAddress);
 
+    if (!$walletSignerAddress.value) return {};
+
+    infoMessage.set('Syncing your market data');
+    const [userOffers, userListings] = await Promise.all([
+      getAddressTokenOffers($walletSignerAddress.value),
+      getAddressTokenListings($walletSignerAddress.value),
+    ]);
+
+    const [tokenOffersMetadata, tokenListingsMetadata] = await Promise.all([
+      joinTokensAndCollections(userOffers),
+      joinTokensAndCollections(userListings),
+    ]);
+    infoMessage.set('Your market data are up to date');
+
     return {
       walletSignerAddress: computed(() => $walletSignerAddress.value),
+      userOffers: computed(() => userOffers),
+      userListings: computed(() => userListings),
+      tokenOffersMetadata: computed(() => tokenOffersMetadata),
+      tokenListingsMetadata: computed(() => tokenListingsMetadata),
     };
   },
 };

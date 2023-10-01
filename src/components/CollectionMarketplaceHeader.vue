@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
+import type { CollectionData } from '../utils/types/CollectionData';
 import { aarchToArch, toFixed } from '../utils/arch';
 
 export default {
@@ -91,7 +91,7 @@ export default {
       default: () => '/arch-logo.svg',
     },
     collectionData: {
-      type: Object as PropType<CollectionEntitie>,
+      type: Object as PropType<CollectionData>,
       required: true,
     },
     floor: {

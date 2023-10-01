@@ -1,8 +1,7 @@
-export interface UserListings {
+export interface Listing {
   collection: string;
   denom: string;
   listing_id: string;
-  offers: any[];
   open_for_offers: boolean;
   owner: string;
   price: string;

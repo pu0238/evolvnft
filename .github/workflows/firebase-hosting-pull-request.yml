@@ -4,7 +4,7 @@
 name: Deploy to Firebase Hosting on PR
 'on': pull_request
 env:
-  PUBLIC_NETWORK: TESTNET
+  PUBLIC_NETWORK: MAINNET
 jobs:
   build_and_preview:
     permissions: write-all

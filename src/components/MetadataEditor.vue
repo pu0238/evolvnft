@@ -129,6 +129,7 @@ import { joinMetadataAndImages, uploadStringMetadata } from '../utils/metadata';
 import { uploadBlob } from '../utils/bundlrUploader';
 import { getArchwaySigner } from '../utils/wallet';
 import { getMetadata } from '../utils/utils';
+import { infoMessage } from '../state/error';
 
 export default {
   data() {
@@ -217,7 +218,7 @@ export default {
             metadataUploadId,
           );
           this.metadata = await getMetadata(this.tokenUri);
-          console.info('Metadata updated');
+          infoMessage.set('Metadata updated');
           this.evolvInProgress = false;
           this.filesToUpload = {};
         }

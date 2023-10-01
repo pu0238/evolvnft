@@ -26,7 +26,7 @@
           </p>
           <p class="font-josefin text-xs mr-2">
             delegated: {{ allocatedTokenNumber }}, collection limit:
-            {{ (collection as CollectionEntitie)?.limit }}
+            {{ (collection as CollectionData)?.limit }}
           </p>
         </div>
       </div>
@@ -357,7 +357,6 @@
 import Button from './Button.vue';
 import BlackExpandable from './BlackExpandable.vue';
 import { readFileAsDataURL } from '../utils/metadata';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import Uploader from './Uploader.vue';
 import { errorMessage } from '../state/error';
 import { joinMetadataAndImages } from '../utils/metadata';
@@ -366,6 +365,8 @@ import {
   applyForLanuchpad,
   getAllocatedTokensNum,
 } from '../utils/evolve';
+import type { CollectionData } from '../utils/types/CollectionData';
+import type { PropType } from 'vue';
 
 export default {
   components: {
@@ -409,7 +410,7 @@ export default {
       required: true,
     },
     collection: {
-      type: Object,
+      type: Object as PropType<CollectionData>,
       required: true,
     },
   },
@@ -501,7 +502,7 @@ export default {
       await allocateTokens(
         this.collectionAddress,
         this.filesToUpload,
-        this.collection as CollectionEntitie,
+        this.collection as CollectionData,
       );
       this.filesToUpload = {};
       this.mintingnProgress = false;
@@ -529,7 +530,7 @@ export default {
       await allocateTokens(
         this.collectionAddress,
         filesToUpload,
-        this.collection as CollectionEntitie,
+        this.collection as CollectionData,
       );
       this.mintingnProgress = false;
     },

@@ -1,8 +1,14 @@
 <template>
-  <CollectionMarketplace v-if="location.hash?.length === 67" :collectionAddress="location.hash.slice(1)"/>
+  <Suspense v-if="location.hash?.length === 67">
+    <CollectionMarketplace
+      :collectionAddress="location.hash.slice(1)"
+    />
+  </Suspense>
   <div class="grid" v-else>
     <MarketplaceHeader />
-    <MarketplaceContainer />
+    <Suspense>
+      <MarketplaceContainer />
+    </Suspense>
   </div>
 </template>
 
@@ -14,7 +20,11 @@ import CollectionMarketplace from './CollectionMarketplace.vue';
 // @ts-ignore
 import { useBrowserLocation } from '@vueuse/core';
 export default {
-  components: { MarketplaceHeader, MarketplaceContainer, CollectionMarketplace },
+  components: {
+    MarketplaceHeader,
+    MarketplaceContainer,
+    CollectionMarketplace,
+  },
   setup() {
     const location = useBrowserLocation();
     return { location };

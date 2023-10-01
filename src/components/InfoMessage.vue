@@ -1,6 +1,6 @@
 <template>
   <div
-    class="info float-right ml-1 py-3 px-6 my-1 bg-indigo-500 rounded-full text-white font-josefin ease-out flex items-center text-xl w-fit"
+    class="info float-right ml-1 py-3 px-6 my-1 bg-indigo-500 rounded-full text-white font-josefin ease-out flex items-center text-base w-fit"
   >
     <svg
       width="8"
@@ -14,7 +14,10 @@
         fill="white"
       />
     </svg>
-    <span class="float-left relative ml-2 top-[2px]"> Info: {{ content }}</span>
+    <span class="flex relative ml-2 top-[2px]">
+      <p class="mr-1">Info:</p>
+      <p v-html="content"></p
+    ></span>
   </div>
 </template>
 

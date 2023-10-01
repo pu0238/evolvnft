@@ -38,24 +38,23 @@
 
 <script lang="ts">
 import { useStore } from '@nanostores/vue';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import CollectionItem from './CollectionItem.vue';
-import { isWalletConnected } from '../state/walletState';
-import { computed } from 'vue';
+import { walletSignerAddress } from '../state/walletState';
+import { ref } from 'vue';
 import { isWallet } from '../utils/wallet';
 import CollectionsList from './CollectionsList.vue';
 import SingleCollection from './SingleCollection.vue';
 import CollectionTokens from './CollectionTokens.vue';
 import HeaderSubtitle from './HeaderSubtitle.vue';
-import { getArchwaySigner } from '../utils/wallet';
-import { getCollectionManager } from '../utils/evolve';
+import { getCollectionsOwnedByAddress } from '../utils/evolve';
+import type { CollectionData } from '../utils/types/CollectionData';
 
 export default {
   data() {
     return {
-      collections: [] as CollectionEntitie[],
+      collections: [] as CollectionData[],
       collectionAddress: undefined as string | undefined,
-      singleCollection: undefined as CollectionEntitie | undefined,
+      singleCollection: undefined as CollectionData | undefined,
     };
   },
   components: {
@@ -69,34 +68,18 @@ export default {
     openCollection(address: string) {
       this.collectionAddress = address;
     },
-    async getWalletCollections(): Promise<void | CollectionEntitie[]> {
-      const { signerAddress, archwaySigner } = await getArchwaySigner();
-      const list_user_collections = {
-        address: signerAddress,
-      };
-
-      const collectionManagerContract = await getCollectionManager();
-      const data = await archwaySigner.queryContractSmart(
-        collectionManagerContract,
-        {
-          list_user_collections,
-        },
-      );
-      return data;
-    },
   },
-  async mounted() {
-    if (isWalletConnected) {
-      const collections = await this.getWalletCollections();
-      collections && (this.collections = collections);
-    }
-  },
-  setup() {
+  async setup() {
     isWallet();
-    const $collectionDescription = useStore(isWalletConnected);
+    const $walletSignerAddress = useStore(walletSignerAddress);
+    if (!$walletSignerAddress.value) return {};
+
+    const collections = ref(
+      await getCollectionsOwnedByAddress($walletSignerAddress.value),
+    );
 
     return {
-      isWalletConnected: computed(() => $collectionDescription.value),
+      collections,
     };
   },
 };

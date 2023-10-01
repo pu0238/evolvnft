@@ -2,21 +2,25 @@
   <div class="grid">
     <div v-if="ongoing && ongoing.length >= 1">
       <LaunchpadLiveMinting
-            :denom="ongoing[0].costDenom"
-            :name="ongoing[0].name"
-            :description="ongoing[0].description"
-            :endTime="ongoing[0].endTime"
-            :startTime="ongoing[0].startTime"
-            :discordUrl="ongoing[0].discordUrl"
-            :twitterUrl="ongoing[0].twitterUrl"
-            :projectUrl="ongoing[0].projectUrl"
-            :thumbnail="ongoing[0].thumbnail"
-            :tokenCost="ongoing[0].tokenCost"
-            :supply="ongoing[0].totalTokens"
-            :preview="ongoing[0].preview"
-            :soldTokens="ongoing[0].soldTokens"
-            status="ongoing"
-            @openLaunchpad="$emit('openOngoing', ongoing[0])"
+        :denom="ongoing[0].cost_denom"
+        :name="ongoing[0].collection?.name"
+        :description="ongoing[0].collection?.description"
+        :endTime="ongoing[0].end_time"
+        :startTime="ongoing[0].start_time"
+        :discordUrl="ongoing[0].discord_url"
+        :twitterUrl="ongoing[0].twitter_url"
+        :projectUrl="ongoing[0].project_url"
+        :thumbnail="
+          ongoing[0].collection?.thumbnail
+            ? ongoing[0].collection?.thumbnail
+            : undefined
+        "
+        :tokenCost="ongoing[0].token_cost"
+        :supply="ongoing[0].total_tokens"
+        :preview="ongoing[0].preview"
+        :soldTokens="ongoing[0].sold_tokens"
+        status="ongoing"
+        @openLaunchpad="$emit('openOngoing', ongoing[0])"
       />
       <div
         class="grid lg:grid-cols-2 xl:grid-cols-3 gap-4"
@@ -25,19 +29,23 @@
         <template v-for="(item, index) in ongoing">
           <UpcomingMintBox
             v-if="index != 0"
-            :denom="item.costDenom"
-            :name="item.name"
-            :description="item.description"
-            :endTime="item.endTime"
-            :startTime="item.startTime"
-            :discordUrl="item.discordUrl"
-            :twitterUrl="item.twitterUrl"
-            :projectUrl="item.projectUrl"
-            :thumbnail="item.thumbnail"
-            :tokenCost="item.tokenCost"
-            :supply="item.totalTokens"
+            :denom="item.cost_denom"
+            :name="item.collection?.name"
+            :description="item.collection?.description"
+            :endTime="item.end_time"
+            :startTime="item.start_time"
+            :discordUrl="item.discord_url"
+            :twitterUrl="item.twitter_url"
+            :projectUrl="item.project_url"
+            :thumbnail="
+              ongoing[0].collection?.thumbnail
+                ? ongoing[0].collection?.thumbnail
+                : undefined
+            "
+            :tokenCost="item.token_cost"
+            :supply="item.total_tokens"
             :preview="item.preview"
-            :soldTokens="item.soldTokens"
+            :soldTokens="item.sold_tokens"
             status="ongoing"
           />
         </template>
@@ -53,19 +61,23 @@
       >
         <template v-for="(item, index) in upcoming">
           <UpcomingMintBox
-          :denom="item.costDenom"
-            :name="item.name"
-            :description="item.description"
-            :endTime="item.endTime"
-            :startTime="item.startTime"
-            :discordUrl="item.discordUrl"
-            :twitterUrl="item.twitterUrl"
-            :projectUrl="item.projectUrl"
-            :thumbnail="item.thumbnail"
-            :tokenCost="item.tokenCost"
-            :supply="item.totalTokens"
+            :denom="item.cost_denom"
+            :name="item.collection?.name"
+            :description="item.collection?.description"
+            :endTime="item.end_time"
+            :startTime="item.start_time"
+            :discordUrl="item.discord_url"
+            :twitterUrl="item.twitter_url"
+            :projectUrl="item.project_url"
+            :thumbnail="
+              item.collection?.thumbnail
+                ? item.collection?.thumbnail
+                : undefined
+            "
+            :tokenCost="item.token_cost"
+            :supply="item.total_tokens"
             :preview="item.preview"
-            :soldTokens="item.soldTokens"
+            :soldTokens="item.sold_tokens"
             status="upcoming"
           />
         </template>
@@ -81,19 +93,23 @@
       >
         <template v-for="(item, index) in finished">
           <UpcomingMintBox
-            :denom="item.costDenom"
-            :name="item.name"
-            :description="item.description"
-            :endTime="item.endTime"
-            :startTime="item.startTime"
-            :discordUrl="item.discordUrl"
-            :twitterUrl="item.twitterUrl"
-            :projectUrl="item.projectUrl"
-            :thumbnail="item.thumbnail"
-            :tokenCost="item.tokenCost"
-            :supply="item.totalTokens"
+            :denom="item.cost_denom"
+            :name="item.collection?.name"
+            :description="item.collection?.description"
+            :endTime="item.end_time"
+            :startTime="item.start_time"
+            :discordUrl="item.discord_url"
+            :twitterUrl="item.twitter_url"
+            :projectUrl="item.project_url"
+            :thumbnail="
+              item.collection?.thumbnail
+                ? item.collection?.thumbnail
+                : undefined
+            "
+            :tokenCost="item.token_cost"
+            :supply="item.total_tokens"
             :preview="item.preview"
-            :soldTokens="item.soldTokens"
+            :soldTokens="item.sold_tokens"
             status="finished"
           />
         </template>
@@ -105,27 +121,27 @@
 <script lang="ts">
 import LaunchpadLiveMinting from './LaunchpadLiveMinting.vue';
 import UpcomingMintBox from './UpcomingMintBox.vue';
-import type { LaunchpadItem } from '../utils/types/LaunchpadItem';
+import type { CollectionLaunchpadEntrie } from '../utils/types/CollectionLaunchpadEntrie';
 
 export default {
   components: { LaunchpadLiveMinting, UpcomingMintBox },
   emits: ['openOngoing'],
   props: {
     finished: {
-      type: Array<LaunchpadItem>,
+      type: Array<CollectionLaunchpadEntrie>,
       required: false,
     },
     ongoing: {
-      type: Array<LaunchpadItem>,
+      type: Array<CollectionLaunchpadEntrie>,
       required: false,
     },
     upcoming: {
-      type: Array<LaunchpadItem>,
+      type: Array<CollectionLaunchpadEntrie>,
       required: false,
     },
     openOngoing: {
       type: Function,
     },
-  }
+  },
 };
 </script>
