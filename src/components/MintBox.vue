@@ -104,14 +104,15 @@
 <script lang="ts">
 import { useStore } from '@nanostores/vue';
 import { errorMessage } from '../state/error';
-import { computed } from 'vue';
+import { PropType, computed } from 'vue';
 import Uploader from './Uploader.vue';
 import Button from './Button.vue';
 import { buildMintObject, joinMetadataAndImages } from '../utils/metadata';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { getArchwaySigner } from '../utils/wallet';
 import { getCollectionManager } from '../utils/evolve';
 import { BLOCKCHAIN_SCAN_TXS } from '../utils/constant';
+import type { CollectionData } from '../utils/types/CollectionData';
+import { chainScanInfoMessage } from '../utils/schared';
 
 export default {
   emit: ['close', 'afterMint'],
@@ -142,7 +143,7 @@ export default {
       type: Promise,
     },
     collection: {
-      type: Object,
+      type: Object as PropType<CollectionData>,
       required: true,
     },
   },
@@ -153,7 +154,7 @@ export default {
       const tokens = await buildMintObject(
         signerAddress,
         this.filesToUpload,
-        this.collection as CollectionEntitie,
+        this.collection,
       );
       if (!tokens) return console.error('Failed to mint NFTs');
       const mint_tokens = {
@@ -167,9 +168,7 @@ export default {
         { mint_tokens },
         'auto',
       );
-      console.info(
-        `${BLOCKCHAIN_SCAN_TXS}/${transactionHash}`,
-      );
+      chainScanInfoMessage(transactionHash)
       this.$emit('afterMint');
       this.filesToUpload = {};
       this.mintingnProgress = false;

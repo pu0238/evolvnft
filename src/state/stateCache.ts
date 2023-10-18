@@ -1,10 +1,29 @@
 import { WritableAtom, atom } from 'nanostores';
 
-export const collectionManagerContractAddress: WritableAtom<
-  undefined | string
+export const evolveContracts: WritableAtom<
+  | undefined
+  | {
+      collectionManager: string;
+      launchpadManager: string;
+      marketplaceManager: string;
+    }
 > = atom(undefined);
-export const launchpadManagerContractAddress: WritableAtom<undefined | string> =
-  atom(undefined);
-export const marketplaceManagerContractAddress: WritableAtom<
-  undefined | string
+
+export const collectionManagerState: WritableAtom<
+  | undefined
+  | DecodedState[]
 > = atom(undefined);
+
+export const marketplaceManagerState: WritableAtom<
+  | undefined
+  | DecodedState[]
+> = atom(undefined);
+
+export const launchpadManagerState: WritableAtom<
+  | undefined
+  | DecodedState[]
+> = atom(undefined);
+
+export const synchronizationInProgress: WritableAtom<
+| boolean
+> = atom(false);

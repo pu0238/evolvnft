@@ -16,49 +16,43 @@ import LaunchpadHeader from './LaunchpadHeader.vue';
 import LaunchpadContainer from './LaunchpadContainer.vue';
 import LaunchpadSingleCollection from './LaunchpadSingleCollection.vue';
 
-import type { LaunchpadItem } from '../utils/types/LaunchpadItem';
 import { getLaunchpadEntries } from '../utils/evolve';
+import type { CollectionLaunchpadEntrie } from '../utils/types/CollectionLaunchpadEntrie';
+import { Ref, ref } from 'vue';
 
 export default {
-  components: { LaunchpadHeader, LaunchpadContainer, LaunchpadSingleCollection },
+  components: {
+    LaunchpadHeader,
+    LaunchpadContainer,
+    LaunchpadSingleCollection,
+  },
   data() {
     return {
-      finished: [] as LaunchpadItem[],
-      ongoing: [] as LaunchpadItem[],
-      upcoming: [] as LaunchpadItem[],
-      next: null as null | string,
+      finished: [] as CollectionLaunchpadEntrie[],
+      ongoing: [] as CollectionLaunchpadEntrie[],
+      upcoming: [] as CollectionLaunchpadEntrie[],
       singleLaunchpadCollection: false,
-      openOngoing: undefined,
+      openOngoing: undefined as undefined | CollectionLaunchpadEntrie,
     };
   },
-  methods: {
-    setLaunchpadEntries(launchpadEntries: {
-      finished?: any[] | undefined;
-      ongoing?: any[] | undefined;
-      upcoming?: any[] | undefined;
-      next: string;
-    }) {
-      this.next = launchpadEntries.next;
+  async setup() {
+    const finished: Ref<CollectionLaunchpadEntrie[]> = ref([]);
+    const ongoing: Ref<CollectionLaunchpadEntrie[]> = ref([]);
+    const upcoming: Ref<CollectionLaunchpadEntrie[]> = ref([]);
 
-      if (launchpadEntries.finished)
-        this.finished.push(...launchpadEntries.finished);
-      if (launchpadEntries.ongoing)
-        this.ongoing.push(...launchpadEntries.ongoing);
-      if (launchpadEntries.upcoming)
-        this.upcoming.push(...launchpadEntries.upcoming);
-    },
-    async loadLaunchpadEntries() {
-      const launchpadEntries = await getLaunchpadEntries();
-      this.setLaunchpadEntries(launchpadEntries);
+    const launchpadEntries = await getLaunchpadEntries();
+    if (launchpadEntries.finished)
+      finished.value.push(...launchpadEntries.finished);
+    if (launchpadEntries.ongoing)
+      ongoing.value.push(...launchpadEntries.ongoing);
+    if (launchpadEntries.upcoming)
+      upcoming.value.push(...launchpadEntries.upcoming);
 
-      while (this.next) {
-        const launchpadEntries = await getLaunchpadEntries(this.next);
-        this.setLaunchpadEntries(launchpadEntries);
-      }
-    },
-  },
-  async mounted() {
-    await this.loadLaunchpadEntries();
+    return {
+      finished,
+      ongoing,
+      upcoming,
+    };
   },
 };
 </script>

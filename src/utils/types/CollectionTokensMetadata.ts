@@ -1,8 +1,8 @@
-import type { CollectionEntitie } from './CollectionItem';
+import type { CollectionData } from './CollectionData';
 
 export interface CollectionTokensMetadata {
   [key: string]: {
     tokens: { [key: string]: { metadataUrl?: string; metadata?: any } };
-    collectionData: CollectionEntitie;
+    collectionData: void | CollectionData;
   };
 }

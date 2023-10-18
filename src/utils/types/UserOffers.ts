@@ -1,6 +1,6 @@
-export interface UserOffers {
+import type { Offer } from "./Offer";
+
+export interface UserOffers extends Partial<Offer> {
   collection: string;
-  from: string;
-  offer: { denom: string; amount: string };
-  tokenId: string;
+  token_id: string;
 }

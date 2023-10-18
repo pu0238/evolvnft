@@ -285,11 +285,11 @@
 import Button from './Button.vue';
 import BlackExpandable from './BlackExpandable.vue';
 import { readFileAsDataURL } from '../utils/metadata';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import { mintNFTs } from '../utils/evolve';
 import Uploader from './Uploader.vue';
 import { errorMessage } from '../state/error';
 import { joinMetadataAndImages } from '../utils/metadata';
+import type { CollectionData } from '../utils/types/CollectionData';
 
 export default {
   components: {
@@ -411,7 +411,7 @@ export default {
       await mintNFTs(
         this.collectionAddress,
         this.filesToUpload,
-        this.collection as CollectionEntitie,
+        this.collection as CollectionData,
       );
       this.filesToUpload = {};
       this.mintingnProgress = false;
@@ -439,7 +439,7 @@ export default {
       await mintNFTs(
         this.collectionAddress,
         filesToUpload,
-        this.collection as CollectionEntitie,
+        this.collection as CollectionData,
       );
       this.mintingnProgress = false;
     },

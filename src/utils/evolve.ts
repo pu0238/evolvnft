@@ -1,21 +1,50 @@
+import { useStore } from '@nanostores/vue';
 import {
-  collectionManagerContractAddress,
-  launchpadManagerContractAddress,
-  marketplaceManagerContractAddress,
+  collectionManagerState,
+  launchpadManagerState,
+  marketplaceManagerState,
 } from '../state/stateCache';
 import {
   BLOCKCHAIN_SCAN_TXS,
   CARNISTER_API_URL,
   SYSTEM_CONTEXT_CONTRACT_ADDRESS,
 } from './constant';
+import {
+  getCollectionManagerState,
+  getCollectionState,
+  getLaunchpadManagerState,
+  getMarketplaceManagerState,
+  getSystemContextState,
+} from './evolveStateQuery';
 import { buildMintObject } from './metadata';
-import type { CollectionEntitie } from './types/CollectionItem';
+import type { CollectionEntitie } from './types/CollectionEntitie';
 import type { RecentListings } from './types/RecentListings';
 import type { UserCollections } from './types/UserCollections';
 import type { UserListings } from './types/UserListings';
 import type { UserOffers } from './types/UserOffers';
 import { getArchwaySigner, getQueryClient } from './wallet';
 import _ from 'lodash';
+import {
+  findAllInMap,
+  findInMap,
+  findMapKeys,
+  findMapValues,
+  findVar,
+  normalizeMap,
+} from './ contractStateManager';
+import type { CollectionManagerState } from './types/CollectionManagerState';
+import type { CollectionUserStats } from './types/CollectionUserStats';
+import type { CollectionData } from './types/CollectionData';
+import BigNumber from 'bignumber.js';
+import type { CollectionToken } from './types/CollectionToken';
+import { ownedUserCollections, ownedUserTokens } from '../state/dashboard';
+import type { Listing } from './types/Listing';
+import type { MintEvent } from './types/MintEvent';
+import type { CollectionLaunchpadParam } from './types/CollectionLaunchpadParam';
+import { chainScanInfoMessage, groupBy } from './schared';
+import type { CollectionLaunchpadEntrie } from './types/CollectionLaunchpadEntrie';
+import type { UserLaunchpadStats } from './types/UserLaunchpadStats';
+import { infoMessage } from '../state/error';
 
 /*
  *
@@ -108,68 +137,156 @@ export async function getNextMetadataId(
  */
 
 export async function getCollectionManager(): Promise<string> {
-  const collectionManager = collectionManagerContractAddress.get();
-  if (collectionManager) {
-    return collectionManager;
-  }
-  const queryClient = await getQueryClient();
-  const state: { address: string } = await queryClient.queryContractSmart(
-    SYSTEM_CONTEXT_CONTRACT_ADDRESS,
-    { get_collection_manager: {} },
-  );
-  collectionManagerContractAddress.set(state.address);
-  return state.address;
+  const contractAddresses = await getSystemContextState();
+  return contractAddresses.collectionManager;
 }
 
-export async function getCollectionsStats() {
-  const queryClient = await getQueryClient();
-  const collectionManagerContract = await getCollectionManager();
-
-  return await queryClient.queryContractSmart(collectionManagerContract, {
-    get_stats: {},
-  });
-}
-
-export async function getCollectionsStatsForAddress(address: string) {
-  const queryClient = await getQueryClient();
-  const collectionManagerContract = await getCollectionManager();
-
-  return await queryClient.queryContractSmart(collectionManagerContract, {
-    get_user_stats: { address },
-  });
-}
-
-export async function getWalletCollections(): Promise<
-  void | CollectionEntitie[]
+export async function getCollectionsStats(): Promise<
+  undefined | CollectionManagerState
 > {
-  const { signerAddress, archwaySigner } = await getArchwaySigner();
-  const list_user_collections = {
-    address: signerAddress,
-  };
+  getCollectionManagerState();
+  const $collectionManagerState = useStore(collectionManagerState);
 
-  const collectionManagerContract = await getCollectionManager();
-  const data = await archwaySigner.queryContractSmart(
-    collectionManagerContract,
-    {
-      list_user_collections,
-    },
-  );
-  return data;
+  if (!$collectionManagerState.value) return;
+  const state = findVar($collectionManagerState.value, 'state');
+  if (!state) return;
+  return JSON.parse(state);
 }
 
-export async function getCollection(
+export async function getCollectionsStatsForAddress(
   address: string,
-): Promise<CollectionEntitie> {
-  const queryClient = await getQueryClient();
-  const get_collection = {
-    address,
-  };
+): Promise<undefined | CollectionUserStats> {
+  getCollectionManagerState();
+  const $collectionManagerState = useStore(collectionManagerState);
 
-  const collectionManagerContract = await getCollectionManager();
-  const data = await queryClient.queryContractSmart(collectionManagerContract, {
-    get_collection,
-  });
-  return data;
+  if (!$collectionManagerState.value) return;
+  const userStats = findInMap(
+    $collectionManagerState.value,
+    'user_stats',
+    address,
+  );
+  if (!userStats) return;
+  return JSON.parse(userStats);
+}
+
+export async function getCollectionData(
+  collectionAddress: string,
+): Promise<void | CollectionData> {
+  getCollectionManagerState();
+  const $collectionManagerState = useStore(collectionManagerState);
+
+  if (!$collectionManagerState.value) return;
+  const collectionManagerStateValue = $collectionManagerState.value;
+
+  const collection = findInMap(
+    collectionManagerStateValue,
+    'collections',
+    collectionAddress,
+  );
+  if (!collection) return;
+
+  const collectionState = await getCollectionState(collectionAddress);
+  const tokens = findMapValues(collectionState, '\x06tokens').map(
+    (tokenData, index) =>
+      ({ tokenId: index + 1, ...JSON.parse(tokenData) } as CollectionToken),
+  );
+  const rewards_percentage_fee = Number(
+    findVar(collectionState, 'token_holders_pool_fee'),
+  );
+
+  return {
+    address: collectionAddress,
+    ...JSON.parse(collection),
+    tokens,
+    rewards_percentage_fee,
+  };
+}
+
+export async function getCollectionsOwnedByAddress(
+  address: string,
+): Promise<CollectionData[] | undefined> {
+  getCollectionManagerState();
+  const $collectionManagerState = useStore(collectionManagerState);
+
+  if (!$collectionManagerState.value) return;
+  const collectionManagerStateValue = $collectionManagerState.value;
+
+  // If user created new session try to use cached data to swap them later with newest
+  const cachedOwnedUserCollections = localStorage.getItem(
+    'ownedUserCollections',
+  );
+  if (cachedOwnedUserCollections) {
+    const parseCachedOwnedTokens: CollectionData[] = JSON.parse(
+      cachedOwnedUserCollections,
+    );
+    ownedUserCollections.set(parseCachedOwnedTokens);
+  }
+
+  const userCollections = findInMap(
+    collectionManagerStateValue,
+    'user_collections',
+    address,
+  );
+  if (!userCollections) return;
+  const collectionList: string[] = JSON.parse(userCollections);
+
+  const collectionsData = await Promise.all(
+    collectionList.map((collectionAddress) =>
+      getCollectionData(collectionAddress),
+    ),
+  );
+
+  const collections = collectionsData.filter(
+    (col) => col !== undefined,
+  ) as CollectionData[];
+  ownedUserCollections.set(collections);
+  localStorage.setItem('ownedUserCollections', JSON.stringify(collections));
+
+  return collections;
+}
+
+export async function getOwnedTokensByAddress(address: string) {
+  getCollectionManagerState();
+  const $collectionManagerState = useStore(collectionManagerState);
+
+  if (!$collectionManagerState.value) return;
+  const collectionManagerStateValue = $collectionManagerState.value;
+
+  // If user created new session try to use cached data to swap them later with newest
+  const cachedOwnedTokens = localStorage.getItem('ownedUserTokens');
+  if (cachedOwnedTokens) {
+    const parseCachedOwnedTokens: CollectionData[] =
+      JSON.parse(cachedOwnedTokens);
+    ownedUserTokens.set(parseCachedOwnedTokens);
+  }
+
+  const userCollections = findMapKeys(
+    collectionManagerStateValue,
+    '\u000bcollections',
+  );
+
+  const ownedTokens: CollectionData[] = [];
+
+  await Promise.all(
+    userCollections.map(async (collectionAddress) => {
+      const contractState = await getCollectionData(collectionAddress);
+      if (!contractState || !contractState.tokens) return;
+
+      const userTokens = contractState.tokens.filter(
+        (token) => token.owner === address,
+      );
+      if (userTokens.length === 0) return;
+
+      ownedTokens.push({ ...contractState, userTokens });
+      if (!cachedOwnedTokens) {
+        ownedUserTokens.set([...ownedTokens]);
+      }
+    }),
+  );
+  ownedUserTokens.set([...ownedTokens]);
+  localStorage.setItem('ownedUserTokens', JSON.stringify(ownedTokens));
+
+  return ownedTokens;
 }
 
 export async function mintNFTs(
@@ -180,13 +297,13 @@ export async function mintNFTs(
       metadata?: string | undefined;
     };
   },
-  collection: CollectionEntitie,
+  collection: CollectionData,
 ) {
   const { signerAddress, archwaySigner } = await getArchwaySigner();
   const tokens = await buildMintObject(
     signerAddress,
     filesToUpload,
-    collection as CollectionEntitie,
+    collection,
   );
   const mint_tokens = {
     address: collectionAddress,
@@ -199,7 +316,7 @@ export async function mintNFTs(
     { mint_tokens },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function setRewardsFee(
@@ -219,7 +336,7 @@ export async function setRewardsFee(
     { set_rewards_fee },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function applyForLanuchpad(
@@ -245,7 +362,7 @@ export async function applyForLanuchpad(
     { apply_for_launchpad },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 /*
@@ -254,66 +371,114 @@ export async function applyForLanuchpad(
  *
  */
 
-export async function getLaunchpadStatsForAddress(address: string) {
-  const queryClient = await getQueryClient();
-  const launchpadManager = await getLaunchpadManager();
+export async function getLaunchpadStatsForAddress(
+  address: string,
+): Promise<{} | UserLaunchpadStats> {
+  getLaunchpadManagerState();
+  const $launchpadManagerState = useStore(launchpadManagerState);
 
-  return await queryClient.queryContractSmart(launchpadManager, {
-    get_user_stats: { address },
-  });
+  if (!$launchpadManagerState.value) return {};
+  const launchpadManagerValue = $launchpadManagerState.value;
+  const userStats = findInMap(launchpadManagerValue, 'user_stats', address);
+  if (!userStats) return {};
+
+  return JSON.parse(userStats);
 }
 
 export async function getAllocatedTokensNum(
   collectionAddress: string,
-): Promise<number> {
-  const queryClient = await getQueryClient();
-  const launchpadManager = await getLaunchpadManager();
-  const num: number = await queryClient.queryContractSmart(launchpadManager, {
-    get_allocated_tokens_num: { address: collectionAddress },
-  });
-  return num;
+): Promise<undefined | number> {
+  getLaunchpadManagerState();
+  const $launchpadManagerState = useStore(launchpadManagerState);
+
+  if (!$launchpadManagerState.value) return;
+  const launchpadManagerValue = $launchpadManagerState.value;
+  const userStats = findInMap(
+    launchpadManagerValue,
+    'tokens_count',
+    collectionAddress,
+  );
+
+  if (!userStats) return;
+  return Number(userStats);
 }
 
 export async function getLaunchpadManager(): Promise<string> {
-  const launchpadManager = launchpadManagerContractAddress.get();
-  if (launchpadManager) {
-    return launchpadManager;
-  }
-  const queryClient = await getQueryClient();
-  const state: { address: string } = await queryClient.queryContractSmart(
-    SYSTEM_CONTEXT_CONTRACT_ADDRESS,
-    { get_launchpad_manager: {} },
-  );
-  launchpadManagerContractAddress.set(state.address);
-  return state.address;
+  const contractAddresses = await getSystemContextState();
+  return contractAddresses.launchpadManager;
 }
 
-export async function getLaunchpadEntries(
-  start_from?: string,
-  limit = 20,
-): Promise<{
-  finished?: any[];
-  ongoing?: any[];
-  upcoming?: any[];
-  next: string;
+export async function getLaunchpadEntries(): Promise<{
+  finished?: CollectionLaunchpadEntrie[];
+  ongoing?: CollectionLaunchpadEntrie[];
+  upcoming?: CollectionLaunchpadEntrie[];
 }> {
-  const queryClient = await getQueryClient();
-  const launchpadManager = await getLaunchpadManager();
-  const res = await queryClient.queryContractSmart(launchpadManager, {
-    list_launchpad_entries: { limit, start_from },
+  getLaunchpadManagerState();
+  const $launchpadManagerState = useStore(launchpadManagerState);
+
+  if (!$launchpadManagerState.value) return {};
+  const launchpadManagerValue = $launchpadManagerState.value;
+
+  const mintingEvents = normalizeMap(
+    launchpadManagerValue,
+    '\u0000\u000eminting_events',
+  ).map(async (item) => {
+    const value: MintEvent = JSON.parse(item.value);
+    const collectionParams = findInMap(
+      launchpadManagerValue,
+      'launchpad_params',
+      item.key,
+    );
+    const parsedCollectionParams: CollectionLaunchpadParam = collectionParams
+      ? JSON.parse(collectionParams)
+      : {};
+
+    const whitelist = findInMap(launchpadManagerValue, 'whitelists', item.key);
+    const parsedWhitelist = whitelist ? JSON.parse(whitelist) : undefined;
+
+    const preview = findInMap(
+      launchpadManagerValue,
+      'minting_event_previews',
+      item.key,
+    );
+    const parsedPreview = preview ? JSON.parse(preview) : {};
+
+    const start_time = new Date(Number(value.start_time) * 1000).getTime();
+    const end_time = new Date(Number(value.end_time) * 1000).getTime();
+    const currentTime = new Date().getTime();
+
+    let status;
+    if (currentTime < start_time) {
+      status = 'upcoming';
+    } else if (currentTime > start_time && currentTime < end_time) {
+      status = 'ongoing';
+    } else {
+      status = 'finished';
+    }
+
+    return {
+      ...value,
+      ...parsedCollectionParams,
+      start_time,
+      end_time,
+      status,
+      whitelist: parsedWhitelist,
+      preview: parsedPreview,
+      collection: await getCollectionData(item.key),
+    };
   });
 
-  return { ..._.groupBy(res.data, 'status'), next: res.nextPage };
-}
+  const launchpadEntries = await Promise.all(mintingEvents);
+  const groupedLaunchpadEntries = groupBy(launchpadEntries, 'status');
 
-export async function getLaunchpadEntrie(collectionAddress: string) {
-  const queryClient = await getQueryClient();
-  const launchpadManager = await getLaunchpadManager();
-  const res = await queryClient.queryContractSmart(launchpadManager, {
-    get_launchpad_entry: { address: collectionAddress },
-  });
+  Object.keys(groupedLaunchpadEntries).forEach(
+    (key) =>
+      (groupedLaunchpadEntries[key] = groupedLaunchpadEntries[key].sort(
+        (a: any, b: any) => (a.start_time > b.start_time ? 0 : -1),
+      )),
+  );
 
-  return res;
+  return groupedLaunchpadEntries;
 }
 
 export async function allocateTokens(
@@ -324,13 +489,13 @@ export async function allocateTokens(
       metadata?: string | undefined;
     };
   },
-  collection: CollectionEntitie,
+  collection: CollectionData,
 ) {
   const { signerAddress, archwaySigner } = await getArchwaySigner();
   const tokens = await buildMintObject(
     signerAddress,
     filesToUpload,
-    collection as CollectionEntitie,
+    collection,
   );
   const allocate_tokens = {
     address: collectionAddress,
@@ -343,7 +508,7 @@ export async function allocateTokens(
     { allocate_tokens },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function claimLaunchpadToken(
@@ -355,7 +520,6 @@ export async function claimLaunchpadToken(
   const claim_token = {
     address: collectionAddress,
   };
-  console.info(claim_token);
   const launchpadManagerContract = await getLaunchpadManager();
   const { transactionHash } = await archwaySigner.execute(
     signerAddress,
@@ -365,7 +529,7 @@ export async function claimLaunchpadToken(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 /*
@@ -373,6 +537,24 @@ export async function claimLaunchpadToken(
  *  ==== Collection ====
  *
  */
+
+export async function getAllRewards(
+  collectionAddress: string,
+): Promise<{ [key: string]: BigNumber }> {
+  const queryClient = await getQueryClient();
+  const rewards = await queryClient.getAllRewardsRecords(collectionAddress);
+
+  const accumulatedRewards: { [key: string]: BigNumber } = {};
+
+  const coins = rewards.map((reward) => reward.rewards).flat();
+  coins.forEach((coin) => {
+    if (accumulatedRewards[coin.denom])
+      accumulatedRewards[coin.denom].add(new BigNumber(coin.amount));
+    else accumulatedRewards[coin.denom] = new BigNumber(coin.amount);
+  });
+
+  return accumulatedRewards;
+}
 
 export async function withdrawalRewards(
   collectionAddress: string,
@@ -385,35 +567,7 @@ export async function withdrawalRewards(
     { pay_out_rewards: {} },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
-}
-
-export async function getOwnedTokensIds(
-  collectionAddress: string,
-  ownerAddress: string,
-): Promise<string[]> {
-  const queryClient = await getQueryClient();
-
-  const { tokens } = await queryClient.queryContractSmart(collectionAddress, {
-    tokens: { owner: ownerAddress },
-  });
-  return tokens;
-}
-
-export async function getOwnedTokens(
-  ownerAddress: string,
-  page?: number,
-): Promise<UserCollections> {
-  const queryClient = await getQueryClient();
-
-  const collectionManagerContract = await getCollectionManager();
-  const result = await queryClient.queryContractSmart(
-    collectionManagerContract,
-    {
-      list_owned_tokens: { address: ownerAddress, page },
-    },
-  );
-  return result;
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function getNftInfo(
@@ -433,24 +587,9 @@ export async function getNftInfo(
   return token_uri;
 }
 
-export async function getSpecificTokens(
-  collectionAddress: string,
-  tokenIds: string[],
-): Promise<{ extension: any; token_uri: string }[]> {
-  const queryClient = await getQueryClient();
-
-  const res = await queryClient.queryContractSmart(collectionAddress, {
-    specific_tokens: {
-      ids: tokenIds,
-    },
-  });
-
-  return res;
-}
-
 export async function listToken(
   collectionAddress: string,
-  tokenId: string,
+  tokenId: number,
   tokenAmount: string,
   denom: string,
   openToOffers: boolean,
@@ -464,7 +603,7 @@ export async function listToken(
     {
       send_nft: {
         contract: marketplaceManager,
-        token_id: tokenId,
+        token_id: tokenId.toString(),
         msg: Buffer.from(
           JSON.stringify({
             price: { denom, amount: tokenAmount },
@@ -475,12 +614,12 @@ export async function listToken(
     },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function sendToken(
   collectionAddress: string,
-  tokenId: string,
+  tokenId: number,
   receiverAddress: string,
 ): Promise<void> {
   const { signerAddress, archwaySigner } = await getArchwaySigner();
@@ -496,7 +635,7 @@ export async function sendToken(
     },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 /*
  *
@@ -505,39 +644,41 @@ export async function sendToken(
  */
 
 export async function getMarketplaceManager(): Promise<string> {
-  const marketplaceManager = marketplaceManagerContractAddress.get();
-  if (marketplaceManager) {
-    return marketplaceManager;
-  }
-  const queryClient = await getQueryClient();
-  const state: { address: string } = await queryClient.queryContractSmart(
-    SYSTEM_CONTEXT_CONTRACT_ADDRESS,
-    { get_marketplace_manager: {} },
-  );
-  marketplaceManagerContractAddress.set(state.address);
-  return state.address;
+  const contractAddresses = await getSystemContextState();
+  return contractAddresses.marketplaceManager;
 }
 
-export async function getRecentListings(): Promise<RecentListings[]> {
-  const marketplaceManager = await getMarketplaceManager();
-  const queryClient = await getQueryClient();
-  const state = await queryClient.queryContractSmart(marketplaceManager, {
-    get_recent_listings: {},
-  });
-  return state.reverse();
+export async function getRecentListings(): Promise<Listing[] | undefined> {
+  getMarketplaceManagerState();
+  const $marketplaceManagerState = useStore(marketplaceManagerState);
+
+  if (!$marketplaceManagerState.value) return;
+
+  const recentOffers: Listing[] = findMapValues(
+    $marketplaceManagerState.value,
+    '\u0000\u000frecent_listings\u0000',
+  )
+    .map((item) => JSON.parse(item))
+    .reverse();
+
+  return recentOffers;
 }
 
 export async function getCollectionListings(
   collectionAddr: string,
-): Promise<RecentListings[]> {
-  const marketplaceManager = await getMarketplaceManager();
-  const queryClient = await getQueryClient();
-  const state = await queryClient.queryContractSmart(marketplaceManager, {
-    get_collection_listings: {
-      collection: collectionAddr,
-    },
-  });
-  return state.reverse();
+): Promise<undefined | Listing[]> {
+  getMarketplaceManagerState();
+  const $marketplaceManagerState = useStore(marketplaceManagerState);
+
+  if (!$marketplaceManagerState.value) return;
+
+  const listings: Listing[] = findAllInMap(
+    $marketplaceManagerState.value,
+    '\u0000\blistings',
+    collectionAddr,
+  ).map((item) => JSON.parse(item));
+
+  return listings;
 }
 
 export async function purchaseToken(
@@ -562,7 +703,7 @@ export async function purchaseToken(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function placeOffer(
@@ -587,44 +728,92 @@ export async function placeOffer(
     undefined,
     [{ denom, amount: tokenAmount }],
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function getTokenOffers(
   collectionAddr: string,
   tokenId: string,
-): Promise<any> {
-  const marketplaceManager = await getMarketplaceManager();
-  const queryClient = await getQueryClient();
-  const state = await queryClient.queryContractSmart(marketplaceManager, {
-    get_offers: {
-      collection: collectionAddr,
-      token_id: tokenId,
-    },
-  });
-  return state;
+): Promise<UserOffers[]> {
+  getMarketplaceManagerState();
+  const $marketplaceManagerState = useStore(marketplaceManagerState);
+  if (!$marketplaceManagerState.value) return [];
+
+  const offers = findAllInMap(
+    $marketplaceManagerState.value,
+    'listing_offers\u0000',
+    `${collectionAddr}-${tokenId}`,
+  );
+
+  return offers.map((el) => JSON.parse(el));
 }
 
-export async function getAddressTokenOffers(address: string): Promise<UserOffers[]> {
-  const marketplaceManager = await getMarketplaceManager();
-  const queryClient = await getQueryClient();
-  const state = await queryClient.queryContractSmart(marketplaceManager, {
-    get_user_offers: {
-      owner: address,
-    },
-  });
-  return state;
+export async function getAddressTokenOffers(
+  address: string,
+): Promise<[] | UserOffers[]> {
+  getMarketplaceManagerState();
+  const $marketplaceManagerState = useStore(marketplaceManagerState);
+  if (!$marketplaceManagerState.value) return [];
+
+  const userOffers = findInMap(
+    $marketplaceManagerState.value,
+    'user_offers',
+    address,
+  );
+
+  if (!userOffers) return [];
+  const parsedUserOffers = await Promise.all(
+    (JSON.parse(userOffers) as string[]).map(async (id) => {
+      const [collection, token_id] = id.split('-');
+      const offers = await getTokenOffers(collection, token_id);
+      if (!offers)
+        return {
+          collection,
+          token_id,
+        };
+      const offer = offers.find((el) => el.from === address);
+      if (!offer)
+        return {
+          collection,
+          token_id,
+        };
+
+      return {
+        ...offer,
+        collection,
+        token_id,
+      };
+    }),
+  );
+
+  return parsedUserOffers;
 }
 
-export async function getAddressTokenListings(address: string): Promise<UserListings[]> {
-  const marketplaceManager = await getMarketplaceManager();
-  const queryClient = await getQueryClient();
-  const state = await queryClient.queryContractSmart(marketplaceManager, {
-    get_user_listings: {
-      owner: address,
-    },
-  });
-  return state;
+export async function getAddressTokenListings(
+  address: string,
+): Promise<UserListings[]> {
+  getMarketplaceManagerState();
+  const $marketplaceManagerState = useStore(marketplaceManagerState);
+  if (!$marketplaceManagerState.value) return [];
+  const marketplaceManagerValue = $marketplaceManagerState.value;
+
+  const tokenListings = findInMap(
+    marketplaceManagerValue,
+    'user_offers',
+    address,
+  );
+
+  if (!tokenListings) return [];
+  const parsedUserOffers = await Promise.all(
+    (JSON.parse(tokenListings) as string[]).map(async (id) => {
+      const offer = findInMap(marketplaceManagerValue, '\u0000\blistings', id);
+
+      if (!offer) return {};
+      return JSON.parse(offer);
+    }),
+  );
+
+  return parsedUserOffers;
 }
 
 export async function cancelOffer(
@@ -645,7 +834,7 @@ export async function cancelOffer(
     },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function acceptOffer(
@@ -668,7 +857,7 @@ export async function acceptOffer(
     },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }
 
 export async function closeTokenListing(
@@ -689,5 +878,5 @@ export async function closeTokenListing(
     },
     'auto',
   );
-  console.info(`${BLOCKCHAIN_SCAN_TXS}${transactionHash}`);
+  chainScanInfoMessage(transactionHash)
 }

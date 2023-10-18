@@ -2,7 +2,7 @@
   <div class="flex w-full flex-wrap-reverse xl:flex-nowrap">
     <div class="flex-auto mt-4 xl:mt-20 mx-10">
       <ExpandableMint
-        :collectionAddress="collectionAddress"
+        :collectionAddress="collection.address"
         :collection="collection"
       />
       <ExpandableRewards
@@ -11,7 +11,7 @@
         :splitRewards="false"
       />
       <ExpandableLaunchpad
-        :collectionAddress="collectionAddress"
+        :collectionAddress="collection.address"
         :collection="collection"
       />
     </div>
@@ -31,21 +31,22 @@
         :collectionDescription="collection?.description"
         :collectionSymbol="collection?.symbol"
         :rewardsPercentageFee="collection?.rewards_percentage_fee"
-        :accumulatedRewards="collection?.accumulated_rewards"
+        :accumulatedRewards="accumulatedRewards"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { getCollection } from '../utils/evolve';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import CollectionBaner from './CollectionBaner.vue';
 import Button from './Button.vue';
 import BlackExpandable from './BlackExpandable.vue';
 import ExpandableMint from './ExpandableMint.vue';
 import ExpandableRewards from './ExpandableRewards.vue';
 import ExpandableLaunchpad from './ExpandableLaunchpad.vue';
+import type { CollectionData } from '../utils/types/CollectionData';
+import { computed, type PropType } from 'vue';
+import { getAllRewards } from '../utils/evolve';
 
 export default {
   emits: ['back'],
@@ -57,29 +58,17 @@ export default {
     ExpandableMint,
     ExpandableRewards,
   },
-  data() {
-    return {
-      collection: undefined as unknown as CollectionEntitie,
-    };
-  },
   props: {
-    collectionAddress: {
-      type: String,
+    collection: {
+      type: Object as PropType<CollectionData>,
       required: true,
     },
   },
-  methods: {
-    async loadCollectionData() {
-      if (this.collectionAddress) {
-        const collectionData = await getCollection(this.collectionAddress);
-        if (collectionData) {
-          this.collection = collectionData;
-        }
-      }
-    },
-  },
-  async mounted() {
-    await this.loadCollectionData();
+  async setup(props) {
+    const accumulatedRewards = await getAllRewards(props.collection.address);
+    return {
+      accumulatedRewards: computed(() => accumulatedRewards),
+    };
   },
 };
 </script>

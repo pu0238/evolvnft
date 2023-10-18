@@ -13,31 +13,21 @@
 import { getArchwaySigner } from '../utils/wallet';
 import { getCollectionsStatsForAddress } from '../utils/evolve';
 import Chart from 'chart.js/auto';
+import { Ref, computed, ref } from 'vue';
+import { useStore } from '@nanostores/vue';
+import { walletSignerAddress } from '../state/walletState';
 
 export default {
-  data() {
-    return {
-      collectionsCreated: undefined,
-      tokensMinted: undefined,
-    };
-  },
-  async mounted() {
-    const { signerAddress } = await getArchwaySigner();
-    const { collectionsCreated, tokensMinted } =
-      await getCollectionsStatsForAddress(signerAddress);
-    this.collectionsCreated = collectionsCreated;
-    this.tokensMinted = tokensMinted;
-    
-    this.$nextTick(function () {
-      const doughnut = document.getElementById('doughnut') as any;
-      const chart = new Chart(doughnut, {
+  methods: {
+    createUserStatsChart(canvas: HTMLCanvasElement, data: number[]) {
+      new Chart(canvas, {
         type: 'doughnut',
         data: {
-          labels: ['Collections created', 'Tokens minted'],
+          labels: ['Collections created', 'NFTs minted'],
           datasets: [
             {
               label: 'quantity',
-              data: [this.collectionsCreated, this.tokensMinted],
+              data,
               backgroundColor: [
                 '#6366f1', // indigo 500
                 '#a5b4fc', // indigo 300
@@ -61,7 +51,28 @@ export default {
           },
         },
       });
-    });
+    },
+  },
+  mounted() {
+    if (this.doughnut)
+      this.createUserStatsChart(this.doughnut, [
+        this.collectionsCreated,
+        this.tokensMinted,
+      ]);
+  },
+  async setup() {
+    const doughnut: Ref<null | HTMLCanvasElement> = ref(null);
+    const $walletSignerAddress = useStore(walletSignerAddress);
+    if (!$walletSignerAddress.value) return {};
+    
+    const collectionsStats = await getCollectionsStatsForAddress($walletSignerAddress.value);
+    if (!collectionsStats) return {};
+
+    return {
+      collectionsCreated: computed(() => collectionsStats.collections_created),
+      tokensMinted: computed(() => collectionsStats.tokens_minted),
+      doughnut,
+    };
   },
 };
 </script>

@@ -1,6 +1,5 @@
 export interface CollectionToken {
+  tokenId: number;
   owner: string;
-  approvals: any[];
   token_uri: string;
-  extension: any;
 }

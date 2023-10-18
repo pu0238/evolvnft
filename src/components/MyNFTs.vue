@@ -21,12 +21,14 @@
             draggable="false"
             class="w-44 mx-auto sm:w-72 md:w-96 rounded-2xl"
             :src="openCollectionToken.metadata.image"
+            loading="lazy"
           />
           <img
             v-else
             draggable="false"
             class="w-44 mx-auto sm:w-72 md:w-96 rounded-2xl p-8"
             src="/evolvnft-collection-logo.svg"
+            loading="lazy"
           />
           <div class="text-white flex font-josefin mt-4">
             <div class="grid w-full">
@@ -105,7 +107,7 @@
           <div class="mt-4" v-if="listingPriceInput">
             <p class="font-josefin mr-2 text-sm">Listing price:</p>
             <div class="mb-2 flex bg-zinc-900 rounded-2xl w-full min-w-[6rem]">
-              <img draggable="false" :src="denomLogo" class="w-4 mx-4 my-2" />
+              <img draggable="false" :src="denomLogo" class="w-4 mx-4 my-2" loading="lazy"/>
               <code
                 class="flex-1 bg-zinc-900 w-full min-w-[6rem] pr-4 py-2 rounded-2xl flex"
               >
@@ -173,7 +175,7 @@
       </div>
     </ProductsCart>
   </div>
-  <div class="grid" v-if="collectionAddress">
+  <div class="grid" v-if="currentCollectionData?.address">
     <div>
       <Button
         content="back"
@@ -195,12 +197,13 @@
             ? currentCollectionData.thumbnail
             : 'evolvnft-collection-logo.svg'
         "
+        loading="lazy"
       />
       <div class="lg:ml-8 lg:max-w-[20rem] flex-1">
-        <h2 class="font-cal text-2xl mt-4 lg:mt-1">
+        <h2 class="font-cal text-2xl mt-4 lg:mt-1 truncate">
           {{ currentCollectionData.name }}
         </h2>
-        <h3 class="font-josefin font-semibold mb-3">
+        <h3 class="font-josefin font-semibold mb-3 truncate">
           {{ currentCollectionData.symbol }}
         </h3>
         <div class="grid font-josefin text-xs w-full gap-[5px]">
@@ -237,7 +240,7 @@
         v-if="currentCollectionTokens"
         v-for="tokenData in currentCollectionTokens"
         :tokenId="tokenData.tokenId"
-        :collection="collectionAddress"
+        :collectionAddress="currentCollectionData.address"
         :metadata="tokenData.metadata"
         class="drop-shadow-2xl"
         :marketplace="false"
@@ -247,22 +250,14 @@
   </div>
   <CollectionsList
     v-else
-    v-if="userCollections.length > 0"
-    :collections="userCollections"
-    @collectionDetails="(address: string) => openCollection(address)"
+    v-if="ownedTokens && ownedTokens.length > 0"
+    :collections="ownedTokens"
+    @collectionDetails="(ownedTokens: CollectionData) => openCollection(ownedTokens)"
   />
 </template>
 
 <script lang="ts">
-import {
-  getCollection,
-  getOwnedTokens,
-  listToken,
-  sendToken,
-} from '../utils/evolve';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
-import type { UserCollection } from '../utils/types/UserCollections';
-import { getArchwaySigner } from '../utils/wallet';
+import { getOwnedTokensByAddress, listToken, sendToken } from '../utils/evolve';
 import CollectionsList from './CollectionsList.vue';
 import OfferBox from './OfferBox.vue';
 import CollectionBaner from './CollectionBaner.vue';
@@ -278,7 +273,10 @@ import {
   MINIMUM_LISTING_PRICE,
   NETWORK_INFO,
 } from '../utils/constant';
-import { errorMessage } from '../state/error';
+import { errorMessage, infoMessage } from '../state/error';
+import { ownedUserTokens } from '../state/dashboard';
+import type { CollectionData } from '../utils/types/CollectionData';
+import { isWallet } from '../utils/wallet';
 import { getMetadata } from '../utils/utils';
 
 export default {
@@ -292,31 +290,23 @@ export default {
   },
   data() {
     return {
-      userCollections: [] as CollectionEntitie[],
-      userCollectionsAndTokens: [] as UserCollection[],
-      collectionAddress: undefined as string | undefined,
       currentCollectionTokens: undefined as
         | undefined
         | {
+            tokenId: number;
             metadata: any;
             owner: string;
-            approvals: any;
             token_uri: string;
-            extension: any;
-            tokenId: string;
           }[],
-      currentCollectionData: undefined as undefined | CollectionEntitie,
-      paginator: 5,
+      currentCollectionData: undefined as undefined | CollectionData,
       openToken: false,
       openCollectionToken: undefined as
         | undefined
         | {
+            tokenId: number;
             metadata: any;
             owner: string;
-            approvals: any;
             token_uri: string;
-            extension: any;
-            tokenId: string;
           },
       openTokenSubPage: 'details',
       listingInProgress: false,
@@ -336,8 +326,13 @@ export default {
   },
   methods: {
     async listNFT() {
-      if (this.collectionAddress && this.openCollectionToken) {
-        if (this.listingPriceInput && this.listingPrice) {
+      if (this.currentCollectionData) {
+        if (
+          this.listingPriceInput &&
+          this.listingPrice &&
+          this.openCollectionToken
+        ) {
+
           if (this.listingPrice < MINIMUM_LISTING_PRICE) {
             throw errorMessage.set(
               `Minimul listing price is: ${toFixed(MINIMUM_LISTING_PRICE)}${
@@ -347,7 +342,7 @@ export default {
           }
           this.listingInProgress = true;
           await listToken(
-            this.collectionAddress,
+            this.currentCollectionData.address,
             this.openCollectionToken.tokenId,
             archToAarch(this.listingPrice),
             NETWORK_INFO.stakeCurrency.coinMinimalDenom,
@@ -363,7 +358,7 @@ export default {
     async sendNFT() {
       if (
         this.addressInput &&
-        this.collectionAddress &&
+        this.currentCollectionData?.address &&
         this.openCollectionToken
       ) {
         if (
@@ -374,7 +369,7 @@ export default {
         }
         this.sendingInProgress = true;
         await sendToken(
-          this.collectionAddress,
+          this.currentCollectionData.address,
           this.openCollectionToken.tokenId,
           this.sendToAddress,
         );
@@ -386,10 +381,8 @@ export default {
     async toogleOpen(collectionToken?: {
       metadata: any;
       owner: string;
-      approvals: any;
       token_uri: string;
-      extension: any;
-      tokenId: string;
+      tokenId: number;
     }) {
       if (this.openToken) {
         this.openCollectionToken = undefined;
@@ -404,90 +397,44 @@ export default {
       }
       this.openToken = !this.openToken;
     },
-    async loadOwnedTokens() {
-      const { signerAddress } = await getArchwaySigner();
 
-      let collectionsAddresses = await getOwnedTokens(signerAddress);
-      this.userCollectionsAndTokens.push(...collectionsAddresses.collections);
-      collectionsAddresses.collections.forEach((col) =>
-        getCollection(col.address).then((res) =>
-          this.userCollections?.push(res),
-        ),
-      );
-      for (let index = 0; true; index++) {
-        collectionsAddresses = await getOwnedTokens(signerAddress, index);
-        this.userCollectionsAndTokens.push(...collectionsAddresses.collections);
-        collectionsAddresses.collections.forEach((col) =>
-          getCollection(col.address).then((res) => {
-            this.userCollections?.push(res);
-          }),
-        );
-        if (collectionsAddresses.collectionsScanned < 10) break;
-      }
-      this.userCollectionsAndTokens.forEach(col => {
-        const collection = this.userCollections.find(tokens => tokens.address === col.address)
-        if (collection) {
-          collection.tokens = col.tokens
-        }
-      })
-    },
-    async loadCollectionTokens(colectionTokens?: {
-      [key: string]: {
-        owner: string;
-        approvals: any;
-        token_uri: string;
-        extension: any;
-      };
-    }) {
-      if (!colectionTokens) return;
-      if (this.collectionAddress) {
-        const metadataArray = await Promise.all(
-          Object.values(colectionTokens).map((item) =>
-            getMetadata(item.token_uri),
-          ),
-        );
-        this.currentCollectionTokens = Object.keys(colectionTokens).map(
-          (id, index) => ({
-            ...colectionTokens[id],
-            metadata: metadataArray[index],
-            tokenId: id,
-          }),
-        );
-      }
-    },
     back() {
       this.currentCollectionTokens = undefined;
-      this.collectionAddress = undefined;
       this.currentCollectionData = undefined;
     },
-    async openCollection(address: string) {
-      this.collectionAddress = address;
-      const colectionTokens = this.userCollectionsAndTokens.find(
-        (col) => col.address === this.collectionAddress,
-      )?.tokens;
-      await Promise.all([
-        this.loadCollectionTokens(colectionTokens),
-        getCollection(address).then(
-          (res) => (this.currentCollectionData = res),
-        ),
-      ]);
+    async openCollection(ownedTokens: CollectionData) {
+      this.currentCollectionData = ownedTokens;
+      await this.loadCollectionTokens(ownedTokens);
     },
-    blockchainScan() {
-      return BLOCKCHAIN_SCAN_ACCOUNT;
+    async loadCollectionTokens(ownedTokens: CollectionData) {
+      if (!ownedTokens.tokens) return;
+      this.currentCollectionTokens = await Promise.all(
+        ownedTokens.tokens.map(async (item) => ({
+          metadata: await getMetadata(item.token_uri),
+          ...item,
+        })),
+      );
     },
     shortenArchAddress,
   },
   computed: {
     minimumListingPrice: () => MINIMUM_LISTING_PRICE,
+    blockchainScan: () => BLOCKCHAIN_SCAN_ACCOUNT,
   },
-  async mounted() {
-    await this.loadOwnedTokens();
-  },
-  setup() {
+  async setup() {
+    isWallet();
     const $walletSignerAddress = useStore(walletSignerAddress);
+    if (!$walletSignerAddress.value) return {};
+
+    const $ownedUserTokens = useStore(ownedUserTokens);
+    infoMessage.set('Syncing your NFTs');
+    getOwnedTokensByAddress($walletSignerAddress.value).then(() =>
+      infoMessage.set('Your NFTs are up to date'),
+    );
 
     return {
       walletSignerAddress: computed(() => $walletSignerAddress.value),
+      ownedTokens: computed(() => $ownedUserTokens.value),
     };
   },
 };

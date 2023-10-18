@@ -1,14 +1,14 @@
-import InfoBox from './InfoBox.vue';
+import InfoMessage from './InfoMessage.vue';
 
 export default {
-  component: InfoBox,
+  component: InfoMessage,
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  title: 'InfoBox',
+  title: 'InfoMessage',
 };
 
 const Template = (args) => ({
-  components: { InfoBox },
-  template: '<InfoBox />',
+  components: { InfoMessage },
+  template: '<InfoMessage />',
 });
 export const Default = Template.bind({});

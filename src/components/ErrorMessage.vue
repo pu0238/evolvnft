@@ -1,6 +1,6 @@
 <template>
   <div
-    class="error float-right py-3 px-6 my-1 bg-red-500 rounded-full text-white font-josefin ease-out flex items-center text-xl w-fit"
+    class="error float-right py-3 px-6 my-1 bg-red-500 rounded-full text-white font-josefin ease-out flex items-center text-base w-fit"
   >
     <svg
       width="33"

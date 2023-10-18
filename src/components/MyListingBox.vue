@@ -13,10 +13,10 @@
       <div class="flex justify-between items-center">
         <a
           class="flex items-center font-cal text-indigo-500 font-semibold ease-out duration-300 hover:text-indigo-600"
-          :href="`/marketplace?tokenId=${listing.tokenId}#${listing.collection}`"
+          :href="`/marketplace?tokenId=${listing.token_id}#${listing.collection}`"
           target="_blank"
         >
-          #{{ listing.tokenId }}
+          #{{ listing.token_id }}
         </a>
         <div class="flex items-center font-cal">
           <img draggable="false" :src="denomLogo" class="w-4 mx-1 my-2" />
@@ -37,7 +37,7 @@
         <div class="flex">
           <Button
             content="close listing"
-            @click="$emit('cancelOffer', listing.collection, listing.tokenId)"
+            @click="$emit('cancelOffer', listing.collection, listing.token_id)"
           />
         </div>
       </div>

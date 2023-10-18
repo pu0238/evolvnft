@@ -8,7 +8,7 @@
     <ProductsCart
       v-if="collectionData"
       :open="openToken"
-      :title="`${collectionData.name} #${openTokenData?.tokenId}`"
+      :title="`${collectionData.name} #${openTokenData?.token_id}`"
       @close="toogleOpen"
       class="overflow-auto"
     >
@@ -220,7 +220,7 @@
           >
             {{ buyInProgress ? 'sale in progress...' : 'buy now' }}
           </button>
-          <template v-if="openTokenData?.openForOffers">
+          <template v-if="openTokenData?.open_for_offers">
             <div class="text-center">or</div>
             <div
               v-if="openOfferInput"
@@ -263,7 +263,7 @@
       :floor="floor"
       :listed="collectionListings?.length"
     />
-    <div v-if="listingsMetadata.length > 0">
+    <div v-if="!collectionListings || collectionListings.length > 0">
       <div class="flex font-josefin font-semibold mt-16 text-lg">
         <button
           class="px-4 py-2 ease-out duration-300 hover:text-indigo-500 border-b-4 hover:border-indigo-500"
@@ -288,7 +288,7 @@
       <div class="grid border-t-2 border-black pt-4">
         <div class="grid sm:flex mb-6 gap-2 items-center">
           <div class="flex-1 flex mx-auto">
-            <button class="bg-black px-[10px] rounded-full mr-2 group">
+            <button class="bg-black px-[10px] rounded-full mr-2 group" @click="reloadCollectionManagerState">
               <svg
                 width="25"
                 height="25"
@@ -372,12 +372,12 @@
         <div class="flex flex-wrap justify-center gap-y-2">
           <OfferBox
             v-for="offer in filteredListings"
-            :tokenId="offer.listing.tokenId"
-            :price="offer.listing.normalizedPrice || offer.listing.price"
-            :collection="offer.listing.collection"
+            :tokenId="Number(offer.token_id)"
+            :price="offer.normalizedPrice ?? offer.price"
+            :collectionAddress="offer.collection"
             :metadata="offer.metadata"
             class="drop-shadow-2xl"
-            @click="toogleOpen(offer.metadata, offer.listing)"
+            @click="toogleOpen(offer.metadata, offer)"
             :marketplace="false"
           />
         </div>
@@ -394,16 +394,13 @@ import {
   acceptOffer,
   cancelOffer,
   closeTokenListing,
-  getCollection,
+  getCollectionData,
   getCollectionListings,
-  getNftInfo,
   getTokenOffers,
   placeOffer,
   purchaseToken,
 } from '../utils/evolve';
 import CollectionMarketplaceHeader from './CollectionMarketplaceHeader.vue';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
-import type { RecentListings } from '../utils/types/RecentListings';
 import OfferBox from './OfferBox.vue';
 import {
   aarchToArch,
@@ -416,18 +413,23 @@ import ProductsCart from './ProductsCart.vue';
 import { BLOCKCHAIN_SCAN_ACCOUNT } from '../utils/constant';
 import { useStore } from '@nanostores/vue';
 import { walletSignerAddress } from '../state/walletState';
-import { computed } from 'vue';
+import { Ref, computed, ref } from 'vue';
 import { getMetadata } from '../utils/utils';
+import type { CollectionData } from '../utils/types/CollectionData';
+import type { Listing } from '../utils/types/Listing';
+import { reloadCollectionManagerState } from '../utils/evolveStateQuery';
+
+interface MarketplaceListing extends Listing {
+  normalizedPrice?: string;
+  metadata?: any;
+}
 
 export default {
   components: { CollectionMarketplaceHeader, OfferBox, ProductsCart },
   data() {
     return {
-      collectionData: undefined as undefined | CollectionEntitie,
-      collectionListings: [] as RecentListings[],
       active: 'listings',
       search: '',
-      floor: undefined as undefined | number,
       sort: '',
       openSort: false,
       sortItems: [
@@ -436,7 +438,7 @@ export default {
         { title: 'price: high to low', value: 'asc' },
       ],
       openToken: false,
-      openTokenData: undefined as undefined | RecentListings,
+      openTokenData: undefined as undefined | MarketplaceListing,
       openTokenMetadata: undefined as undefined | any,
       buyInProgress: false,
       offerPrice: undefined as undefined | any,
@@ -444,7 +446,7 @@ export default {
       openTokenOffers: undefined as undefined | any[],
       openTokenSubPage: 'details',
       paginator: 10,
-      listingsMetadata: [] as { listing: RecentListings; metadata: any }[],
+      listingsMetadata: [] as { listing: MarketplaceListing; metadata: any }[],
       closingInProgress: false,
     };
   },
@@ -460,37 +462,38 @@ export default {
   },
   computed: {
     filteredListings() {
-      if (this.listingsMetadata.length > 0) {
-        const searchResult = this.listingsMetadata.filter((listing) =>
-          listing.listing.tokenId
-            .toLowerCase()
-            .includes(this.search.toLowerCase()),
+      if (!this.collectionListings || this.collectionListings.length === 0)
+        return [];
+      const searchResult = this.collectionListings.filter((listing) =>
+        (listing?.metadata?.name ?? listing.token_id)
+          .toLowerCase()
+          .includes(this.search.toLowerCase()),
+      );
+      if (this.sort === 'desc')
+        return searchResult.sort(
+          (l1, l2) => Number(l1.price) - Number(l2.price),
         );
-        if (this.sort === 'desc')
-          return searchResult.sort(
-            (l1, l2) => Number(l1.listing.price) - Number(l2.listing.price),
-          );
-        else if (this.sort === 'asc')
-          return searchResult.sort(
-            (l1, l2) => Number(l2.listing.price) - Number(l1.listing.price),
-          );
-        return searchResult;
-      }
+      else if (this.sort === 'asc')
+        return searchResult.sort(
+          (l1, l2) => Number(l2.price) - Number(l1.price),
+        );
+      return searchResult;
     },
     blockchainScan() {
       return BLOCKCHAIN_SCAN_ACCOUNT;
     },
   },
   methods: {
+    reloadCollectionManagerState,
     toFixed,
     shortenArchAddress,
     aarchToArch,
     async closeNFTListing() {
-      if (this.openTokenData && this.openTokenData?.tokenId) {
+      if (this.openTokenData && this.openTokenData?.token_id) {
         this.closingInProgress = true;
         await closeTokenListing(
           this.collectionAddress,
-          this.openTokenData?.tokenId,
+          this.openTokenData?.token_id,
         );
         this.closingInProgress = false;
       }
@@ -508,15 +511,17 @@ export default {
       }
     },
     async realoadListings() {
-      this.collectionListings = await getCollectionListings(
+      const collectionListings = await getCollectionListings(
         this.collectionAddress,
       );
+      if (!collectionListings) return;
+      this.collectionListings = collectionListings;
     },
     chooseSortItem(item: any, index: number) {
       swapElements(this.sortItems, 0, index + 1);
       this.sort = item.value;
     },
-    async toogleOpen(metadata?: any, offer?: RecentListings) {
+    async toogleOpen(metadata?: any, offer?: MarketplaceListing) {
       if (this.openToken) {
         this.openTokenMetadata = undefined;
         this.openTokenData = undefined;
@@ -534,11 +539,11 @@ export default {
       this.openToken = !this.openToken;
     },
     async buyNFT() {
-      if (this.openTokenData && this.openTokenData?.tokenId) {
+      if (this.openTokenData && this.openTokenData?.token_id) {
         this.buyInProgress = true;
         await purchaseToken(
           this.collectionAddress,
-          this.openTokenData?.tokenId,
+          this.openTokenData?.token_id,
           this.openTokenData?.price,
           this.openTokenData?.denom,
         );
@@ -547,11 +552,11 @@ export default {
       this.buyInProgress = false;
     },
     async makeAnOffer() {
-      if (this.openTokenData && this.openTokenData?.tokenId) {
+      if (this.openTokenData && this.openTokenData?.token_id) {
         const price = archToAarch(this.offerPrice);
         await placeOffer(
           this.collectionAddress,
-          this.openTokenData?.tokenId,
+          this.openTokenData?.token_id,
           price,
           this.openTokenData?.denom,
         );
@@ -566,48 +571,24 @@ export default {
     async listOffers() {
       if (
         this.openTokenData?.collection &&
-        this.openTokenData?.tokenId &&
-        this.openTokenData?.openForOffers
+        this.openTokenData?.token_id &&
+        this.openTokenData?.open_for_offers
       ) {
         this.openTokenOffers = await getTokenOffers(
           this.openTokenData?.collection,
-          this.openTokenData?.tokenId,
+          this.openTokenData?.token_id,
         );
       }
-    },
-    async loadMarketData() {
-      const [collectionData, listings] = await Promise.all([
-        getCollection(this.collectionAddress),
-        getCollectionListings(this.collectionAddress),
-      ]);
-
-      this.collectionData = collectionData;
-      this.collectionListings = listings.map((listing) => {
-        listing.normalizedPrice = aarchToArch(Number(listing.price));
-        return listing;
-      });
-
-      //console.log('collectionListings', this.collectionListings);
-      //listings.forEach((a) => console.log(a.offers));
-      /*
-      const a = listings.map(async listing => await getNftInfo(listing.collection, listing.tokenId))
-      const tokensMetadata = await Promise.all(a);
-      console.log(a)
-*/
-      if (Object.keys(this.collectionListings).length === 0) return;
-      this.floor = Math.min(
-        ...this.collectionListings.map((item) => Number(item.price)),
-      );
     },
     async cancelOfferForToken(offerOwner: string) {
       if (
         this.openTokenData?.collection &&
-        this.openTokenData?.tokenId &&
+        this.openTokenData?.token_id &&
         this.openTokenOffers
       ) {
         await cancelOffer(
           this.openTokenData?.collection,
-          this.openTokenData?.tokenId,
+          this.openTokenData?.token_id,
         );
         this.openTokenOffers = this.openTokenOffers.filter(function (obj) {
           return obj.from !== offerOwner;
@@ -617,12 +598,12 @@ export default {
     async acceptOfferForToken(offerOwner: string) {
       if (
         this.openTokenData?.collection &&
-        this.openTokenData?.tokenId &&
+        this.openTokenData?.token_id &&
         this.openTokenOffers
       ) {
         await acceptOffer(
           this.openTokenData?.collection,
-          this.openTokenData?.tokenId,
+          this.openTokenData?.token_id,
           offerOwner,
         );
         this.openTokenOffers = this.openTokenOffers.filter(function (obj) {
@@ -630,46 +611,55 @@ export default {
         });
       }
     },
-    async getTokenMetadata(collection: string, tokenId: string) {
-      const metadataUrl = await getNftInfo(collection, tokenId);
-      return await getMetadata(metadataUrl);
-    },
-    async dynamicLoadOffers() {
-      for (
-        let index = this.paginator;
-        index <= this.collectionListings.length ||
-        (this.collectionListings.length <= this.paginator &&
-          this.paginator === index);
-        index += this.paginator
-      ) {
-        const paginRecentListings = this.collectionListings.slice(
-          index - this.paginator,
-          index,
-        );
+  },
+  async setup(props) {
+    const collectionData: Ref<CollectionData | undefined> = ref(undefined);
+    const collectionListings: Ref<MarketplaceListing[] | undefined> =
+      ref(undefined);
+    const floor: Ref<number | undefined> = ref(undefined);
+    const listingsMetadata: Ref<
+      { listing: MarketplaceListing; metadata: any }[]
+    > = ref([]);
 
-        const fiveListingsMetadata = await Promise.all(
-          paginRecentListings.map((listing) =>
-            this.getTokenMetadata(listing.collection, listing.tokenId),
-          ),
+    const loadMarketData = async () => {
+      const [resolvedCollectionData, listings] = await Promise.all([
+        getCollectionData(props.collectionAddress),
+        getCollectionListings(props.collectionAddress),
+      ]);
+      if (!resolvedCollectionData || !listings) return;
+      collectionData.value = resolvedCollectionData;
+      collectionListings.value = listings.map((listing, index) => {
+        const currentToken = collectionData.value?.tokens?.find(
+          (token) => token.tokenId.toString() === listing.token_id,
         );
-        this.listingsMetadata.push(
-          ...paginRecentListings.map((listing, index) => ({
-            listing,
-            metadata: fiveListingsMetadata[index],
-          })),
-        );
-      }
-    },
-  },
-  async mounted() {
-    await this.loadMarketData();
-    await this.dynamicLoadOffers();
-  },
-  setup() {
+        if (currentToken?.token_uri)
+          getMetadata(currentToken?.token_uri).then((data) => {
+            if (!collectionListings.value || !collectionListings.value[index])
+              return;
+            collectionListings.value[index].metadata = data;
+          });
+        return {
+          ...listing,
+          normalizedPrice: aarchToArch(Number(listing.price)),
+        };
+      });
+
+      if (Object.keys(collectionListings.value).length === 0) return;
+      floor.value = Math.min(
+        ...collectionListings.value.map((item) => Number(item.price)),
+      );
+    };
+
     const $walletSignerAddress = useStore(walletSignerAddress);
+    await loadMarketData();
 
     return {
       walletSignerAddress: computed(() => $walletSignerAddress.value),
+      collectionData,
+      collectionListings,
+      floor,
+      listingsMetadata,
+      loadMarketData,
     };
   },
 };

@@ -28,7 +28,7 @@
             :collectionDescription="collection?.description"
             :collectionSymbol="collection?.symbol"
             :rewardsPercentageFee="collection?.rewards_percentage_fee"
-            :accumulatedRewards="collection?.accumulated_rewards"
+            :accumulatedRewards="accumulatedRewards"
           />
         </div>
         <div class="mx-auto">
@@ -36,7 +36,7 @@
             v-if="mintBox"
             @close="() => (mintBox = !mintBox)"
             :collectionAddress="collectionAddress"
-            :afterMint="loadCollectionData()"
+            :afterMint="reloadCollectionManagerState()"
             :collection="collection"
           />
         </div>
@@ -64,7 +64,7 @@
         :collectionDescription="collection?.description"
         :collectionSymbol="collection?.symbol"
         :rewardsPercentageFee="collection?.rewards_percentage_fee"
-        :accumulatedRewards="collection?.accumulated_rewards"
+        :accumulatedRewards="accumulatedRewards"
       />
     </div>
   </div>
@@ -74,11 +74,15 @@
 import type { Window as KeplrWindow } from '@keplr-wallet/types';
 import CollectionBaner from './CollectionBaner.vue';
 import Actions from './Actions.vue';
-import type { CollectionEntitie } from '../utils/types/CollectionItem';
 import MintBox from './MintBox.vue';
 import Button from './Button.vue';
-import { getArchwaySigner } from '../utils/wallet';
-import { getCollectionManager } from '../utils/evolve';
+import {
+  getAllRewards,
+  getCollectionData,
+} from '../utils/evolve';
+import type { CollectionData } from '../utils/types/CollectionData';
+import { ref } from 'vue';
+import { reloadCollectionManagerState } from '../utils/evolveStateQuery';
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -134,7 +138,7 @@ export default {
           tag: 'sdk',
         },
       ],
-      collection: undefined as unknown as CollectionEntitie,
+      collection: undefined as unknown as CollectionData,
     };
   },
   props: {
@@ -156,33 +160,21 @@ export default {
         this.$emit('singleCollection', this.collection);
       }
     },
-    async getCollection(): Promise<void | CollectionEntitie> {
-      const { signerAddress, archwaySigner } = await getArchwaySigner();
-
-      const get_collection = {
-        address: this.collectionAddress,
-      };
-
-      const collectionManagerContract = await getCollectionManager();
-      const data = await archwaySigner.queryContractSmart(
-        collectionManagerContract,
-        {
-          get_collection,
-        },
-      );
-      return data;
-    },
-    async loadCollectionData() {
-      if (this.collectionAddress) {
-        const collectionData = await this.getCollection();
-        if (collectionData) {
-          this.collection = collectionData;
-        }
-      }
-    },
+    reloadCollectionManagerState
   },
-  async mounted() {
-    await this.loadCollectionData();
+  async setup(props) {
+    const [$collectionData, $accumulatedRewards] = await Promise.all([
+      getCollectionData(props.collectionAddress),
+      getAllRewards(props.collectionAddress),
+    ]);
+
+    const collectionData = ref($collectionData);
+    const accumulatedRewards = ref($accumulatedRewards);
+
+    return {
+      collectionData,
+      accumulatedRewards,
+    };
   },
 };
 </script>

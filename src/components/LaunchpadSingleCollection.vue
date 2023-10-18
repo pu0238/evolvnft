@@ -34,13 +34,13 @@
       <h2
         class="text-3xl md:text-2xl lg:text-3xl xl:text-4xl text-black font-cal text-center"
       >
-        {{ launchpadData.name }}
+        {{ launchpadData.collection?.name }}
       </h2>
       <div class="my-2">
         <p
           class="text-sm font-semibold sm:font-normal md:text-md lg:text-lg xl:text-xl text-black font-josefin text-center w-[18rem] sm:w-[25rem] md:w-[22rem] lg:w-[33rem] xl:w-[40rem] 2xl:w-[42rem] ]"
         >
-          {{ launchpadData.description }}
+          {{ launchpadData.collection?.description }}
         </p>
       </div>
 
@@ -54,27 +54,27 @@
             @click="claimToken"
           />
         </div>
-        <template v-if="launchpadData.whitelistEnd">
+        <template v-if="launchpadData.whitelist">
           <div class="border-b-zinc-300 border-b-[1px] text-base">
             whitelist minting starts at:
             <p class="font-semibold text-lg">
-              {{ parseTime(launchpadData.startTime) }}
-              {{ parseDate(launchpadData.startTime) }}
+              {{ parseTime(launchpadData.start_time) }}
+              {{ parseDate(launchpadData.start_time) }}
             </p>
           </div>
           <div class="text-base">
             open mint starts at:
             <p class="font-semibold text-lg">
-              {{ parseTime(launchpadData.whitelistEnd) }}
-              {{ parseDate(launchpadData.whitelistEnd) }}
+              {{ parseTime(launchpadData.whitelist) }}
+              {{ parseDate(launchpadData.whitelist) }}
             </p>
           </div>
         </template>
         <div class="text-base" v-else>
           open mint starts at:
           <p class="font-semibold text-lg">
-            {{ parseTime(launchpadData.startTime) }}
-            {{ parseDate(launchpadData.startTime) }}
+            {{ parseTime(launchpadData.start_time) }}
+            {{ parseDate(launchpadData.start_time) }}
           </p>
         </div>
       </div>
@@ -117,7 +117,8 @@
             <p class="font-semibold float-right">
               {{
                 Math.round(
-                  (launchpadData.soldTokens / launchpadData.totalTokens) * 100,
+                  (launchpadData.sold_tokens / launchpadData.total_tokens) *
+                    100,
                 )
               }}
               %
@@ -126,7 +127,8 @@
               <div
                 class="bg-indigo-500 h-2.5 rounded-full"
                 :style="`width: ${Math.round(
-                  (launchpadData.soldTokens / launchpadData.totalTokens) * 100,
+                  (launchpadData.sold_tokens / launchpadData.total_tokens) *
+                    100,
                 )}%`"
               ></div>
             </div>
@@ -146,12 +148,11 @@
 <script lang="ts">
 import Button from './Button.vue';
 import LaunchpadCollectionLogo from './LaunchpadCollectionLogo.vue';
-import type { LaunchpadItem } from '../utils/types/LaunchpadItem';
 import type { PropType } from 'vue';
 import { CARNISTER_API_URL } from '../utils/constant';
 import { parseDate, parseTime } from '../utils/schared';
 import { claimLaunchpadToken } from '../utils/evolve';
-
+import type { CollectionLaunchpadEntrie } from '../utils/types/CollectionLaunchpadEntrie';
 
 export default {
   components: {
@@ -166,7 +167,7 @@ export default {
   },
   props: {
     launchpadData: {
-      type: Object as PropType<LaunchpadItem>,
+      type: Object as PropType<CollectionLaunchpadEntrie>,
       required: true,
     },
   },
@@ -177,19 +178,21 @@ export default {
     parseDate,
     parseTime,
     async claimToken() {
+      if (!this.launchpadData.collection?.address) return;
+
       await claimLaunchpadToken(
-        this.launchpadData.address,
-        this.launchpadData.tokenCost,
-        this.launchpadData.costDenom,
+        this.launchpadData.collection?.address,
+        this.launchpadData.token_cost,
+        this.launchpadData.cost_denom,
       );
     },
     checkDidUserCanMint() {
-      const startTime = Number(this.launchpadData.startTime) * 1000;
-      const endTime = Number(this.launchpadData.endTime) * 1000;
+      const startTime = Number(this.launchpadData.start_time) * 1000;
+      const endTime = Number(this.launchpadData.end_time) * 1000;
       const currentTime = new Date().getTime();
 
-      if (this.launchpadData.whitelistEnd) {
-        const whitelistEnd = Number(this.launchpadData.whitelistEnd) * 1000;
+      if (this.launchpadData.whitelist) {
+        const whitelistEnd = Number(this.launchpadData.whitelist) * 1000;
         // TODO: is user whitelisted?
         if (currentTime > whitelistEnd && currentTime < endTime) {
           this.userCanMint = true;

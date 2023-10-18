@@ -104,12 +104,12 @@ export default {
       required: true,
     },
     endTime: {
-      type: String,
+      type: Number,
       default: () => '26.06.2012',
       required: true,
     },
     startTime: {
-      type: String,
+      type: Number,
       default: () => '24h',
       required: true,
     },

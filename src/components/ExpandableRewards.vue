@@ -108,6 +108,7 @@
 </template>
 
 <script lang="ts">
+import { infoMessage } from '../state/error';
 import { setRewardsFee, withdrawalRewards } from '../utils/evolve';
 import BlackExpandable from './BlackExpandable.vue';
 import Button from './Button.vue';
@@ -138,7 +139,7 @@ export default {
     async setCollectionRewards() {
       const rewardFee = Number(this.sliderValue) * 100;
       if (this.rewardPercentage === rewardFee)
-        return console.info('Reward is equal to the selected value');
+        return infoMessage.set('Reward is equal to the selected value');
       await setRewardsFee(
         this.collectionAddress,
         Number(this.sliderValue) * 100,
